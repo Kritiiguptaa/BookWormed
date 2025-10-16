@@ -1,0 +1,195 @@
+<mxfile host="app.diagrams.net" modified="2025-10-14T01:10:00.000Z" agent="Gemini-AI-Assistant" etag="gH8i7j6k5l4m3n2o" version="22.1.0" type="device">
+  <diagram id="DFD-Level-1" name="Page-1">
+    <mxGraphModel dx="1600" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1100" background="#f0f0f0" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Level 1 DFD: Book Recommendation and Sales System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="20" width="800" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="User" style="shape=actor;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="100" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" value="Administrator" style="shape=actor;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="880" y="900" width="40" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pg" value="Payment Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DDDDDD;strokeColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="320" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="p1" value="P1:&lt;br&gt;User&lt;br&gt;Management" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="380" y="380" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="P2:&lt;br&gt;Book&lt;br&gt;Management" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="680" y="740" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="P3:&lt;br&gt;Book&lt;br&gt;Discovery" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="580" y="380" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="P4:&lt;br&gt;User Interaction&lt;br&gt;Management" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="840" y="380" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" value="P5:&lt;br&gt;Recommendation&lt;br&gt;Engine" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="380" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p6" value="P6:&lt;br&gt;Order &amp; Payment&lt;br&gt;Processing" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="290" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ds1" value="DS1: Users" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#EFEFFB;strokeColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="380" y="760" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ds2" value="DS2: Books" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#EFEFFB;strokeColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="580" y="760" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ds3" value="DS3: Reviews" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#EFEFFB;strokeColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="840" y="760" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ds4" value="DS4: Wishlists" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#EFEFFB;strokeColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="760" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ds5" value="DS5: Orders" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#EFEFFB;strokeColor=#555555;" vertex="1" parent="1">
+          <mxGeometry x="1520" y="500" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-user-p1-in" value="Login Credentials" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="user" target="p1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="440" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p1-user-out" value="Login Status" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-user-p3-in" value="Search Query / Browse Request" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="user" target="p3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p3-user-out" value="Book Lists &amp; Details" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p3" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-user-p4-in" value="Review, Rating, &amp; Wishlist Data" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="user" target="p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p4-user-out" value="Interaction Confirmation" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p4" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p5-user-out" value="Recommended Books List" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p5" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1080" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-user-p6-in" value="Purchase Request" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="user" target="p6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1220" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p6-user-out" value="Order Confirmation" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p6" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-admin-p2-in" value="Book Management Commands" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="admin" target="p2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p2-admin-out" value="Action Confirmation" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2" target="admin">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p6-pg-out" value="Payment Authorization Request" style="edgeStyle=none;html=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p6" target="pg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-pg-p6-in" value="Transaction Status" style="edgeStyle=none;html=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="pg" target="p6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p1-ds1" value="User Data Query" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p1" target="ds1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p3-ds2" value="Book Data Query" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p3" target="ds2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p4-ds3" value="Review Data (Write)" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p4" target="ds3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p4-ds4" value="Wishlist Data (Write)" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p4" target="ds4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1160" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p4-ds2-update" value="Average Rating (Update)" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p4" target="ds2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p5-ds2" value="All Books Data" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="p5" target="ds2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p5-ds3" value="Ratings Data Query" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="p5" target="ds3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p5-ds4" value="Preferences Data Query" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="p5" target="ds4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p6-ds2" value="Book Price Query" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="p6" target="ds2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="240" />
+              <mxPoint x="200" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="flow-p6-ds5" value="Order Record (Write/Update)" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p6" target="ds5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-p2-ds2" value="Book Record (Write/Update)" style="edgeStyle=elbowEdgeStyle;elbow=vertical;html=1;curved=1;endArrow=classic;endFill=1;" edge="1" parent="1" source="p2" target="ds2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow-user-p5-implicit" value="(Implicit Request)" style="edgeStyle=elbowEdgeStyle;elbow=horizontal;html=1;curved=1;endArrow=classic;endFill=1;dashed=1;" edge="1" parent="1" source="user" target="p5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
