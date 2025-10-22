@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import Home from './pages/Home'
+import Posts from './pages/Posts'
 import Navbar from './components/Navbar'
 import Friends from './components/friends.jsx'
 import Search from './components/search.jsx';
@@ -27,6 +28,7 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path='/friends' element={<Friends/>}/>
+        <Route path='/posts' element={<Posts/>}/>
       </Routes>
       <Footer />
     </div>

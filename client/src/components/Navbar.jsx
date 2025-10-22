@@ -16,6 +16,7 @@ const Navbar = () => {
                         <div className="hidden md:flex items-baseline space-x-4">
                             <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Home</Link>
                             <Link to="/books" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Books</Link>
+                            <Link to="/posts" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Posts</Link>
                             <Link to="/about" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">About</Link>
                             {user && (
                                 <Link to="/friends" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Following</Link>
