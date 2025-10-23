@@ -3,6 +3,7 @@ import userModel from "../models/userModel.js"
 // import razorpay from 'razorpay';
 import bcrypt from 'bcryptjs'    //password protection
 import jwt from 'jsonwebtoken'   //user authentication
+import { createNotificationHelper } from './NotificationController.js';
 // import stripe from "stripe";
 const getUser = async (req, res) => {
   try {
@@ -156,6 +157,9 @@ const followUser = async (req, res) => {
     await user.save();
     await followUser.save();
 
+    // Create notification for the followed user
+    await createNotificationHelper(followId, userId, 'follow');
+
     res.json({ success: true, message: `You are now following ${followUser.username}` });
   } catch (error) {
     res.json({ success: false, message: error.message });
@@ -204,4 +208,25 @@ const getFriends = async (req, res) => {
   }
 };
 
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser}
+const getUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Find user and populate followers and following, exclude password
+    const user = await userModel.findById(userId)
+      .select('-password')
+      .populate('followers', 'name email username profilePicture bio')
+      .populate('following', 'name email username profilePicture bio');
+    
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    res.json({ success: true, user });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error fetching user profile" });
+  }
+};
+
+export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile}

@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import userRouter from './routes/userRoutes.js';
 import postRouter from './routes/postRoutes.js';
+import bookRouter from './routes/bookRoutes.js';
+import notificationRouter from './routes/notificationRoutes.js';
 import connectDB from './configs/mongodb.js';
 
 // App Config
@@ -18,6 +20,8 @@ app.use(cors())
 // API routes
 app.use('/api/user',userRouter)
 app.use('/api/post',postRouter)
+app.use('/api/book',bookRouter)
+app.use('/api/notification',notificationRouter)
 
 app.get('/', (req,res) => res.send("API Working"))
 

@@ -1,4 +1,5 @@
 import Post from '../models/postModel.js';
+import { createNotificationHelper } from './NotificationController.js';
 
 // Create a new post
 export const createPost = async (req, res) => {
@@ -163,6 +164,14 @@ export const toggleLike = async (req, res) => {
     if (likeIndex === -1) {
       // Like the post
       post.likes.push(userId);
+      
+      // Create notification for post author
+      await createNotificationHelper(
+        post.author.toString(),
+        userId,
+        'like_post',
+        { postId: id }
+      );
     } else {
       // Unlike the post
       post.likes.splice(likeIndex, 1);
@@ -209,6 +218,14 @@ export const addComment = async (req, res) => {
 
     post.comments.push(newComment);
     await post.save();
+
+    // Create notification for post author
+    await createNotificationHelper(
+      post.author.toString(),
+      userId,
+      'comment_post',
+      { postId: id, comment: text.trim() }
+    );
 
     res.status(201).json({
       success: true,
