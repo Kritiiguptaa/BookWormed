@@ -2,6 +2,13 @@ import React, { useContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import Home from './pages/Home'
+import Posts from './pages/Posts'
+import BrowseBooks from './pages/BrowseBooks'
+import BookDetails from './pages/BookDetails'
+import MyLists from './pages/MyLists'
+import About from './pages/About'
+import UserProfile from './pages/UserProfile'
+import Notifications from './pages/Notifications'
 import Navbar from './components/Navbar'
 import Friends from './components/friends.jsx'
 import Search from './components/search.jsx';
@@ -28,6 +35,13 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path='/friends' element={<Friends/>}/>
+        <Route path='/posts' element={<Posts/>}/>
+        <Route path='/books' element={<BrowseBooks/>}/>
+        <Route path='/books/:id' element={<BookDetails/>}/>
+        <Route path='/my-lists' element={<MyLists/>}/>
+        <Route path='/about' element={<About/>}/>
+        <Route path='/profile/:userId' element={<UserProfile/>}/>
+        <Route path='/notifications' element={<Notifications/>}/>
         <Route path='/buy' element={<BuyCredit />} />
       </Routes>
       <Footer />
