@@ -7,7 +7,10 @@ import {
     followUser,
     unfollowUser,
     getFriends,
-    getUser
+    getUser,
+    userCredits,
+    paymentRazorpay,
+    verifyRazorpay
 } from '../controllers/UserController.js';
 import userAuth from '../middlewares/auth.js';
 const userRouter = express.Router();
@@ -21,4 +24,8 @@ userRouter.post('/unfollow/:unfollowId', userAuth, unfollowUser);
 // userRouter.get('/friends/:userId', userAuth, getFriends);
 userRouter.get('/friends/', userAuth, getFriends);
 userRouter.get('/get', userAuth, getUser);
+userRouter.get('/credits', userAuth, userCredits)
+userRouter.post('/pay-razor', userAuth, paymentRazorpay)
+userRouter.post('/verify-razor', verifyRazorpay)
+
 export default userRouter;

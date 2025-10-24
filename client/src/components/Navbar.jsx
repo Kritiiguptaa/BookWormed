@@ -1,10 +1,14 @@
 import { useContext } from 'react';
 import { assets } from '../assests/assets.js';
-import { Link } from 'react-router-dom';
+// 1. Imported useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 import { AppContext } from '../context/AppContext';
 
 const Navbar = () => {
-    const { user, setShowLogin, logout } = useContext(AppContext);
+    // 2. Added 'credit' to context
+    const { user, setShowLogin, logout, credit } = useContext(AppContext);
+    // 3. Initialized navigate hook
+    const navigate = useNavigate();
 
     return (
         <header className="bg-gray-950/80 backdrop-blur-sm sticky top-0 z-40">
@@ -32,6 +36,16 @@ const Navbar = () => {
                                     Search
                                 </Link>
 
+                                {/* === 4. ADDED CREDITS BUTTON === */}
+                                <button
+                                    onClick={() => navigate('/buy')}
+                                    className="flex items-center gap-2 text-white px-3 py-2 rounded-md text-sm font-medium hover:text-white hover:bg-gray-700 transition-colors"
+                                >
+                                    <img className="w-5" src={assets.credit_star} alt="Credits" />
+                                    <p className="text-xs sm:text-sm font-medium">Credits Left: {credit}</p>
+                                </button>
+                                {/* ================================ */}
+
                                 {/* User info */}
                                 <div className="flex items-center gap-2">
                                     <img
@@ -53,6 +67,9 @@ const Navbar = () => {
                         ) : (
                             // Logged-out state
                             <div className="flex items-center gap-2 sm:gap-5">
+                                {/* === 5. ADDED PRICING LINK === */}
+                                <p onClick={()=>navigate('/buy')} className='cursor-pointer text-gray-300 hover:text-white transition-colors'>Pricing</p>
+                                {/* ============================= */}
                                 <button
                                     onClick={() => setShowLogin(true)}
                                     className="bg-blue-500 text-white px-7 py-2 sm:px-10 text-sm rounded-full"

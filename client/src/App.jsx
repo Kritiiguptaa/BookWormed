@@ -6,6 +6,7 @@ import Navbar from './components/Navbar'
 import Friends from './components/friends.jsx'
 import Search from './components/search.jsx';
 import Footer from './components/Footer'
+import BuyCredit from './pages/BuyCredits.jsx'
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +28,7 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path='/friends' element={<Friends/>}/>
+        <Route path='/buy' element={<BuyCredit />} />
       </Routes>
       <Footer />
     </div>

@@ -1,7 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import axios from 'axios'; 
-
-export const AppContext = createContext(null);
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
     // Start with user as null to represent a logged-out state
@@ -10,8 +11,23 @@ const AppContextProvider = (props) => {
     const [user, setUser] = useState(null);
     const [showLogin, setShowLogin] = useState(false);
     const [token, setToken] = useState(localStorage.getItem('token'));
+    const [credit,setCredit]=useState(false)
     
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    const loadCreditData=async()=>{
+        try {
+            const {data}=await axios.get(backendUrl + '/api/user/credits', {headers:{token}})
+            if(data.success){
+                setCredit(data.credits)
+                setUser(data.user)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+            
+        }
+    }
 
     const fetchUser = async () => {
         const currentToken = localStorage.getItem('token');
@@ -43,7 +59,12 @@ const AppContextProvider = (props) => {
         setToken('');
         setUser(null);
     };
-
+    useEffect(()=>{
+        if(token){
+            loadCreditData()
+        }
+    },[token])
+    
     const value = {
         user,
         setUser,
@@ -53,7 +74,10 @@ const AppContextProvider = (props) => {
         token,
         setToken,
         logout,
-        fetchUser 
+        fetchUser,
+        credit,
+        setCredit,
+        loadCreditData
     };
 
     return (
