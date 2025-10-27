@@ -309,7 +309,7 @@ const verifyRazorpay=async(req,res)=>{
         
     }
 }
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,userCredits,paymentRazorpay,verifyRazorpay}
+// export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,userCredits,paymentRazorpay,verifyRazorpay}
 
 const getUserProfile = async (req, res) => {
   try {
@@ -332,4 +332,4 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile}
+export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,userCredits,paymentRazorpay,verifyRazorpay}

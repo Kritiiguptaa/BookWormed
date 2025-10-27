@@ -74,15 +74,7 @@ const Navbar = () => {
                                 </button>
                                 {/* ================================ */}
 
-                                {/* === 4. ADDED CREDITS BUTTON === */}
-                                <button
-                                    onClick={() => navigate('/buy')}
-                                    className="flex items-center gap-2 text-white px-3 py-2 rounded-md text-sm font-medium hover:text-white hover:bg-gray-700 transition-colors"
-                                >
-                                    <img className="w-5" src={assets.credit_star} alt="Credits" />
-                                    <p className="text-xs sm:text-sm font-medium">Credits Left: {credit}</p>
-                                </button>
-                                {/* ================================ */}
+
 
                                 {/* Notification Bell */}
                                 <Link to="/notifications" className="relative px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
