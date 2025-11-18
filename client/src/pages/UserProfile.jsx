@@ -27,8 +27,17 @@ const UserProfile = () => {
   const [following, setFollowing] = useState([]);
 
   useEffect(() => {
+<<<<<<< HEAD
     if (userId) {
       fetchUserProfile();
+=======
+    // Check if userId is valid (not 'undefined' string or null)
+    if (userId && userId !== 'undefined') {
+      fetchUserProfile();
+    } else if (currentUser?._id) {
+      // If no valid userId in URL but user is logged in, show their profile
+      fetchUserProfile(currentUser._id);
+>>>>>>> origin/master
     }
   }, [userId, currentUser]);
 
@@ -39,12 +48,30 @@ const UserProfile = () => {
     }
   }, [currentUser, userId]);
 
+<<<<<<< HEAD
   const fetchUserProfile = async () => {
     try {
       setLoading(true);
       
       // Fetch user basic info
       const userResponse = await axios.get(`${backendUrl}/api/user/profile/${userId}`);
+=======
+  const fetchUserProfile = async (profileId = userId) => {
+    try {
+      setLoading(true);
+      
+      // Validate profileId - don't proceed if it's undefined or 'undefined' string
+      if (!profileId || profileId === 'undefined') {
+        console.error('Invalid profile ID:', profileId);
+        setLoading(false);
+        return;
+      }
+      
+      // Fetch user basic info
+      const userResponse = await axios.get(`${backendUrl}/api/user/profile/${profileId}`);
+      console.log('User profile response:', userResponse.data);
+      
+>>>>>>> origin/master
       if (userResponse.data.success) {
         const userData = userResponse.data.user;
         setUser(userData);
@@ -64,11 +91,20 @@ const UserProfile = () => {
         if (currentUser) {
           setIsFollowing(currentUser.following?.includes(userId) || false);
         }
+<<<<<<< HEAD
+=======
+      } else {
+        console.error('Failed to fetch user:', userResponse.data.message);
+>>>>>>> origin/master
       }
 
       // Fetch user statistics and activity
       if (token) {
+<<<<<<< HEAD
         fetchUserActivity();
+=======
+        fetchUserActivity(profileId);
+>>>>>>> origin/master
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -77,24 +113,45 @@ const UserProfile = () => {
     }
   };
 
+<<<<<<< HEAD
   const fetchUserActivity = async () => {
     try {
       // Fetch reviews
       const reviewsResponse = await axios.get(`${backendUrl}/api/book/reviews/user/${userId}`);
+=======
+  const fetchUserActivity = async (profileId = userId) => {
+    try {
+      // Validate profileId
+      if (!profileId || profileId === 'undefined') {
+        console.error('Invalid profile ID for activity:', profileId);
+        return;
+      }
+      
+      // Fetch reviews
+      const reviewsResponse = await axios.get(`${backendUrl}/api/book/reviews/user/${profileId}`);
+>>>>>>> origin/master
       if (reviewsResponse.data.success) {
         setRecentReviews(reviewsResponse.data.reviews.slice(0, 5));
         setStats(prev => ({ ...prev, totalReviews: reviewsResponse.data.reviews.length }));
       }
 
       // Fetch posts
+<<<<<<< HEAD
       const postsResponse = await axios.get(`${backendUrl}/api/post/user/${userId}`);
+=======
+      const postsResponse = await axios.get(`${backendUrl}/api/post/user/${profileId}`);
+>>>>>>> origin/master
       if (postsResponse.data.success) {
         setRecentPosts(postsResponse.data.posts.slice(0, 5));
         setStats(prev => ({ ...prev, totalPosts: postsResponse.data.posts.length }));
       }
 
       // Fetch reading lists
+<<<<<<< HEAD
       const listsResponse = await axios.get(`${backendUrl}/api/book/lists/user/${userId}`);
+=======
+      const listsResponse = await axios.get(`${backendUrl}/api/book/lists/user/${profileId}`);
+>>>>>>> origin/master
       if (listsResponse.data.success) {
         setReadingLists(listsResponse.data.lists);
         setStats(prev => ({ ...prev, booksInLists: listsResponse.data.lists.length }));
@@ -110,11 +167,21 @@ const UserProfile = () => {
       return;
     }
 
+<<<<<<< HEAD
+=======
+    const targetUserId = userId || user?._id;
+    if (!targetUserId) return;
+
+>>>>>>> origin/master
     try {
       if (isFollowing) {
         // Unfollow
         await axios.post(
+<<<<<<< HEAD
           `${backendUrl}/api/user/unfollow/${userId}`,
+=======
+          `${backendUrl}/api/user/unfollow/${targetUserId}`,
+>>>>>>> origin/master
           { userId: currentUser._id },
           { headers: { token } }
         );
@@ -123,7 +190,11 @@ const UserProfile = () => {
       } else {
         // Follow
         await axios.post(
+<<<<<<< HEAD
           `${backendUrl}/api/user/follow/${userId}`,
+=======
+          `${backendUrl}/api/user/follow/${targetUserId}`,
+>>>>>>> origin/master
           { userId: currentUser._id },
           { headers: { token } }
         );
@@ -141,7 +212,11 @@ const UserProfile = () => {
 
   const handleMessage = () => {
     // For now, show an alert. You can implement a chat feature later
+<<<<<<< HEAD
     alert(`Chat feature coming soon! You want to message ${user.name}`);
+=======
+    alert(`Chat feature coming soon! You want to message @${user.username || user.email?.split('@')[0]}`);
+>>>>>>> origin/master
     // TODO: Implement chat/messaging functionality
     // This could redirect to a messages page or open a chat modal
   };
@@ -200,22 +275,36 @@ const UserProfile = () => {
                 {/* Profile Picture */}
                 <div className="w-32 h-32 rounded-full border-4 border-gray-800 bg-gray-700 flex items-center justify-center text-5xl">
                   {user.profilePicture ? (
+<<<<<<< HEAD
                     <img src={user.profilePicture} alt={user.name} className="w-full h-full rounded-full object-cover" />
+=======
+                    <img src={user.profilePicture} alt={user?.username || user?.email?.split('@')[0] || 'User'} className="w-full h-full rounded-full object-cover" />
+>>>>>>> origin/master
                   ) : (
                     <span>👤</span>
                   )}
                 </div>
                 
+<<<<<<< HEAD
                 {/* Name and Title */}
                 <div className="mb-4">
                   <h1 className="text-3xl font-bold text-white mb-1">{user.name}</h1>
                   <p className="text-gray-400">@{user.email.split('@')[0]}</p>
+=======
+                {/* Username */}
+                <div className="mb-4">
+                  <h1 className="text-3xl font-bold text-white mb-1">@{user?.username || user?.email?.split('@')[0] || 'user'}</h1>
+>>>>>>> origin/master
                   {user.bio && <p className="text-gray-300 mt-2 max-w-2xl">{user.bio}</p>}
                 </div>
               </div>
 
               {/* Action Buttons */}
+<<<<<<< HEAD
               {currentUser && currentUser._id !== userId && (
+=======
+              {currentUser && currentUser._id !== (userId || user?._id) && (
+>>>>>>> origin/master
                 <div className="flex gap-3 mt-4 md:mt-0">
                   <button 
                     onClick={handleFollowToggle}
@@ -447,7 +536,15 @@ const UserProfile = () => {
                         <img
                           src={item.book.coverImage}
                           alt={item.book.title}
+<<<<<<< HEAD
                           className="w-full h-48 object-cover"
+=======
+                          className="w-20 h-28 object-cover rounded"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.parentElement.innerHTML = '<div class="w-20 h-28 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center"><span class="text-3xl">📚</span></div>';
+                          }}
+>>>>>>> origin/master
                         />
                       ) : (
                         <div className="w-full h-48 bg-gray-600 flex items-center justify-center">
@@ -492,8 +589,12 @@ const UserProfile = () => {
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div className="flex-1 min-w-0">
+<<<<<<< HEAD
                         <p className="font-semibold text-white truncate">{follower.name}</p>
                         <p className="text-sm text-gray-400 truncate">@{follower.username || follower.email.split('@')[0]}</p>
+=======
+                        <p className="font-semibold text-white truncate">@{follower.username || follower.email.split('@')[0]}</p>
+>>>>>>> origin/master
                       </div>
                     </Link>
                   ))}
@@ -530,8 +631,12 @@ const UserProfile = () => {
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div className="flex-1 min-w-0">
+<<<<<<< HEAD
                         <p className="font-semibold text-white truncate">{followedUser.name}</p>
                         <p className="text-sm text-gray-400 truncate">@{followedUser.username || followedUser.email.split('@')[0]}</p>
+=======
+                        <p className="font-semibold text-white truncate">@{followedUser.username || followedUser.email.split('@')[0]}</p>
+>>>>>>> origin/master
                       </div>
                     </Link>
                   ))}

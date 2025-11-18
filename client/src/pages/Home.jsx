@@ -19,7 +19,41 @@ const Home = () => {
       // Fetch featured books
       const booksResponse = await axios.get(`${backendUrl}/api/book/browse?limit=6`);
       if (booksResponse.data.success) {
+<<<<<<< HEAD
         setFeaturedBooks(booksResponse.data.books);
+=======
+        let books = booksResponse.data.books;
+        
+        // Supplement with cover images from public JSON if backend books lack images
+        try {
+          const pubResp = await fetch('/books_full.json');
+          if (pubResp.ok) {
+            const pubData = await pubResp.json();
+            const imageMap = new Map();
+            
+            // Create a map of book titles/authors to their cover images
+            pubData.forEach(b => {
+              const key = `${String(b.Book || '').toLowerCase()}___${String(b.Author || '').toLowerCase()}`;
+              imageMap.set(key, b.Image_URL || '');
+            });
+            
+            // Supplement server books with images
+            books = books.map(book => {
+              if (!book.coverImage || book.coverImage === '') {
+                const key = `${String(book.title || '').toLowerCase()}___${String(book.author || '').toLowerCase()}`;
+                if (imageMap.has(key)) {
+                  return { ...book, coverImage: imageMap.get(key) };
+                }
+              }
+              return book;
+            });
+          }
+        } catch (e) {
+          console.warn('Could not supplement with cover images:', e);
+        }
+        
+        setFeaturedBooks(books);
+>>>>>>> origin/master
         setStats(prev => ({ ...prev, books: booksResponse.data.total || 0 }));
       }
 
@@ -31,6 +65,29 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching home data:', error);
+<<<<<<< HEAD
+=======
+      
+      // Fallback to local JSON if backend fails
+      try {
+        const pubResp = await fetch('/books_full.json');
+        if (pubResp.ok) {
+          const pubData = await pubResp.json();
+          const books = pubData.slice(0, 6).map((b, idx) => ({
+            _id: `fallback-${idx}`,
+            title: b.Book || '',
+            author: b.Author || '',
+            synopsis: b.Description || '',
+            averageRating: b.Avg_Rating || 0,
+            totalRatings: b.Num_Ratings || 0,
+            coverImage: b.Image_URL || ''
+          }));
+          setFeaturedBooks(books);
+        }
+      } catch (e) {
+        console.error('Fallback also failed:', e);
+      }
+>>>>>>> origin/master
     }
   };
 
@@ -202,7 +259,15 @@ const Home = () => {
                       <img
                         src={book.coverImage}
                         alt={book.title}
+<<<<<<< HEAD
                         className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+=======
+                        className="w-full h-64 object-cover"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.parentElement.innerHTML = '<div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center"><span class="text-5xl">📚</span></div>';
+                        }}
+>>>>>>> origin/master
                       />
                     ) : (
                       <div className="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center">

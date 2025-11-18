@@ -146,8 +146,12 @@ const Search = () => {
                       className="w-14 h-14 rounded-full object-cover border-2 border-gray-600"
                     />
                     <div>
+<<<<<<< HEAD
                       <p className="font-bold text-lg text-white hover:text-blue-400">{userItem.name}</p>
                       <p className="text-sm text-gray-400">@{userItem.username || userItem.email.split('@')[0]}</p>
+=======
+                      <p className="font-bold text-lg text-white hover:text-blue-400">@{userItem.username || userItem.email.split('@')[0]}</p>
+>>>>>>> origin/master
                       {userItem.bio && (
                         <p className="text-sm text-gray-300 mt-1 line-clamp-1">{userItem.bio}</p>
                       )}
@@ -188,7 +192,15 @@ const Search = () => {
                     <img
                       src={book.coverImage}
                       alt={book.title}
+<<<<<<< HEAD
                       className="w-full h-48 object-cover"
+=======
+                      className="w-16 h-24 object-cover rounded"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.parentElement.innerHTML = '<div class="w-16 h-24 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center"><span class="text-2xl">📚</span></div>';
+                      }}
+>>>>>>> origin/master
                     />
                   ) : (
                     <div className="w-full h-48 bg-gray-600 flex items-center justify-center">

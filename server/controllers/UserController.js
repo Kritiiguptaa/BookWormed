@@ -128,7 +128,11 @@ const searchUsers = async (req, res) => {
     const { query } = req.params;
     const users = await userModel.find({
       username: { $regex: query, $options: 'i' } // case-insensitive search
+<<<<<<< HEAD
     }).select('username name _id'); // only send username, name, id
+=======
+    }).select('username _id'); // only send username and id
+>>>>>>> origin/master
 
     res.json({ success: true, users });
   } catch (error) {
@@ -197,7 +201,11 @@ const unfollowUser = async (req, res) => {
 const getFriends = async (req, res) => {
   try {
     const { userId } = req.body; // userAuth adds this from the token
+<<<<<<< HEAD
     const user = await userModel.findById(userId).populate('following', 'name username _id');
+=======
+    const user = await userModel.findById(userId).populate('following', 'username _id');
+>>>>>>> origin/master
 
     if (!user) return res.json({ success: false, message: "User not found" });
 
@@ -210,8 +218,13 @@ const getFriends = async (req, res) => {
 const userCredits=async(req,res)=>{
     try{
         const {userId}=req.body
+<<<<<<< HEAD
         const user=await userModel.findById(userId)
         res.json({success:true, credits:user.creditBalance, user:{name:user.name}})
+=======
+        const user=await userModel.findById(userId).select('-password')
+        res.json({success:true, credits:user.creditBalance, user})
+>>>>>>> origin/master
     }catch(error){
         console.log(error.message)
         res.json(
@@ -318,8 +331,13 @@ const getUserProfile = async (req, res) => {
     // Find user and populate followers and following, exclude password
     const user = await userModel.findById(userId)
       .select('-password')
+<<<<<<< HEAD
       .populate('followers', 'name email username profilePicture bio')
       .populate('following', 'name email username profilePicture bio');
+=======
+      .populate('followers', 'email username profilePicture bio')
+      .populate('following', 'email username profilePicture bio');
+>>>>>>> origin/master
     
     if (!user) {
       return res.json({ success: false, message: "User not found" });

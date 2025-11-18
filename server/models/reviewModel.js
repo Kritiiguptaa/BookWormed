@@ -26,6 +26,14 @@ const reviewSchema = new mongoose.Schema({
     required: true,
     maxLength: 3000
   },
+<<<<<<< HEAD
+=======
+  visibility: {
+    type: String,
+    enum: ['public', 'followers'],
+    default: 'public'
+  },
+>>>>>>> origin/master
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user'

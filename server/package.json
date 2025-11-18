@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "server": "nodemon server.js",
+<<<<<<< HEAD
     "start": "node server.js"
+=======
+    "start": "node server.js",
+    "cleanup-reviews": "node ./scripts/cleanup_reviews.js"
+>>>>>>> origin/master
   },
   "author": "",
   "license": "ISC",

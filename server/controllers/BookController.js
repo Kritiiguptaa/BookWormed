@@ -155,6 +155,16 @@ export const rateBook = async (req, res) => {
     const { rating } = req.body;
     const userId = req.userId;
 
+<<<<<<< HEAD
+=======
+  if (!userId || !id) {
+   return res.status(401).json({
+     success: false,
+      message: "Please login before rating the book"
+   });
+ }
+
+>>>>>>> origin/master
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({ success: false, message: 'Rating must be between 1 and 5' });
     }
@@ -198,6 +208,7 @@ export const rateBook = async (req, res) => {
 };
 
 // Add/Update review
+<<<<<<< HEAD
 export const addReview = async (req, res) => {
   try {
     const { id } = req.params;
@@ -205,6 +216,56 @@ export const addReview = async (req, res) => {
     const userId = req.userId;
     const userName = req.userName;
 
+=======
+// export const addReview = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { rating, reviewText, visibility } = req.body;
+//     const userId = req.userId;
+//     if (!userId || !id) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Please login before submitting a review"
+//       });
+//     }
+//     const userName = req.userName;
+
+    // Require authentication: ensure middleware populated userId
+    // if (!userId) {
+    //   return res.status(401).json({ success: false, message: 'Not authorized. Please login to post reviews.' });
+    // }
+export const addReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rating, reviewText, visibility } = req.body;
+    const userId = req.userId;
+    const userName = req.userName;
+
+   // 🚨 BLOCK any operation if user or book missing
+   if (!userId || !id) {
+     return res.status(401).json({
+       success: false,
+       message: "Please login before submitting a review"
+     });
+   }
+
+    if (!rating || !reviewText || rating < 1 || rating > 5) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid rating and review text are required'
+      });
+    }
+
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const authHdr = req.headers.authorization || null;
+        console.log(`[addReview] incoming: bookId=${id}, userId=${userId}, userName=${userName}, tokenHeader=${req.headers.token ? 'present' : 'missing'}, authorization=${authHdr ? 'present' : 'missing'}`);
+      } catch (e) { /* ignore logging errors */ }
+    }
+    // normalize visibility
+    const vis = visibility === 'followers' ? 'followers' : 'public';
+
+>>>>>>> origin/master
     if (!rating || !reviewText || rating < 1 || rating > 5) {
       return res.status(400).json({ success: false, message: 'Valid rating and review text are required' });
     }
@@ -232,12 +293,41 @@ export const addReview = async (req, res) => {
         user: userId,
         userName,
         rating,
+<<<<<<< HEAD
         reviewText
       });
       await review.save();
 
       // Update book review count
       book.totalReviews += 1;
+=======
+        reviewText,
+        visibility: vis
+      });
+      try {
+        await review.save();
+        // Update book review count
+        book.totalReviews += 1;
+      } catch (saveErr) {
+        // Handle duplicate key (race condition) by updating existing review instead
+        if (saveErr && saveErr.code === 11000) {
+          const existing = await Review.findOne({ book: id, user: userId });
+          if (existing) {
+            existing.rating = rating;
+            existing.reviewText = reviewText;
+            existing.isEdited = true;
+            existing.editedAt = new Date();
+            existing.visibility = vis;
+            await existing.save();
+            review = existing;
+          } else {
+            throw saveErr;
+          }
+        } else {
+          throw saveErr;
+        }
+      }
+>>>>>>> origin/master
     }
 
     // Also update the book rating
@@ -262,7 +352,13 @@ export const addReview = async (req, res) => {
     });
   } catch (error) {
     console.error('Error adding review:', error);
+<<<<<<< HEAD
     res.status(500).json({ success: false, message: 'Error adding review' });
+=======
+      const payload = { success: false, message: error.message || 'Error adding review' };
+      if (process.env.NODE_ENV !== 'production') payload.error = error.stack || error;
+      res.status(500).json(payload);
+>>>>>>> origin/master
   }
 };
 
@@ -537,3 +633,55 @@ export const getUserListsPublic = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching lists' });
   }
 };
+<<<<<<< HEAD
+=======
+
+// Get reviews from users you follow (for Posts feed)
+export const getFollowingReviews = async (req, res) => {
+  try {
+    const userId = req.userId; // Get from middleware, not req.body
+    
+    console.log('getFollowingReviews called for userId:', userId);
+    
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Please login to view following reviews' });
+    }
+
+    // Import user model to get following list
+    const userModel = (await import('../models/userModel.js')).default;
+    const user = await userModel.findById(userId).select('following');
+    
+    console.log('User following list:', user?.following);
+    
+    if (!user || !user.following || user.following.length === 0) {
+      console.log('User has no following');
+      return res.status(200).json({ success: true, reviews: [] });
+    }
+
+    // Get reviews from followed users - include all reviews regardless of visibility
+    const reviews = await Review.find({ 
+      user: { $in: user.following }
+    })
+      .populate('user', 'username email')
+      .populate('book', 'title author coverImage averageRating')
+      .sort({ createdAt: -1 })
+      .limit(50);
+
+    console.log('Found reviews from following:', reviews.length);
+    console.log('Reviews:', reviews.map(r => ({ 
+      user: r.user?.username, 
+      book: r.book?.title,
+      rating: r.rating,
+      text: r.reviewText?.substring(0, 20)
+    })));
+
+    res.status(200).json({
+      success: true,
+      reviews
+    });
+  } catch (error) {
+    console.error('Error fetching following reviews:', error);
+    res.status(500).json({ success: false, message: 'Error fetching reviews' });
+  }
+};
+>>>>>>> origin/master

@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
+<<<<<<< HEAD
 import { useParams } from 'react-router-dom';
+=======
+import { useParams, Link } from 'react-router-dom';
+>>>>>>> origin/master
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
@@ -14,6 +18,10 @@ const BookDetails = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewText, setReviewText] = useState('');
   const [reviewRating, setReviewRating] = useState(0);
+<<<<<<< HEAD
+=======
+  const [reviewVisibility, setReviewVisibility] = useState('public');
+>>>>>>> origin/master
   const [selectedList, setSelectedList] = useState('');
 
   useEffect(() => {
@@ -23,10 +31,45 @@ const BookDetails = () => {
   const fetchBookDetails = async () => {
     try {
       setLoading(true);
+<<<<<<< HEAD
       const response = await axios.get(`${backendUrl}/api/book/${id}`);
       
       if (response.data.success) {
         setBook(response.data.book);
+=======
+      const response = await axios.get(`${backendUrl}/api/book/${id}`, { headers: { token } });
+      
+      if (response.data.success) {
+        let bookData = response.data.book;
+        
+        // Supplement cover image from books_full.json if missing
+        if (!bookData.coverImage) {
+          try {
+            const booksResponse = await fetch('/books_full.json');
+            const allBooks = await booksResponse.json();
+            
+            // Create a map for quick lookup
+            const imageMap = new Map();
+            allBooks.forEach(b => {
+              const key = `${String(b.Book || '').toLowerCase().trim()}___${String(b.Author || '').toLowerCase().trim()}`;
+              if (b.Image_URL) {
+                imageMap.set(key, b.Image_URL);
+              }
+            });
+            
+            // Try to find matching cover
+            const bookKey = `${bookData.title?.toLowerCase()?.trim()}___${bookData.author?.toLowerCase()?.trim()}`;
+            const coverUrl = imageMap.get(bookKey);
+            if (coverUrl) {
+              bookData.coverImage = coverUrl;
+            }
+          } catch (error) {
+            console.error('Error supplementing cover image:', error);
+          }
+        }
+        
+        setBook(bookData);
+>>>>>>> origin/master
         setReviews(response.data.reviews);
         
         // Check if user already rated
@@ -91,9 +134,16 @@ const BookDetails = () => {
         `${backendUrl}/api/book/${id}/review`,
         {
           rating: reviewRating,
+<<<<<<< HEAD
           reviewText: reviewText.trim()
         },
         { headers: { token } }
+=======
+          reviewText: reviewText.trim(),
+          visibility: reviewVisibility
+        },
+        { headers: { token, Authorization: `Bearer ${token}` } }
+>>>>>>> origin/master
       );
 
       if (response.data.success) {
@@ -104,8 +154,14 @@ const BookDetails = () => {
         fetchBookDetails(); // Refresh to get updated ratings
       }
     } catch (error) {
+<<<<<<< HEAD
       console.error('Error submitting review:', error);
       alert(error.response?.data?.message || 'Failed to submit review');
+=======
+      console.error('Error submitting review:', error, error.response?.data);
+      const serverMsg = error.response?.data?.message || error.response?.data || error.message;
+      alert(serverMsg || 'Failed to submit review');
+>>>>>>> origin/master
     }
   };
 
@@ -189,6 +245,7 @@ const BookDetails = () => {
                   alt={book.title}
                   className="w-full rounded-lg shadow-lg"
                   onError={(e) => {
+<<<<<<< HEAD
                     e.target.src = '';
                     e.target.style.display = 'none';
                   }}
@@ -196,6 +253,15 @@ const BookDetails = () => {
               ) : (
                 <div className="w-full aspect-[2/3] bg-gray-700 rounded-lg flex items-center justify-center">
                   <span className="text-9xl">📚</span>
+=======
+                    e.target.onerror = null;
+                    e.target.parentElement.innerHTML = '<div class="w-full aspect-[2/3] bg-gradient-to-br from-gray-700 to-gray-600 rounded-lg flex items-center justify-center"><span class="text-6xl">📚</span></div>';
+                  }}
+                />
+              ) : (
+                <div className="w-full aspect-[2/3] bg-gradient-to-br from-gray-700 to-gray-600 rounded-lg flex items-center justify-center">
+                  <span className="text-6xl">📚</span>
+>>>>>>> origin/master
                 </div>
               )}
             </div>
@@ -339,6 +405,10 @@ const BookDetails = () => {
                   {renderStars(reviewRating, true, setHoverRating, setReviewRating)}
                 </div>
               </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
               <div className="mb-4">
                 <label className="block text-sm text-gray-300 mb-2">Your Review</label>
                 <textarea
@@ -381,6 +451,7 @@ const BookDetails = () => {
             ) : (
               reviews.map((review) => (
                 <div key={review._id} className="p-4 bg-gray-700 rounded-lg">
+<<<<<<< HEAD
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <p className="font-semibold text-white">{review.userName}</p>
@@ -394,6 +465,24 @@ const BookDetails = () => {
                         )}
                       </div>
                     </div>
+=======
+                  <div className="flex items-center gap-3 mb-2">
+                    <Link
+                      to={`/profile/${review.user}`}
+                      className="flex items-center gap-2 hover:opacity-80 transition"
+                    >
+                      <div className="h-9 w-9 rounded-full bg-blue-500 flex items-center justify-center text-sm font-semibold text-white">
+                        @
+                      </div>
+                      <span className="font-semibold text-white">@{review.userName || 'unknown'}</span>
+                    </Link>
+                    <span className="ml-auto text-xs text-gray-400">
+                      {new Date(review.createdAt).toLocaleDateString()} {review.isEdited && '(edited)'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-400 mb-1">
+                    {renderStars(review.rating)}
+>>>>>>> origin/master
                   </div>
                   <p className="text-gray-300 whitespace-pre-wrap">{review.reviewText}</p>
                 </div>

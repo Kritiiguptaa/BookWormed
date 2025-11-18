@@ -165,11 +165,20 @@ const MyLists = () => {
                         alt={item.book.title}
                         className="w-24 h-36 object-cover rounded"
                         onError={(e) => {
+<<<<<<< HEAD
                           e.target.style.display = 'none';
                         }}
                       />
                     ) : (
                       <div className="w-24 h-36 bg-gray-700 rounded flex items-center justify-center">
+=======
+                          e.target.onerror = null;
+                          e.target.parentElement.innerHTML = '<div class="w-24 h-36 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center"><span class="text-4xl">📚</span></div>';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-24 h-36 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center">
+>>>>>>> origin/master
                         <span className="text-4xl">📚</span>
                       </div>
                     )}
