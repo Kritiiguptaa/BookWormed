@@ -1,0 +1,162 @@
+[
+  {
+    "Book": "To Kill a Mockingbird",
+    "Author": "Harper Lee",
+    "Description": "The unforgettable novel of a childhood in a sleepy Southern town and the crisis of conscience that rocked it.",
+    "Genres": ["Classics","Fiction","Historical Fiction","Literature"],
+    "Avg_Rating": 4.27,
+    "Num_Ratings": 5691311,
+    "URL": "https://www.goodreads.com/book/show/2657.To_Kill_a_Mockingbird",
+    "Image_URL": ""
+  },
+  {
+    "Book": "Harry Potter and the Philosopher's Stone (Harry Potter, #1)",
+    "Author": "J.K. Rowling",
+    "Description": "Harry Potter thinks he is an ordinary boy - until he is rescued by an owl and taken to Hogwarts School of Witchcraft and Wizardry.",
+    "Genres": ["Fantasy","Young Adult","Magic"],
+    "Avg_Rating": 4.47,
+    "Num_Ratings": 9278135,
+    "URL": "https://www.goodreads.com/book/show/72193.Harry_Potter_and_the_Philosopher_s_Stone",
+    "Image_URL": ""
+  },
+  {
+    "Book": "Pride and Prejudice",
+    "Author": "Jane Austen",
+    "Description": "Since its immediate success in 1813, Pride and Prejudice has remained one of the most popular novels in the English language.",
+    "Genres": ["Classics","Romance","Literature"],
+    "Avg_Rating": 4.28,
+    "Num_Ratings": 3944155,
+    "URL": "https://www.goodreads.com/book/show/1885.Pride_and_Prejudice",
+    "Image_URL": ""
+  },
+  {
+    "Book": "1984",
+    "Author": "George Orwell",
+    "Description": "A dystopian social science fiction novel and cautionary tale about the future.",
+    "Genres": ["Classics","Dystopia","Science Fiction"],
+    "Avg_Rating": 4.19,
+    "Num_Ratings": 4201429,
+    "URL": "https://www.goodreads.com/book/show/61439040-1984",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Great Gatsby",
+    "Author": "F. Scott Fitzgerald",
+    "Description": "The story of the fabulously wealthy Jay Gatsby and his love for the beautiful Daisy Buchanan.",
+    "Genres": ["Classics","Fiction"],
+    "Avg_Rating": 3.93,
+    "Num_Ratings": 4839642,
+    "URL": "https://www.goodreads.com/book/show/4671.The_Great_Gatsby",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Catcher in the Rye",
+    "Author": "J.D. Salinger",
+    "Description": "A classic novel of teenage angst and rebellion.",
+    "Genres": ["Classics","Young Adult"],
+    "Avg_Rating": 3.81,
+    "Num_Ratings": 3315881,
+    "URL": "https://www.goodreads.com/book/show/5107.The_Catcher_in_the_Rye",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Lord of the Rings",
+    "Author": "J.R.R. Tolkien",
+    "Description": "An epic high fantasy novel about the quest to destroy the One Ring.",
+    "Genres": ["Fantasy","Adventure"],
+    "Avg_Rating": 4.52,
+    "Num_Ratings": 644766,
+    "URL": "https://www.goodreads.com/book/show/33.The_Lord_of_the_Rings",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Book Thief",
+    "Author": "Markus Zusak",
+    "Description": "A story set in Nazi Germany about a young girl's relationship with books.",
+    "Genres": ["Historical Fiction","Fiction"],
+    "Avg_Rating": 4.39,
+    "Num_Ratings": 2364659,
+    "URL": "https://www.goodreads.com/book/show/19063.The_Book_Thief",
+    "Image_URL": ""
+  },
+  {
+    "Book": "Jane Eyre",
+    "Author": "Charlotte Brontë",
+    "Description": "An orphan girl's struggle for independence and love.",
+    "Genres": ["Classics","Romance"],
+    "Avg_Rating": 4.14,
+    "Num_Ratings": 1975582,
+    "URL": "https://www.goodreads.com/book/show/10210.Jane_Eyre",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Kite Runner",
+    "Author": "Khaled Hosseini",
+    "Description": "A powerful story of friendship and redemption set in Afghanistan.",
+    "Genres": ["Fiction","Historical Fiction"],
+    "Avg_Rating": 4.33,
+    "Num_Ratings": 2954721,
+    "URL": "https://www.goodreads.com/book/show/77203.The_Kite_Runner",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Giver",
+    "Author": "Lois Lowry",
+    "Description": "A dystopian novel about a society without pain or choice.",
+    "Genres": ["Young Adult","Dystopia"],
+    "Avg_Rating": 4.12,
+    "Num_Ratings": 2285401,
+    "URL": "https://www.goodreads.com/book/show/3636.The_Giver",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Little Prince",
+    "Author": "Antoine de Saint-Exupéry",
+    "Description": "A poetic tale about loneliness, friendship, love, and loss.",
+    "Genres": ["Classics","Fantasy"],
+    "Avg_Rating": 4.32,
+    "Num_Ratings": 1924063,
+    "URL": "https://www.goodreads.com/book/show/157993.The_Little_Prince",
+    "Image_URL": ""
+  },
+  {
+    "Book": "Animal Farm",
+    "Author": "George Orwell",
+    "Description": "A satiric fable about a group of farm animals who overthrow their human owner.",
+    "Genres": ["Classics","Dystopia","Politics"],
+    "Avg_Rating": 3.98,
+    "Num_Ratings": 3575172,
+    "URL": "https://www.goodreads.com/book/show/170448.Animal_Farm",
+    "Image_URL": ""
+  },
+  {
+    "Book": "The Diary of a Young Girl",
+    "Author": "Anne Frank",
+    "Description": "The wartime diary of Anne Frank, a Jewish girl in hiding during WWII.",
+    "Genres": ["Nonfiction","Memoir","History"],
+    "Avg_Rating": 4.18,
+    "Num_Ratings": 3488438,
+    "URL": "https://www.goodreads.com/book/show/48855.The_Diary_of_a_Young_Girl",
+    "Image_URL": ""
+  },
+  {
+    "Book": "Lord of the Flies",
+    "Author": "William Golding",
+    "Description": "A novel about a group of boys stranded on an island who try to govern themselves.",
+    "Genres": ["Classics","Fiction"],
+    "Avg_Rating": 3.69,
+    "Num_Ratings": 2738919,
+    "URL": "https://www.goodreads.com/book/show/7624.Lord_of_the_Flies",
+    "Image_URL": ""
+  },
+  {
+    "Book": "Romeo and Juliet",
+    "Author": "William Shakespeare",
+    "Description": "A tragic play about two young star-crossed lovers.",
+    "Genres": ["Classics","Plays","Romance"],
+    "Avg_Rating": 3.74,
+    "Num_Ratings": 2469086,
+    "URL": "https://www.goodreads.com/book/show/18135.Romeo_and_Juliet",
+    "Image_URL": ""
+  }
+]

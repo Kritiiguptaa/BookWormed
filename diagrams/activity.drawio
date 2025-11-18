@@ -1,0 +1,247 @@
+<mxfile host="app.diagrams.net" modified="2025-10-13T17:30:00.000Z" agent="Gemini-AI-Assistant" etag="def789ghi012" version="22.1.0" type="device">
+  <diagram id="true-activity-diagram" name="Page-1">
+    <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="2300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <mxCell id="start_node" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="580" y="40" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="user_logs_in" value="User logs in" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="120" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="logged_in_decision" value="Logged in?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="200" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="proceed_to_app" value="Proceed to app" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="220" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="prompt_login" value="Prompt for login/registration" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="220" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="login_merge" style="rhombus;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="580" y="320" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="search_browse_decision" value="Search or Browse?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="400" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="user_enters_search" value="User enters search query" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="520" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="search_books" value="Search Books" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="600" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="query_db_search" value="Query Database" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="680" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="return_results" value="Return Results" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="760" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="display_search_results" value="Display Search Results" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="840" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="book_found_decision" value="Book Found?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="370" y="920" width="100" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="no_results_found" value='Display "No Results Found"' style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="940" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="end_node_no_results" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="260" y="1020" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="select_book_search" value="Select Book" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1040" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="browse_books" value="Browse Books" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="520" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fetch_browsing_data" value="Fetch Browsing Data" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="600" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="query_db_browse" value="Query Database" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="680" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="return_data" value="Return Data" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="760" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="display_books" value="Display Books" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="840" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="select_book_browse" value="Select Book" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="940" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="select_merge" style="rhombus;whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="580" y="1120" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="request_book_details" value="Request Book Details" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1200" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="fetch_book_details" value="Fetch Book Details" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="return_details" value="Return Details" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="display_book_details" value="Display Book Details" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="view_book_details" value="View Book Details" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1520" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="note_book_details" value="Displays synopsis, author,&lt;br&gt;genres, avg. rating, etc." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#FFFF99;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="680" y="1510" width="110" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="action_on_book_decision" value="Action on Book?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="1600" width="140" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="input_rating" value="Input Rating" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1720" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="submit_rating" value="Submit Rating" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1800" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="update_rating" value="Update Rating" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1880" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="confirm_rating" value="Confirm Rating" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1960" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="end_node1" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="110" y="2040" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="input_review" value="Input Review" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1720" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="save_review" value="Save Review" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1800" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="store_review_data" value="Store Review Data" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1880" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="review_published" value="Review Published" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1960" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="end_node2" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="340" y="2040" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="add_to_wishlist" value="Add Book to Wishlist" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1720" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="update_wishlist" value="Update Wishlist" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1800" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="store_wishlist_data" value="Store Wishlist Data" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1880" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="confirm_wishlist" value="Confirm Wishlist Addition" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1960" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="end_node3" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="580" y="2040" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="trigger_ai" value="Trigger AI Recommendation" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1720" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="process_ai" value="Process AI Algorithm" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1800" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="retrieve_related_books" value="Retrieve Related Books" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1880" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="display_similar_books" value="Display Similar Books" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1960" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="view_recommendations" value="View Recommendations" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="2040" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="end_node4" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="820" y="2120" width="40" height="40" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="end_node_none" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="1620" width="40" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="start_node" target="user_logs_in" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="user_logs_in" target="logged_in_decision" />
+        <mxCell value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="logged_in_decision" target="proceed_to_app" />
+        <mxCell value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="logged_in_decision" target="prompt_login" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="proceed_to_app" target="login_merge">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="470" y="340" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="prompt_login" target="login_merge">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="340" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="login_merge" target="search_browse_decision" />
+        <mxCell value="Search" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="search_browse_decision" target="user_enters_search" />
+        <mxCell value="Browse" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="search_browse_decision" target="browse_books" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="user_enters_search" target="search_books" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="search_books" target="query_db_search" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="query_db_search" target="return_results" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="return_results" target="display_search_results" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="display_search_results" target="book_found_decision" />
+        <mxCell value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="book_found_decision" target="no_results_found" />
+        <mxCell value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="book_found_decision" target="select_book_search" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="no_results_found" target="end_node_no_results" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="browse_books" target="fetch_browsing_data" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="fetch_browsing_data" target="query_db_browse" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="query_db_browse" target="return_data" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="return_data" target="display_books" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="display_books" target="select_book_browse" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="select_book_search" target="select_merge">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="420" y="1140" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="select_book_browse" target="select_merge">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="780" y="1140" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="select_merge" target="request_book_details" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="request_book_details" target="fetch_book_details" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="fetch_book_details" target="return_details" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="return_details" target="display_book_details" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="display_book_details" target="view_book_details" />
+        <mxCell style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1" source="view_book_details" target="note_book_details" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="view_book_details" target="action_on_book_decision" />
+        <mxCell value="Rate Book" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="action_on_book_decision" target="input_rating">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="130" y="1640" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell value="Write Review" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="action_on_book_decision" target="input_review">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="360" y="1640" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell value="Add to Wishlist" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="action_on_book_decision" target="add_to_wishlist">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="600" y="1640" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell value="Get AI Recommendations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="action_on_book_decision" target="trigger_ai">
+            <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="840" y="1640" /></Array></mxGeometry>
+        </mxCell>
+        <mxCell value="None" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="action_on_book_decision" target="end_node_none" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="input_rating" target="submit_rating" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="submit_rating" target="update_rating" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="update_rating" target="confirm_rating" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="confirm_rating" target="end_node1" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="input_review" target="save_review" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="save_review" target="store_review_data" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="store_review_data" target="review_published" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="review_published" target="end_node2" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="add_to_wishlist" target="update_wishlist" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="update_wishlist" target="store_wishlist_data" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="store_wishlist_data" target="confirm_wishlist" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="confirm_wishlist" target="end_node3" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="trigger_ai" target="process_ai" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="process_ai" target="retrieve_related_books" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="retrieve_related_books" target="display_similar_books" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="display_similar_books" target="view_recommendations" />
+        <mxCell style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;" edge="1" parent="1" source="view_recommendations" target="end_node4" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

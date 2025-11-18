@@ -1,0 +1,109 @@
+<mxfile host="app.diagrams.net" modified="2025-10-14T01:40:27.000Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" etag="3-V35wUuQ6yP94e5RjPq1z" version="24.4.0" type="device">
+  <diagram name="Page-1" id="f226a275-520e-450f-a185-3b9549f39e3a">
+    <mxGraphModel dx="1434" dy="754" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="user-class" value="&lt;b&gt;User&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;userId: String&lt;br&gt;isLoggedIn: boolean&lt;hr size=&quot;1&quot;&gt;login()&lt;br&gt;logout()&lt;br&gt;search(query: String): Book[]&lt;br&gt;browse(): Book[]&lt;br&gt;viewBookDetails(book: Book)&lt;br&gt;rateBook(book: Book, rating: int)&lt;br&gt;writeReview(book: Book, text: String)&lt;br&gt;addToWishlist(book: Book)&lt;br&gt;getRecommendations()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="260" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="admin-class" value="&lt;b&gt;Administrator&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;adminId: String&lt;hr size=&quot;1&quot;&gt;addBook(bookData: Map)&lt;br&gt;updateBook(bookId: String, bookData: Map)&lt;br&gt;removeBook(bookId: String)&lt;br&gt;manageUser(userId: String)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="40" width="280" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="applogic-class" value="&lt;b&gt;ApplicationLogic&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;searchBooks(query: String): Book[]&lt;br&gt;fetchBrowsingData(): Book[]&lt;br&gt;getBookDetails(bookId: String): Book&lt;br&gt;submitRating(userId: String, bookId: String, rating: int)&lt;br&gt;saveReview(review: Review)&lt;br&gt;updateWishlist(userId: String, bookId: String)&lt;br&gt;processAIRecommendations(userId: String, bookId: String)&lt;br&gt;addBook(bookData: Map)&lt;br&gt;updateBook(bookId: String, bookData: Map)&lt;br&gt;removeBook(bookId: String)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="240" width="360" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="database-class" value="&lt;b&gt;Database&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;queryDatabase(query: String): Data&lt;br&gt;fetchBookDetails(bookId: String): Book&lt;br&gt;updateRating(bookId: String, rating: int)&lt;br&gt;storeReview(review: Review)&lt;br&gt;storeWishlistData(userId: String, bookId: String)&lt;br&gt;retrieveRelatedBooks(userId: String, bookId: String): Book[]&lt;br&gt;insertBook(book: Book)&lt;br&gt;updateBookRecord(book: Book)&lt;br&gt;deleteBookRecord(bookId: String)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="450" y="520" width="360" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="airecommender-class" value="&lt;b&gt;AIRecommender&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;generateRecommendations(userId: String): Book[]" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="520" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="book-class" value="&lt;b&gt;Book&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;bookId: String&lt;br&gt;title: String&lt;br&gt;author: String&lt;br&gt;synopsis: String&lt;br&gt;genre: String&lt;br&gt;averageRating: float" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="220" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="review-class" value="&lt;b&gt;Review&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;userId: String&lt;br&gt;bookId: String&lt;br&gt;rating: int&lt;br&gt;reviewText: String" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="650" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-applogic" value="interacts with" style="dashed=1;html=1;endArrow=open;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="user-class" target="applogic-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="310" y="220" as="sourcePoint" />
+            <mxPoint x="430" y="320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-admin-applogic" value="uses to manage system" style="dashed=1;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="admin-class" target="applogic-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="490" y="180" as="sourcePoint" />
+            <mxPoint x="540" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-applogic-database" value="uses" style="dashed=1;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="applogic-class" target="database-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="640" y="480" as="sourcePoint" />
+            <mxPoint x="640" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-applogic-airecommender" value="uses" style="dashed=1;html=1;endArrow=open;endFill=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="applogic-class" target="airecommender-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="820" y="480" as="sourcePoint" />
+            <mxPoint x="830" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-applogic-book" value="manages" style="endArrow=none;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="applogic-class" target="book-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="440" y="440" as="sourcePoint" />
+            <mxPoint x="270" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-book" value="adds to wishlist" style="endArrow=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" edge="1" parent="1" source="user-class" target="book-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="280" as="sourcePoint" />
+            <mxPoint x="180" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-user-book-1" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="rel-user-book">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-user-book-2" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="rel-user-book">
+          <mxGeometry x="0.8" relative="1" as="geometry">
+            <mxPoint y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-book-review" value="has" style="endArrow=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="book-class" target="review-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="160" y="610" as="sourcePoint" />
+            <mxPoint x="160" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-book-review-1" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="rel-book-review">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-book-review-2" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="rel-book-review">
+          <mxGeometry x="0.8" relative="1" as="geometry">
+            <mxPoint y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-user-review" value="" style="endArrow=none;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="user-class" target="review-class">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="280" as="sourcePoint" />
+            <mxPoint x="110" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-user-review-1" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="rel-user-review">
+          <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-user-review-2" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="rel-user-review">
+          <mxGeometry x="0.8" relative="1" as="geometry">
+            <mxPoint x="10" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
