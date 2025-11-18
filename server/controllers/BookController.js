@@ -155,8 +155,6 @@ export const rateBook = async (req, res) => {
     const { rating } = req.body;
     const userId = req.userId;
 
-<<<<<<< HEAD
-=======
   if (!userId || !id) {
    return res.status(401).json({
      success: false,
@@ -164,7 +162,6 @@ export const rateBook = async (req, res) => {
    });
  }
 
->>>>>>> origin/master
     if (!rating || rating < 1 || rating > 5) {
       return res.status(400).json({ success: false, message: 'Rating must be between 1 and 5' });
     }
@@ -208,15 +205,6 @@ export const rateBook = async (req, res) => {
 };
 
 // Add/Update review
-<<<<<<< HEAD
-export const addReview = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { rating, reviewText } = req.body;
-    const userId = req.userId;
-    const userName = req.userName;
-
-=======
 // export const addReview = async (req, res) => {
 //   try {
 //     const { id } = req.params;
@@ -265,7 +253,6 @@ export const addReview = async (req, res) => {
     // normalize visibility
     const vis = visibility === 'followers' ? 'followers' : 'public';
 
->>>>>>> origin/master
     if (!rating || !reviewText || rating < 1 || rating > 5) {
       return res.status(400).json({ success: false, message: 'Valid rating and review text are required' });
     }
@@ -293,14 +280,6 @@ export const addReview = async (req, res) => {
         user: userId,
         userName,
         rating,
-<<<<<<< HEAD
-        reviewText
-      });
-      await review.save();
-
-      // Update book review count
-      book.totalReviews += 1;
-=======
         reviewText,
         visibility: vis
       });
@@ -327,7 +306,6 @@ export const addReview = async (req, res) => {
           throw saveErr;
         }
       }
->>>>>>> origin/master
     }
 
     // Also update the book rating
@@ -352,13 +330,9 @@ export const addReview = async (req, res) => {
     });
   } catch (error) {
     console.error('Error adding review:', error);
-<<<<<<< HEAD
-    res.status(500).json({ success: false, message: 'Error adding review' });
-=======
       const payload = { success: false, message: error.message || 'Error adding review' };
       if (process.env.NODE_ENV !== 'production') payload.error = error.stack || error;
       res.status(500).json(payload);
->>>>>>> origin/master
   }
 };
 
@@ -633,8 +607,6 @@ export const getUserListsPublic = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching lists' });
   }
 };
-<<<<<<< HEAD
-=======
 
 // Get reviews from users you follow (for Posts feed)
 export const getFollowingReviews = async (req, res) => {
@@ -684,4 +656,3 @@ export const getFollowingReviews = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching reviews' });
   }
 };
->>>>>>> origin/master

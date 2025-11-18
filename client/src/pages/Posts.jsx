@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import React, { useContext, useRef } from 'react';
-import { AppContext } from '../context/AppContext';
-import CreatePost from '../components/CreatePost';
-import PostFeed from '../components/PostFeed';
-
-const Posts = () => {
-  const { user, setShowLogin } = useContext(AppContext);
-  const postFeedRef = useRef(null);
-=======
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import CreatePost from '../components/CreatePost';
@@ -78,7 +68,6 @@ const Posts = () => {
       setLoadingReviews(false);
     }
   };
->>>>>>> origin/master
 
   const handlePostCreated = () => {
     // Refresh the feed when a new post is created
@@ -88,18 +77,6 @@ const Posts = () => {
     }
   };
 
-<<<<<<< HEAD
-  return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Main Content */}
-      <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Page Title */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Posts
-          </h1>
-          <p className="text-gray-400">Share your thoughts with the community</p>
-=======
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
@@ -137,7 +114,6 @@ const Posts = () => {
             Posts & Reviews
           </h1>
           <p className="text-gray-400">Share your thoughts and see what your friends are reading</p>
->>>>>>> origin/master
         </div>
 
         {/* Create Post Section - Only show if user is logged in */}
@@ -157,14 +133,6 @@ const Posts = () => {
           </div>
         )}
 
-<<<<<<< HEAD
-        {/* Posts Feed */}
-        <PostFeed ref={postFeedRef} />
-      </div>
-
-      {/* Info Footer */}
-      <div className="max-w-3xl mx-auto px-4 py-8">
-=======
         {/* Reviews from Following Users */}
         {user && (
           <>
@@ -251,7 +219,6 @@ const Posts = () => {
 
       {/* Info Footer */}
       <div className="max-w-4xl mx-auto px-4 py-8">
->>>>>>> origin/master
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
           <h3 className="font-semibold text-emerald-400 mb-2">Community Guidelines</h3>
           <ul className="text-sm text-gray-300 space-y-1">

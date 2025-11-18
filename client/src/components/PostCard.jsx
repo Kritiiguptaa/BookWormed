@@ -235,20 +235,12 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
                 <div key={comment._id || index} className="bg-gray-800 rounded-lg p-3">
                   <div className="flex items-start gap-2">
                     <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-<<<<<<< HEAD
-                      {comment.userName?.[0]?.toUpperCase() || 'U'}
-=======
                       @
->>>>>>> origin/master
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-sm text-white">
-<<<<<<< HEAD
-                          {comment.userName || 'Anonymous'}
-=======
                           @{comment.userName || 'anonymous'}
->>>>>>> origin/master
                         </span>
                         <span className="text-xs text-gray-500">
                           {formatDate(comment.createdAt)}

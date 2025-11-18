@@ -2,13 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
-
-const BrowseBooks = () => {
-  const { backendUrl } = useContext(AppContext);
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-=======
 import localBooks from '../data/books.json';
 import { assets } from '../assests/assets.js';
 
@@ -19,7 +12,6 @@ const BrowseBooks = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
->>>>>>> origin/master
   const [filters, setFilters] = useState({
     genre: '',
     author: '',
@@ -31,32 +23,13 @@ const BrowseBooks = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-<<<<<<< HEAD
-    fetchBooks();
-  }, [filters, page]);
-=======
     // Try backend fetch first; fallback to local sample data
     fetchBooks();
   }, [filters, page, searchQuery]);
->>>>>>> origin/master
 
   const fetchBooks = async () => {
     try {
       setLoading(true);
-<<<<<<< HEAD
-      const queryParams = new URLSearchParams({
-        page,
-        limit: 20,
-        ...Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== ''))
-      });
-
-      const response = await axios.get(`${backendUrl}/api/book/browse?${queryParams}`);
-      
-      if (response.data.success) {
-        setBooks(response.data.books);
-        setTotalPages(response.data.totalPages);
-      }
-=======
       // If the user has entered a search query, prefer the full client JSON
       // so we can show all matching results without backend pagination.
       if (searchQuery && String(searchQuery).trim() !== '') {
@@ -186,7 +159,6 @@ const BrowseBooks = () => {
 
       setBooks(mapped);
       setTotalPages(1);
->>>>>>> origin/master
     } catch (error) {
       console.error('Error fetching books:', error);
     } finally {
@@ -200,13 +172,6 @@ const BrowseBooks = () => {
     setPage(1);
   };
 
-<<<<<<< HEAD
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span key={i} className={i <= Math.round(rating) ? 'text-yellow-400' : 'text-gray-600'}>
-=======
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
     setPage(1);
@@ -218,7 +183,6 @@ const BrowseBooks = () => {
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <span key={i} className={i <= Math.round(r) ? 'text-yellow-400' : 'text-gray-600'}>
->>>>>>> origin/master
           ★
         </span>
       );
@@ -226,8 +190,6 @@ const BrowseBooks = () => {
     return stars;
   };
 
-<<<<<<< HEAD
-=======
   const filteredAndSortedBooks = () => {
     let list = Array.isArray(books) ? [...books] : [];
 
@@ -368,7 +330,6 @@ const BrowseBooks = () => {
     setShowModal(false);
   };
 
->>>>>>> origin/master
   return (
     <div className="min-h-screen bg-gray-900 py-6">
       <div className="max-w-7xl mx-auto px-4">
@@ -378,17 +339,11 @@ const BrowseBooks = () => {
           <p className="text-gray-400">Discover your next favorite book</p>
         </div>
 
-<<<<<<< HEAD
-        {/* Filters */}
-=======
         {/* Filters + Search */}
->>>>>>> origin/master
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <input
               type="text"
-<<<<<<< HEAD
-=======
               name="search"
               placeholder="Search by title or author"
               value={searchQuery}
@@ -397,7 +352,6 @@ const BrowseBooks = () => {
             />
             <input
               type="text"
->>>>>>> origin/master
               name="author"
               placeholder="Filter by author"
               value={filters.author}
@@ -432,10 +386,7 @@ const BrowseBooks = () => {
               <option value="newest">Newest First</option>
               <option value="rating">Highest Rated</option>
               <option value="popularity">Most Popular</option>
-<<<<<<< HEAD
-=======
               <option value="trending">Trending (by ratings)</option>
->>>>>>> origin/master
               <option value="title">Title (A-Z)</option>
             </select>
             <button
@@ -447,10 +398,7 @@ const BrowseBooks = () => {
                   minRating: '',
                   sortBy: 'newest'
                 });
-<<<<<<< HEAD
-=======
                 setSearchQuery('');
->>>>>>> origin/master
                 setPage(1);
               }}
               className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
@@ -468,15 +416,6 @@ const BrowseBooks = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-<<<<<<< HEAD
-              {books.map((book) => (
-                <Link
-                  key={book._id}
-                  to={`/books/${book._id}`}
-                  className="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors"
-                >
-                  {book.coverImage && (
-=======
               {booksToDisplay().map((book) => (
                 <div
                   key={book._id}
@@ -484,21 +423,11 @@ const BrowseBooks = () => {
                   className="cursor-pointer bg-gray-800 border border-gray-700 rounded-lg overflow-hidden hover:border-blue-500 transition-colors"
                 >
                   {book.coverImage ? (
->>>>>>> origin/master
                     <img
                       src={book.coverImage}
                       alt={book.title}
                       className="w-full h-64 object-cover"
                       onError={(e) => {
-<<<<<<< HEAD
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  )}
-                  {!book.coverImage && (
-                    <div className="w-full h-64 bg-gray-700 flex items-center justify-center">
-                      <span className="text-6xl">📚</span>
-=======
                         e.target.onerror = null;
                         e.target.parentElement.innerHTML = '<div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center"><span class="text-5xl">📚</span></div>';
                       }}
@@ -506,7 +435,6 @@ const BrowseBooks = () => {
                   ) : (
                     <div className="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center">
                       <span className="text-5xl">📚</span>
->>>>>>> origin/master
                     </div>
                   )}
                   <div className="p-4">
@@ -517,23 +445,6 @@ const BrowseBooks = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1">
                         {renderStars(book.averageRating)}
-<<<<<<< HEAD
-                        <span className="text-sm text-gray-400 ml-1">
-                          ({book.totalRatings})
-                        </span>
-                      </div>
-                      {book.publicationYear && (
-                        <span className="text-xs text-gray-500">{book.publicationYear}</span>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Empty State */}
-            {books.length === 0 && (
-=======
                         <span className="text-sm text-gray-400 ml-1">({book.totalRatings})</span>
                       </div>
                     </div>
@@ -656,7 +567,6 @@ const BrowseBooks = () => {
 
             {/* Empty State */}
             {filteredAndSortedBooks().length === 0 && (
->>>>>>> origin/master
               <div className="text-center py-12">
                 <p className="text-gray-400 text-lg">No books found</p>
                 <p className="text-gray-500 text-sm mt-2">Try adjusting your filters</p>

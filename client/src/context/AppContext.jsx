@@ -37,12 +37,6 @@ const AppContextProvider = (props) => {
                 const response = await axios.get(`${backendUrl}/api/user/get`, {
                     headers: { token: currentToken }
                 });
-<<<<<<< HEAD
-                if (response.data.success) {
-                    setUser(response.data.user); // Update state with fresh user data
-                } else {
-                    // Handle cases where token might be invalid
-=======
                 console.log('Fetch user response:', response.data);
                 if (response.data.success) {
                     console.log('Setting user:', response.data.user);
@@ -50,7 +44,6 @@ const AppContextProvider = (props) => {
                 } else {
                     // Handle cases where token might be invalid
                     console.error('User fetch failed:', response.data.message);
->>>>>>> origin/master
                     logout();
                 }
             } catch (error) {

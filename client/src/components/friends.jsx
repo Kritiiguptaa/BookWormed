@@ -232,12 +232,6 @@ const Friends = () => {
                     />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-white hover:text-gray-300 transition-colors truncate">
-<<<<<<< HEAD
-                        {friend.name}
-                      </p>
-                      <p className="text-sm text-gray-400 truncate">
-=======
->>>>>>> origin/master
                         @{friend.username || friend.email.split('@')[0]}
                       </p>
                       {friend.bio && (
@@ -250,11 +244,7 @@ const Friends = () => {
 
                   {/* Right: Unfollow Button */}
                   <button
-<<<<<<< HEAD
-                    onClick={() => handleUnfollow(friend._id, friend.name)}
-=======
                     onClick={() => handleUnfollow(friend._id, friend.username || friend.email.split('@')[0])}
->>>>>>> origin/master
                     className="ml-4 px-6 py-1.5 bg-gray-700 text-white text-sm font-semibold rounded-lg hover:bg-gray-600 transition-colors flex-shrink-0"
                   >
                     Following

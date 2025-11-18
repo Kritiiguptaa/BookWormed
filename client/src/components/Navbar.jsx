@@ -87,17 +87,6 @@ const Navbar = () => {
                                 </Link>
 
                                 {/* User info - Click to view profile */}
-<<<<<<< HEAD
-                                <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                                    <img
-                                        className="h-8 w-8 rounded-full object-cover cursor-pointer"
-                                        src={assets.profile_icon}
-                                        alt="User Avatar"
-                                        title="View Profile"
-                                    />
-                                    <span className="text-gray-300 max-sm:hidden">{`Hi, ${user.name}`}</span>
-                                </Link>
-=======
                                 {user && user._id ? (
                                     <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
                                         <img
@@ -118,7 +107,6 @@ const Navbar = () => {
                                         <span className="text-gray-300 max-sm:hidden">Loading...</span>
                                     </div>
                                 )}
->>>>>>> origin/master
                                 
                                 {/* Logout Button */}
                                 <button

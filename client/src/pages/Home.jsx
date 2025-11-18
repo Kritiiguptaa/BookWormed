@@ -19,9 +19,6 @@ const Home = () => {
       // Fetch featured books
       const booksResponse = await axios.get(`${backendUrl}/api/book/browse?limit=6`);
       if (booksResponse.data.success) {
-<<<<<<< HEAD
-        setFeaturedBooks(booksResponse.data.books);
-=======
         let books = booksResponse.data.books;
         
         // Supplement with cover images from public JSON if backend books lack images
@@ -53,7 +50,6 @@ const Home = () => {
         }
         
         setFeaturedBooks(books);
->>>>>>> origin/master
         setStats(prev => ({ ...prev, books: booksResponse.data.total || 0 }));
       }
 
@@ -65,8 +61,6 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching home data:', error);
-<<<<<<< HEAD
-=======
       
       // Fallback to local JSON if backend fails
       try {
@@ -87,7 +81,6 @@ const Home = () => {
       } catch (e) {
         console.error('Fallback also failed:', e);
       }
->>>>>>> origin/master
     }
   };
 
@@ -259,15 +252,11 @@ const Home = () => {
                       <img
                         src={book.coverImage}
                         alt={book.title}
-<<<<<<< HEAD
-                        className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-=======
                         className="w-full h-64 object-cover"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.parentElement.innerHTML = '<div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center"><span class="text-5xl">📚</span></div>';
                         }}
->>>>>>> origin/master
                       />
                     ) : (
                       <div className="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center">
