@@ -12,12 +12,12 @@ import {
   updateReadingStatus,
   createBook,
   getReviewsByUser,
-<<<<<<< HEAD
-  getUserListsPublic
-=======
+
   getUserListsPublic,
+
+  // getUserListsPublic,
   getFollowingReviews
->>>>>>> origin/master
+// >>>>>>> origin/master
 } from '../controllers/BookController.js';
 import authUser from '../middlewares/authPost.js';
 
@@ -31,10 +31,10 @@ bookRouter.get('/lists/user/:userId', getUserListsPublic); // Get user's lists (
 
 // Protected routes (require authentication) - specific routes before parameterized routes
 bookRouter.get('/lists', authUser, getUserLists); // Get user's all lists
-<<<<<<< HEAD
-=======
+// <<<<<<< HEAD
+// =======
 bookRouter.get('/reviews/following', authUser, getFollowingReviews); // Get reviews from following
->>>>>>> origin/master
+// >>>>>>> origin/master
 bookRouter.post('/create', authUser, createBook); // Create new book
 
 // Book-specific routes

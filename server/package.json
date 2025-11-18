@@ -5,12 +5,8 @@
   "type": "module",
   "scripts": {
     "server": "nodemon server.js",
-<<<<<<< HEAD
-    "start": "node server.js"
-=======
     "start": "node server.js",
     "cleanup-reviews": "node ./scripts/cleanup_reviews.js"
->>>>>>> origin/master
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +15,7 @@
     "axios": "^1.7.7",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.6.1",
     "express": "^4.21.1",
     "form-data": "^4.0.1",
     "jsonwebtoken": "^9.0.2",
@@ -27,6 +23,5 @@
     "nodemon": "^3.1.7",
     "razorpay": "^2.9.5",
     "stripe": "^17.3.1"
-  },
-  "devDependencies": {}
+  }
 }
