@@ -14,6 +14,12 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
   const [newComment, setNewComment] = useState('');
   const [isCommenting, setIsCommenting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(post.title || '');
+  const [editContent, setEditContent] = useState(post.content || '');
+  const [editImageUrl, setEditImageUrl] = useState(post.imageUrl || '');
+  const [editTags, setEditTags] = useState(post.tags?.join(', ') || '');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const isAuthor = user?._id === post.author?._id || user?._id === post.author;
 
@@ -104,6 +110,44 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
     }
   };
 
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+    
+    if (!editTitle.trim() || !editContent.trim()) {
+      alert('Title and content are required');
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const tagArray = editTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+      
+      const response = await axios.put(
+        `${backendUrl}/api/post/${post._id}`,
+        {
+          title: editTitle.trim(),
+          content: editContent.trim(),
+          imageUrl: editImageUrl.trim(),
+          tags: tagArray
+        },
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        if (onPostUpdate) {
+          onPostUpdate(response.data.post);
+        }
+        setIsEditing(false);
+        setShowDeleteConfirm(false);
+      }
+    } catch (error) {
+      console.error('Error updating post:', error);
+      alert(error.response?.data?.message || 'Failed to update post');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg mb-4 overflow-hidden">
       {/* Post Header */}
@@ -128,7 +172,16 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
                 ⋮
               </button>
               {showDeleteConfirm && (
-                <div className="absolute right-0 mt-2 bg-gray-700 border border-gray-600 rounded-lg shadow-lg z-10">
+                <div className="absolute right-0 mt-2 bg-gray-700 border border-gray-600 rounded-lg shadow-lg z-10 min-w-[120px]">
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setShowDeleteConfirm(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-blue-400 hover:bg-gray-600"
+                  >
+                    Edit Post
+                  </button>
                   <button
                     onClick={handleDeletePost}
                     className="block w-full text-left px-4 py-2 text-red-400 hover:bg-gray-600"
@@ -149,32 +202,119 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
       </div>
 
       {/* Post Content */}
-      <div className="p-4">
-        <h2 className="text-xl font-bold text-white mb-2">{post.title}</h2>
-        <p className="text-gray-300 whitespace-pre-wrap mb-3">{post.content}</p>
-        
-        {post.imageUrl && (
-          <img
-            src={post.imageUrl}
-            alt="Post"
-            className="w-full rounded-lg mb-3 max-h-96 object-cover"
-            onError={(e) => e.target.style.display = 'none'}
-          />
-        )}
-
-        {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-3">
-            {post.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="bg-blue-900 text-blue-300 text-xs px-2 py-1 rounded-full"
+      {isEditing ? (
+        <div className="p-4 bg-gray-900">
+          <form onSubmit={handleUpdatePost}>
+            <div className="mb-3">
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                placeholder="Title"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                maxLength={300}
+                disabled={isUpdating}
+              />
+            </div>
+            <div className="mb-3">
+              <textarea
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                placeholder="Content"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                rows={6}
+                maxLength={10000}
+                disabled={isUpdating}
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="text"
+                value={editImageUrl}
+                onChange={(e) => setEditImageUrl(e.target.value)}
+                placeholder="Image URL (optional)"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isUpdating}
+              />
+            </div>
+            <div className="mb-3">
+              <input
+                type="text"
+                value={editTags}
+                onChange={(e) => setEditTags(e.target.value)}
+                placeholder="Tags (comma separated)"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isUpdating}
+              />
+              {editTags && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {editTags.split(',').map((tag, index) => {
+                    const trimmedTag = tag.trim();
+                    return trimmedTag ? (
+                      <span
+                        key={index}
+                        className="bg-blue-900 text-blue-200 text-xs px-3 py-1 rounded-full"
+                      >
+                        {trimmedTag}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={isUpdating}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
               >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
+                {isUpdating ? 'Updating...' : 'Update Post'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditTitle(post.title || '');
+                  setEditContent(post.content || '');
+                  setEditImageUrl(post.imageUrl || '');
+                  setEditTags(post.tags?.join(', ') || '');
+                }}
+                disabled={isUpdating}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        <div className="p-4">
+          <h2 className="text-xl font-bold text-white mb-2">{post.title}</h2>
+          <p className="text-gray-300 whitespace-pre-wrap mb-3">{post.content}</p>
+          
+          {post.imageUrl && (
+            <img
+              src={post.imageUrl}
+              alt="Post"
+              className="w-full rounded-lg mb-3 max-h-96 object-cover"
+              onError={(e) => e.target.style.display = 'none'}
+            />
+          )}
+
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {post.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-900 text-blue-300 text-xs px-2 py-1 rounded-full"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Post Actions */}
       <div className="px-4 py-2 border-t border-gray-700 flex items-center gap-4">

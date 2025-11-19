@@ -453,14 +453,27 @@ export const getUserLists = async (req, res) => {
     const userId = req.userId;
     const { listType } = req.query;
 
+    console.log('getUserLists called for userId:', userId, 'listType:', listType);
+
     const filter = { user: userId };
     if (listType) {
       filter.listType = listType;
     }
 
+    // First check if any lists exist at all
+    const allUserLists = await UserList.find(filter);
+    console.log('Found userLists (unpopulated):', allUserLists.length);
+    console.log('First list sample:', allUserLists[0]);
+
     const userLists = await UserList.find(filter)
-      .populate('book')
+      .populate({
+        path: 'book',
+        select: 'title author coverImage isbn genres averageRating totalRatings synopsis publicationDate'
+      })
       .sort({ createdAt: -1 });
+
+    console.log('Found userLists (populated):', userLists.length);
+    console.log('First populated list sample:', userLists[0]);
 
     res.status(200).json({
       success: true,
@@ -468,7 +481,7 @@ export const getUserLists = async (req, res) => {
     });
   } catch (error) {
     console.error('Error getting user lists:', error);
-    res.status(500).json({ success: false, message: 'Error fetching user lists' });
+    res.status(500).json({ success: false, message: 'Error fetching user lists', error: error.message });
   }
 };
 

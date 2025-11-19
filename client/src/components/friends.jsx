@@ -140,60 +140,108 @@ const Friends = () => {
   const { backendUrl, user, token, fetchUser } = useContext(AppContext);
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   // Fetch friends list
   const fetchFriends = async () => {
-    // Check if user object is loaded before trying to access its properties
-    if (!token || !user?._id) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
+      setError('');
+      console.log('Fetching friends from:', `${backendUrl}/api/user/friends`);
+      
       const { data } = await axios.get(`${backendUrl}/api/user/friends`, {
         headers: { token },
       });
+      
+      console.log('Friends response:', data);
+      
       if (data.success) {
-        setFriends(data.friends); // array of user objects
+        setFriends(data.friends || []);
+      } else {
+        setError(data.message || 'Failed to load friends');
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error fetching friends:', error);
+      console.error('Error response:', error.response?.data);
+      setError(error.response?.data?.message || 'Failed to load following list');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchFriends();
-  }, [user]); // This will re-run when the user object is updated via fetchUser
+    if (token) {
+      fetchFriends();
+    } else {
+      setLoading(false);
+    }
+  }, [token]); // This will re-run when the user object is updated via fetchUser
 
   const handleUnfollow = async (userIdToUnfollow, userName) => {
     const confirmUnfollow = window.confirm(`Are you sure you want to unfollow ${userName}?`);
     if (!confirmUnfollow) return;
 
     try {
-      if (!token || !user?._id) return alert("Login first");
+      if (!token) return alert("Please login first");
 
-      // 1. Call the backend to unfollow the user
-      await axios.post(`${backendUrl}/api/user/unfollow/${userIdToUnfollow}`, { userId: user._id }, {
+      await axios.post(`${backendUrl}/api/user/unfollow/${userIdToUnfollow}`, {}, {
         headers: { token }
       });
 
-      // 2. Refresh the global user data for consistency across the app
-      await fetchUser();
+      // Refresh user data if fetchUser is available
+      if (fetchUser) {
+        await fetchUser();
+      }
 
-      // 3. Remove the friend from the local state for an immediate UI update
+      // Remove the friend from the local state for immediate UI update
       setFriends(prevFriends =>
         prevFriends.filter(friend => friend._id !== userIdToUnfollow)
       );
 
     } catch (error) {
-      console.log(error);
-      alert('Failed to unfollow user');
+      console.error('Error unfollowing:', error);
+      alert(error.response?.data?.message || 'Failed to unfollow user');
     }
   };
+
+  if (!token) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-400 text-lg mb-4">Please log in to view your following list</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading following list...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">{error}</p>
+          <button
+            onClick={fetchFriends}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }

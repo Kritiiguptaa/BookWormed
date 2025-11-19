@@ -7,6 +7,8 @@ import BrowseBooks from './pages/BrowseBooks'
 import BookDetails from './pages/BookDetails'
 import MyLists from './pages/MyLists'
 import About from './pages/About'
+import Groups from './pages/Groups'
+import GroupDetails from './pages/GroupDetails'
 import UserProfile from './pages/UserProfile'
 import Notifications from './pages/Notifications'
 import Navbar from './components/Navbar'
@@ -36,6 +38,8 @@ const App = () => {
         <Route path="/search" element={<Search />} />
         <Route path='/friends' element={<Friends/>}/>
         <Route path='/posts' element={<Posts/>}/>
+        <Route path='/groups' element={<Groups/>}/>
+        <Route path='/groups/:id' element={<GroupDetails/>}/>
         <Route path='/books' element={<BrowseBooks/>}/>
         <Route path='/books/:id' element={<BookDetails/>}/>
         <Route path='/my-lists' element={<MyLists/>}/>

@@ -42,7 +42,7 @@ export const getUserNotifications = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const notifications = await Notification.find({ recipient: userId })
-      .populate('sender', 'username email profilePicture')
+      .populate('sender', 'name username email profilePicture')
       .populate('post', 'title')
       .populate('book', 'title coverImage')
       .sort({ createdAt: -1 })

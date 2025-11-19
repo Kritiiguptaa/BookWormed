@@ -24,7 +24,10 @@ const Search = () => {
       if (searchType === 'users') {
         const { data } = await axios.get(`${backendUrl}/api/user/search/${searchQuery}`);
         if (data.success) {
-          const mappedResults = data.users.map(u => ({
+          // Filter out the current user from results
+          const filteredUsers = data.users.filter(u => user?._id && u._id !== user._id);
+          
+          const mappedResults = filteredUsers.map(u => ({
             ...u,
             isFollowing: user?.following?.includes(u._id)
           }));
@@ -116,7 +119,7 @@ const Search = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={searchType === 'users' ? 'Search by name or username...' : 'Search by title, author, or ISBN...'}
+            placeholder={searchType === 'users' ? 'Search users by name or username...' : 'Search by title, author, or ISBN...'}
             className="flex-1 px-4 py-3 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {isSearching && (
@@ -141,20 +144,25 @@ const Search = () => {
                     className="flex items-center gap-4 flex-1"
                   >
                     <img
-                      src={assets.profile_icon}
+                      src={userItem.profilePicture || assets.profile_icon}
                       alt={`${userItem.name}'s profile`}
                       className="w-14 h-14 rounded-full object-cover border-2 border-gray-600"
                     />
                     <div>
-                      <p className="font-bold text-lg text-white hover:text-blue-400">@{userItem.username || userItem.email.split('@')[0]}</p>
+                      <p className="font-bold text-lg text-white hover:text-blue-400">
+                        {userItem.name}
+                      </p>
+                      <p className="text-sm text-gray-400">
+                        @{userItem.username || userItem.email?.split('@')[0]}
+                      </p>
                       {userItem.bio && (
-                        <p className="text-sm text-gray-300 mt-1 line-clamp-1">{userItem.bio}</p>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{userItem.bio}</p>
                       )}
                     </div>
                   </Link>
 
                   {/* Follow / Unfollow Button */}
-                  {user && user._id !== userItem._id && (
+                  {user && token && user._id !== userItem._id && (
                     <button
                       onClick={() => handleFollowToggle(userItem._id, userItem.isFollowing)}
                       className={`px-6 py-2 rounded-lg font-semibold transition ${
@@ -165,6 +173,9 @@ const Search = () => {
                     >
                       {userItem.isFollowing ? 'Following' : 'Follow'}
                     </button>
+                  )}
+                  {!user && token && (
+                    <span className="text-gray-500 text-sm">Loading...</span>
                   )}
                 </div>
               ))}

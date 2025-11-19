@@ -135,12 +135,27 @@ const CreatePost = ({ onPostCreated }) => {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Tags (comma separated, optional)"
+            placeholder="Tags (comma separated, e.g., fiction, mystery, thriller)"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             className="w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isSubmitting}
           />
+          {tags && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {tags.split(',').map((tag, index) => {
+                const trimmedTag = tag.trim();
+                return trimmedTag ? (
+                  <span
+                    key={index}
+                    className="bg-blue-900 text-blue-200 text-xs px-3 py-1 rounded-full"
+                  >
+                    {trimmedTag}
+                  </span>
+                ) : null;
+              })}
+            </div>
+          )}
         </div>
 
         <div className="flex gap-3">

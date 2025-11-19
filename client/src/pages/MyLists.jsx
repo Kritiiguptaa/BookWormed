@@ -20,15 +20,30 @@ const MyLists = () => {
   const fetchLists = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${backendUrl}/api/book/lists`, {
+      const url = `${backendUrl}/api/book/lists`;
+      console.log('Fetching lists from:', url);
+      console.log('Token:', token ? 'Present' : 'Missing');
+      console.log('Backend URL from env:', backendUrl);
+      
+      const response = await axios.get(url, {
         headers: { token }
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response data:', JSON.stringify(response.data, null, 2));
+
       if (response.data.success) {
+        console.log('Lists received:', response.data.lists.length);
+        console.log('Lists array:', response.data.lists);
         setLists(response.data.lists);
+      } else {
+        console.error('Response was not successful:', response.data);
       }
     } catch (error) {
       console.error('Error fetching lists:', error);
+      console.error('Error message:', error.message);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
     } finally {
       setLoading(false);
     }
@@ -151,7 +166,14 @@ const MyLists = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredLists.map((item) => (
+            {filteredLists.map((item) => {
+              // Skip if book is not populated
+              if (!item.book || !item.book._id) {
+                console.warn('Skipping item with missing book data:', item);
+                return null;
+              }
+              
+              return (
               <div
                 key={item._id}
                 className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-gray-600 transition-colors"
@@ -184,12 +206,12 @@ const MyLists = () => {
                     >
                       {item.book.title}
                     </Link>
-                    <p className="text-gray-400 mb-2">by {item.book.author}</p>
+                    <p className="text-gray-400 mb-2">by {item.book.author || 'Unknown'}</p>
 
                     <div className="flex items-center gap-2 mb-3">
-                      {renderStars(item.book.averageRating)}
+                      {renderStars(item.book.averageRating || 0)}
                       <span className="text-sm text-gray-400">
-                        {item.book.averageRating.toFixed(1)} ({item.book.totalRatings} ratings)
+                        {(item.book.averageRating || 0).toFixed(1)} ({item.book.totalRatings || 0} ratings)
                       </span>
                     </div>
 
@@ -277,7 +299,8 @@ const MyLists = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         )}
       </div>

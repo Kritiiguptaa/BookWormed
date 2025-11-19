@@ -3,7 +3,7 @@ import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 import PostCard from './PostCard';
 
-const PostFeed = () => {
+const PostFeed = ({ onNewPost, triggerRefresh }) => {
   const { backendUrl } = useContext(AppContext);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +47,22 @@ const PostFeed = () => {
     fetchPosts(1, false);
   }, [backendUrl]);
 
+  // Listen for new posts from parent component
+  useEffect(() => {
+    if (triggerRefresh) {
+      setPage(1);
+      fetchPosts(1, false);
+    }
+  }, [triggerRefresh]);
+
+  const handlePostAdded = (newPost) => {
+    // Add the new post to the top of the feed
+    setPosts(prevPosts => [newPost, ...prevPosts]);
+    if (onNewPost) {
+      onNewPost();
+    }
+  };
+
   const handleLoadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
@@ -55,6 +71,14 @@ const PostFeed = () => {
 
   const handlePostDelete = (postId) => {
     setPosts(prevPosts => prevPosts.filter(post => post._id !== postId));
+  };
+
+  const handlePostUpdate = (updatedPost) => {
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post._id === updatedPost._id ? updatedPost : post
+      )
+    );
   };
 
   const handleRefresh = () => {
@@ -98,6 +122,7 @@ const PostFeed = () => {
               key={post._id}
               post={post}
               onPostDelete={handlePostDelete}
+              onPostUpdate={handlePostUpdate}
             />
           ))}
 

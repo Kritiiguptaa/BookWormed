@@ -10,6 +10,7 @@ const Posts = () => {
   const postFeedRef = useRef(null);
   const [followingReviews, setFollowingReviews] = useState([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (user && token) {
@@ -69,12 +70,9 @@ const Posts = () => {
     }
   };
 
-  const handlePostCreated = () => {
-    // Refresh the feed when a new post is created
-    if (postFeedRef.current) {
-      // Trigger a refresh by remounting the PostFeed component
-      window.location.reload();
-    }
+  const handlePostCreated = (newPost) => {
+    // Trigger a refresh of the feed
+    setRefreshTrigger(prev => prev + 1);
   };
 
   const renderStars = (rating) => {
@@ -213,7 +211,7 @@ const Posts = () => {
         {/* Posts Feed */}
         <div>
           <h2 className="text-xl font-bold text-white mb-4">💬 Community Posts</h2>
-          <PostFeed ref={postFeedRef} />
+          <PostFeed ref={postFeedRef} triggerRefresh={refreshTrigger} />
         </div>
       </div>
 

@@ -16,15 +16,23 @@ const BookDetails = () => {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewVisibility, setReviewVisibility] = useState('public');
   const [selectedList, setSelectedList] = useState('');
+  const [currentListType, setCurrentListType] = useState(null);
+  const [isInList, setIsInList] = useState(false);
 
   useEffect(() => {
     fetchBookDetails();
-  }, [id]);
+    if (token) {
+      checkBookInList();
+    }
+  }, [id, token]);
 
   const fetchBookDetails = async () => {
     try {
       setLoading(true);
+      console.log('Fetching book details for ID:', id);
       const response = await axios.get(`${backendUrl}/api/book/${id}`, { headers: { token } });
+      
+      console.log('Book details response:', response.data);
       
       if (response.data.success) {
         let bookData = response.data.book;
@@ -72,6 +80,30 @@ const BookDetails = () => {
       console.error('Error fetching book details:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkBookInList = async () => {
+    if (!token) return;
+    
+    try {
+      const response = await axios.get(`${backendUrl}/api/book/lists`, {
+        headers: { token }
+      });
+      
+      if (response.data.success) {
+        const bookInList = response.data.lists.find(
+          item => item.book?._id === id || item.book === id
+        );
+        
+        if (bookInList) {
+          setIsInList(true);
+          setCurrentListType(bookInList.listType);
+          setSelectedList(bookInList.listType);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking book in list:', error);
     }
   };
 
@@ -152,6 +184,15 @@ const BookDetails = () => {
     }
 
     try {
+      if (isInList && currentListType !== selectedList) {
+        // Remove from current list first
+        await axios.delete(
+          `${backendUrl}/api/book/${id}/list`,
+          { headers: { token } }
+        );
+      }
+
+      // Add to new list
       const response = await axios.post(
         `${backendUrl}/api/book/${id}/list`,
         { listType: selectedList },
@@ -159,12 +200,34 @@ const BookDetails = () => {
       );
 
       if (response.data.success) {
-        alert('Book added to list successfully!');
-        setSelectedList('');
+        setIsInList(true);
+        setCurrentListType(selectedList);
+        alert(`Book ${isInList && currentListType !== selectedList ? 'moved to' : 'added to'} ${selectedList.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} successfully!`);
       }
     } catch (error) {
       console.error('Error adding to list:', error);
       alert(error.response?.data?.message || 'Failed to add book to list');
+    }
+  };
+
+  const handleRemoveFromList = async () => {
+    if (!token) return;
+
+    try {
+      const response = await axios.delete(
+        `${backendUrl}/api/book/${id}/list`,
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        setIsInList(false);
+        setCurrentListType(null);
+        setSelectedList('');
+        alert('Book removed from list successfully!');
+      }
+    } catch (error) {
+      console.error('Error removing from list:', error);
+      alert(error.response?.data?.message || 'Failed to remove book from list');
     }
   };
 
@@ -209,6 +272,13 @@ const BookDetails = () => {
   return (
     <div className="min-h-screen bg-gray-900 py-6">
       <div className="max-w-6xl mx-auto px-4">
+        {/* Debug info */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="bg-yellow-900 text-yellow-200 p-2 mb-4 text-xs rounded">
+            Debug: Token={token ? 'Yes' : 'No'}, BookID={id}, IsInList={isInList ? 'Yes' : 'No'}
+          </div>
+        )}
+        
         {/* Book Header */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -311,28 +381,59 @@ const BookDetails = () => {
               )}
 
               {/* Add to List */}
-              {token && (
-                <div className="flex gap-2">
-                  <select
-                    value={selectedList}
-                    onChange={(e) => setSelectedList(e.target.value)}
-                    className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">Add to list...</option>
-                    <option value="want-to-read">Want to Read</option>
-                    <option value="currently-reading">Currently Reading</option>
-                    <option value="read">Read</option>
-                    <option value="favorites">Favorites</option>
-                  </select>
-                  <button
-                    onClick={handleAddToList}
-                    disabled={!selectedList}
-                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Add
-                  </button>
-                </div>
-              )}
+              <div className="mt-4 bg-gray-750 border border-gray-600 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-3">Add to Your Reading List</h3>
+                {token ? (
+                  <div>
+                    {isInList && (
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="text-sm text-green-400">
+                          ✓ In your list: {currentListType?.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <select
+                        value={selectedList}
+                        onChange={(e) => setSelectedList(e.target.value)}
+                        className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">{isInList ? 'Change list...' : 'Add to list...'}</option>
+                        <option value="want-to-read">📚 Want to Read</option>
+                        <option value="currently-reading">📖 Currently Reading</option>
+                        <option value="read">✅ Read</option>
+                        <option value="favorites">⭐ Favorites</option>
+                      </select>
+                      <button
+                        onClick={handleAddToList}
+                        disabled={!selectedList || (isInList && selectedList === currentListType)}
+                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors font-semibold"
+                      >
+                        {isInList && selectedList !== currentListType ? 'Move' : isInList ? 'Update' : 'Add'}
+                      </button>
+                      {isInList && (
+                        <button
+                          onClick={handleRemoveFromList}
+                          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
+                          title="Remove from list"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-gray-700 border border-gray-600 rounded-lg p-4 text-center">
+                    <p className="text-gray-300 mb-3">Sign in to add this book to your reading list</p>
+                    <button
+                      onClick={() => setShowLogin(true)}
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

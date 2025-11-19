@@ -30,7 +30,10 @@ bookRouter.get('/reviews/user/:userId', getReviewsByUser); // Get user's reviews
 bookRouter.get('/lists/user/:userId', getUserListsPublic); // Get user's lists (public)
 
 // Protected routes (require authentication) - specific routes before parameterized routes
-bookRouter.get('/lists', authUser, getUserLists); // Get user's all lists
+bookRouter.get('/lists', (req, res, next) => {
+  console.log('Route /lists hit');
+  next();
+}, authUser, getUserLists); // Get user's all lists
 // <<<<<<< HEAD
 // =======
 bookRouter.get('/reviews/following', authUser, getFollowingReviews); // Get reviews from following

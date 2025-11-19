@@ -18,7 +18,7 @@ const notificationSchema = new mongoose.Schema({
   },
   post: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'post'
+    ref: 'Post'
   },
   review: {
     type: mongoose.Schema.Types.ObjectId,

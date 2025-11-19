@@ -126,12 +126,17 @@ const checkUsernameAvailability = async (req, res) => {
 const searchUsers = async (req, res) => {
   try {
     const { query } = req.params;
+    // Search by both username and name (case-insensitive)
     const users = await userModel.find({
-      username: { $regex: query, $options: 'i' } // case-insensitive search
-    }).select('username name _id'); // only send username, name, id
+      $or: [
+        { username: { $regex: query, $options: 'i' } },
+        { name: { $regex: query, $options: 'i' } }
+      ]
+    }).select('username name email bio profilePicture _id').limit(20);
 
     res.json({ success: true, users });
   } catch (error) {
+    console.error('Error searching users:', error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -196,14 +201,24 @@ const unfollowUser = async (req, res) => {
 
 const getFriends = async (req, res) => {
   try {
-    const { userId } = req.body; // userAuth adds this from the token
-    const user = await userModel.findById(userId).populate('following', 'name username _id');
+    const { userId } = req.body;
+    console.log('getFriends called for userId:', userId);
+    
+    if (!userId) {
+      return res.json({ success: false, message: "User ID not found" });
+    }
+    
+    const user = await userModel.findById(userId).populate('following', 'name username email bio profilePicture _id');
 
-    if (!user) return res.json({ success: false, message: "User not found" });
+    if (!user) {
+      console.log('User not found:', userId);
+      return res.json({ success: false, message: "User not found" });
+    }
 
-    res.json({ success: true, friends: user.following });
+    console.log('Found following:', user.following?.length || 0);
+    res.json({ success: true, friends: user.following || [] });
   } catch (error) {
-    console.log(error);
+    console.error('Error in getFriends:', error);
     res.json({ success: false, message: error.message });
   }
 };

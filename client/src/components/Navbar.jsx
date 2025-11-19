@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const Navbar = () => {
     // 2. Added 'credit' to context
-    const { user, setShowLogin, logout, credit, backendUrl, token } = useContext(AppContext);
+    const { user, setShowLogin, logout, credit, backendUrl, token, isLoadingUser } = useContext(AppContext);
     // 3. Initialized navigate hook
     const navigate = useNavigate();
     const [unreadCount, setUnreadCount] = useState(0);
@@ -48,6 +48,7 @@ const Navbar = () => {
                                 <Link to="/my-lists" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">My Lists</Link>
                             )}
                             <Link to="/posts" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Posts</Link>
+                            <Link to="/groups" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Groups</Link>
                             <Link to="/about" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">About</Link>
                             {user && (
                                 <Link to="/friends" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Following</Link>
@@ -87,7 +88,12 @@ const Navbar = () => {
                                 </Link>
 
                                 {/* User info - Click to view profile */}
-                                {user && user._id ? (
+                                {isLoadingUser ? (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
+                                        <span className="text-gray-400 max-sm:hidden">Loading...</span>
+                                    </div>
+                                ) : user && user._id ? (
                                     <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
                                         <img
                                             className="h-8 w-8 rounded-full object-cover"
@@ -97,16 +103,12 @@ const Navbar = () => {
                                         />
                                         <span className="text-gray-300 max-sm:hidden">{`Hi, @${user.username || user.email?.split('@')[0] || 'user'}`}</span>
                                     </Link>
-                                ) : (
+                                ) : token ? (
                                     <div className="flex items-center gap-2">
-                                        <img
-                                            className="h-8 w-8 rounded-full object-cover"
-                                            src={assets.profile_icon}
-                                            alt="User Avatar"
-                                        />
-                                        <span className="text-gray-300 max-sm:hidden">Loading...</span>
+                                        <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
+                                        <span className="text-gray-400 max-sm:hidden">Loading...</span>
                                     </div>
-                                )}
+                                ) : null}
                                 
                                 {/* Logout Button */}
                                 <button

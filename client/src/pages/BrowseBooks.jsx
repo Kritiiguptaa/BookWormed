@@ -14,6 +14,7 @@ const BrowseBooks = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const [filters, setFilters] = useState({
     genre: '',
+    category: '',
     author: '',
     year: '',
     minRating: '',
@@ -21,6 +22,31 @@ const BrowseBooks = () => {
   });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  // Define book categories
+  const bookCategories = [
+    { value: '', label: 'All Categories' },
+    { value: 'fiction', label: '📖 Fiction' },
+    { value: 'non-fiction', label: '📚 Non-Fiction' },
+    { value: 'mystery', label: '🔍 Mystery & Thriller' },
+    { value: 'romance', label: '💕 Romance' },
+    { value: 'science-fiction', label: '🚀 Science Fiction' },
+    { value: 'fantasy', label: '🐉 Fantasy' },
+    { value: 'horror', label: '👻 Horror' },
+    { value: 'biography', label: '👤 Biography & Memoir' },
+    { value: 'history', label: '📜 History' },
+    { value: 'self-help', label: '💡 Self-Help' },
+    { value: 'business', label: '💼 Business & Economics' },
+    { value: 'science', label: '🔬 Science & Technology' },
+    { value: 'poetry', label: '✍️ Poetry' },
+    { value: 'classics', label: '🎭 Classics' },
+    { value: 'young-adult', label: '🎒 Young Adult' },
+    { value: 'children', label: '🧸 Children\'s Books' },
+    { value: 'cooking', label: '🍳 Cooking & Food' },
+    { value: 'travel', label: '✈️ Travel' },
+    { value: 'religion', label: '🙏 Religion & Spirituality' },
+    { value: 'philosophy', label: '🤔 Philosophy' }
+  ];
 
   useEffect(() => {
     // Try backend fetch first; fallback to local sample data
@@ -213,6 +239,22 @@ const BrowseBooks = () => {
       list = list.filter(b => (b.genres || []).some(gg => String(gg).toLowerCase().includes(g)));
     }
 
+    // category filter
+    if (filters.category) {
+      const cat = String(filters.category).toLowerCase();
+      list = list.filter(b => {
+        const genresStr = (b.genres || []).join(' ').toLowerCase();
+        const titleStr = String(b.title || '').toLowerCase();
+        const synopsisStr = String(b.synopsis || '').toLowerCase();
+        const combinedText = `${genresStr} ${titleStr} ${synopsisStr}`;
+        
+        // Match category to genres or content
+        return combinedText.includes(cat) || 
+               (cat === 'fiction' && !combinedText.includes('non-fiction')) ||
+               (cat === 'non-fiction' && combinedText.includes('non-fiction'));
+      });
+    }
+
     // sorting
     if (filters.sortBy === 'rating') {
       list.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
@@ -232,6 +274,7 @@ const BrowseBooks = () => {
   const isFiltersEmpty = () => {
     return (
       (!filters.genre || filters.genre === '') &&
+      (!filters.category || filters.category === '') &&
       (!filters.author || filters.author === '') &&
       (!filters.year || filters.year === '') &&
       (!filters.minRating || filters.minRating === '') &&
@@ -341,13 +384,31 @@ const BrowseBooks = () => {
 
         {/* Filters + Search */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <input
               type="text"
               name="search"
               placeholder="Search by title or author"
               value={searchQuery}
               onChange={handleSearchChange}
+              className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <select
+              name="category"
+              value={filters.category}
+              onChange={handleFilterChange}
+              className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {bookCategories.map(cat => (
+                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              ))}
+            </select>
+            <input
+              type="text"
+              name="genre"
+              placeholder="Or filter by genre"
+              value={filters.genre}
+              onChange={handleFilterChange}
               className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
@@ -393,6 +454,7 @@ const BrowseBooks = () => {
               onClick={() => {
                 setFilters({
                   genre: '',
+                  category: '',
                   author: '',
                   year: '',
                   minRating: '',

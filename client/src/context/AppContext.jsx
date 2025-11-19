@@ -12,61 +12,89 @@ const AppContextProvider = (props) => {
     const [showLogin, setShowLogin] = useState(false);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [credit,setCredit]=useState(false)
+    const [isLoadingUser, setIsLoadingUser] = useState(false);
     
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const loadCreditData=async()=>{
         try {
+            console.log('Loading credit data...');
             const {data}=await axios.get(backendUrl + '/api/user/credits', {headers:{token}})
+            console.log('Credit data response:', data);
             if(data.success){
                 setCredit(data.credits)
-                setUser(data.user)
+                // Also update user data from credit endpoint
+                if (data.user && !user) {
+                    setUser(data.user);
+                }
+            } else {
+                console.error('Failed to load credit data:', data.message);
             }
         } catch (error) {
-            console.log(error)
-            toast.error(error.message)
-            
+            console.error('Error loading credit data:', error)
+            console.error('Error response:', error.response?.data);
+            toast.error(error.response?.data?.message || error.message)
         }
     }
 
     const fetchUser = async () => {
-        const currentToken = localStorage.getItem('token');
-        if (currentToken) {
-            try {
-                // This endpoint needs to be created on the backend
-                const response = await axios.get(`${backendUrl}/api/user/get`, {
-                    headers: { token: currentToken }
-                });
-                console.log('Fetch user response:', response.data);
-                if (response.data.success) {
-                    console.log('Setting user:', response.data.user);
-                    setUser(response.data.user); // Update state with fresh user data
-                } else {
-                    // Handle cases where token might be invalid
-                    console.error('User fetch failed:', response.data.message);
+        const currentToken = token || localStorage.getItem('token');
+        if (!currentToken) {
+            console.log('No token found, skipping user fetch');
+            setIsLoadingUser(false);
+            return;
+        }
+
+        if (isLoadingUser) {
+            console.log('Already loading user, skipping duplicate request');
+            return;
+        }
+
+        try {
+            setIsLoadingUser(true);
+            console.log('Fetching user with token:', currentToken.substring(0, 20) + '...');
+            const response = await axios.get(`${backendUrl}/api/user/get`, {
+                headers: { token: currentToken }
+            });
+            console.log('Fetch user response:', response.data);
+            if (response.data.success && response.data.user) {
+                console.log('Setting user:', response.data.user);
+                setUser(response.data.user);
+            } else {
+                console.error('User fetch failed:', response.data.message);
+                // If token is invalid, clear it
+                if (response.data.message?.includes('Authorized') || response.data.message?.includes('token')) {
                     logout();
                 }
-            } catch (error) {
-                console.error("Failed to fetch user data", error);
-                logout(); // Log out if there's an error fetching data
             }
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+            console.error("Error response:", error.response?.data);
+            // Only logout if it's an auth error
+            if (error.response?.status === 401 || error.response?.data?.message?.includes('Authorized')) {
+                logout();
+            }
+        } finally {
+            setIsLoadingUser(false);
         }
     };
 
+    // Fetch user data when component mounts or token changes
     useEffect(() => {
-        fetchUser();
-    }, [token]); 
+        // Only fetch if we have a token but no user data
+        if (token && !user && !isLoadingUser) {
+            fetchUser();
+            loadCreditData();
+        }
+    }, [token]);
 
     const logout = () => {
         localStorage.removeItem('token');
         setToken('');
         setUser(null);
+        setCredit(0);
+        setIsLoadingUser(false);
     };
-    useEffect(()=>{
-        if(token){
-            loadCreditData()
-        }
-    },[token])
     
     const value = {
         user,
@@ -80,7 +108,8 @@ const AppContextProvider = (props) => {
         fetchUser,
         credit,
         setCredit,
-        loadCreditData
+        loadCreditData,
+        isLoadingUser
     };
 
     return (
