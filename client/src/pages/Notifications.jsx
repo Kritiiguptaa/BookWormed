@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 
 const Notifications = () => {
   const { backendUrl, token } = useContext(AppContext);
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -79,6 +80,38 @@ const Notifications = () => {
     }
   };
 
+  const handleNotificationClick = async (notification) => {
+    // Mark as read if unread
+    if (!notification.read) {
+      await markAsRead(notification._id);
+    }
+
+    // Navigate based on notification type
+    switch (notification.type) {
+      case 'follow':
+        if (notification.sender?._id) {
+          navigate(`/profile/${notification.sender._id}`);
+        }
+        break;
+      case 'like_post':
+      case 'comment_post':
+      case 'new_post':
+        if (notification.post?._id) {
+          navigate(`/posts`); // Navigate to posts page - you might want to add a specific post view
+        }
+        break;
+      case 'like_review':
+      case 'new_review':
+      case 'new_rating':
+        if (notification.book?._id) {
+          navigate(`/books/${notification.book._id}`);
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
   const getNotificationMessage = (notification) => {
     const senderName = notification.sender?.name || 'Someone';
     
@@ -142,6 +175,32 @@ const Notifications = () => {
             )}
           </>
         );
+      case 'new_post':
+        return (
+          <>
+            <Link to={`/profile/${notification.sender._id}`} className="font-semibold text-blue-400 hover:text-blue-300">
+              {senderName}
+            </Link>
+            <span className="text-gray-300"> created a new post</span>
+            {notification.post?.title && (
+              <span className="text-gray-400"> "{notification.post.title}"</span>
+            )}
+          </>
+        );
+      case 'new_rating':
+        return (
+          <>
+            <Link to={`/profile/${notification.sender._id}`} className="font-semibold text-blue-400 hover:text-blue-300">
+              {senderName}
+            </Link>
+            <span className="text-gray-300"> rated</span>
+            {notification.book?.title && (
+              <Link to={`/books/${notification.book._id}`} className="font-semibold text-blue-400 hover:text-blue-300">
+                {' "' + notification.book.title + '"'}
+              </Link>
+            )}
+          </>
+        );
       default:
         return <span className="text-gray-300">New notification</span>;
     }
@@ -159,6 +218,10 @@ const Notifications = () => {
         return '⭐';
       case 'new_review':
         return '📝';
+      case 'new_post':
+        return '📄';
+      case 'new_rating':
+        return '⭐';
       default:
         return '🔔';
     }
@@ -229,7 +292,8 @@ const Notifications = () => {
             {notifications.map((notification) => (
               <div
                 key={notification._id}
-                className={`bg-gray-800 border border-gray-700 rounded-lg p-4 hover:bg-gray-750 transition-colors ${
+                onClick={() => handleNotificationClick(notification)}
+                className={`bg-gray-800 border border-gray-700 rounded-lg p-4 hover:bg-gray-750 transition-colors cursor-pointer ${
                   !notification.read ? 'border-l-4 border-l-blue-500' : ''
                 }`}
               >
@@ -250,14 +314,20 @@ const Notifications = () => {
                       </span>
                       {!notification.read && (
                         <button
-                          onClick={() => markAsRead(notification._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            markAsRead(notification._id);
+                          }}
                           className="text-xs text-blue-400 hover:text-blue-300"
                         >
                           Mark as read
                         </button>
                       )}
                       <button
-                        onClick={() => deleteNotification(notification._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(notification._id);
+                        }}
                         className="text-xs text-red-400 hover:text-red-300"
                       >
                         Delete

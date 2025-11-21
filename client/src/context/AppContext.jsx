@@ -11,29 +11,48 @@ const AppContextProvider = (props) => {
     const [user, setUser] = useState(null);
     const [showLogin, setShowLogin] = useState(false);
     const [token, setToken] = useState(localStorage.getItem('token'));
-    const [credit,setCredit]=useState(false)
-    const [isLoadingUser, setIsLoadingUser] = useState(false);
+    const [subscription, setSubscription] = useState(null)
+    const [siteStats, setSiteStats] = useState({ posts: 0, reviews: 0, books: 0 })
+    const [isLoadingUser, setIsLoadingUser] = useState(!!localStorage.getItem('token'));
     
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-    const loadCreditData=async()=>{
+    const loadSubscriptionData=async()=>{
         try {
-            console.log('Loading credit data...');
-            const {data}=await axios.get(backendUrl + '/api/user/credits', {headers:{token}})
-            console.log('Credit data response:', data);
+            console.log('Loading subscription data...');
+            const {data}=await axios.get(backendUrl + '/api/user/subscription', {headers:{token}})
+            console.log('Subscription data response:', data);
             if(data.success){
-                setCredit(data.credits)
-                // Also update user data from credit endpoint
-                if (data.user && !user) {
-                    setUser(data.user);
-                }
+                console.log('Setting subscription:', data.subscription);
+                setSubscription(data.subscription)
             } else {
-                console.error('Failed to load credit data:', data.message);
+                console.error('Failed to load subscription data:', data.message);
+                // Set empty subscription object to indicate loaded but no premium
+                setSubscription({ hasPremium: false, status: 'expired', plan: 'free' });
             }
         } catch (error) {
-            console.error('Error loading credit data:', error)
+            console.error('Error loading subscription data:', error)
             console.error('Error response:', error.response?.data);
+            // Set empty subscription object to indicate loaded but failed
+            setSubscription({ hasPremium: false, status: 'expired', plan: 'free' });
             toast.error(error.response?.data?.message || error.message)
+        }
+    }
+
+    const loadSiteStats = async () => {
+        try {
+            console.log('Loading site stats...');
+            const { data } = await axios.get(backendUrl + '/api/stats');
+            console.log('Site stats response:', data);
+            if (data.success && data.stats) {
+                setSiteStats({
+                    posts: data.stats.posts || 0,
+                    reviews: data.stats.reviews || 0,
+                    books: data.stats.books || 0
+                });
+            }
+        } catch (error) {
+            console.error('Error loading site stats:', error);
         }
     }
 
@@ -42,11 +61,6 @@ const AppContextProvider = (props) => {
         if (!currentToken) {
             console.log('No token found, skipping user fetch');
             setIsLoadingUser(false);
-            return;
-        }
-
-        if (isLoadingUser) {
-            console.log('Already loading user, skipping duplicate request');
             return;
         }
 
@@ -81,18 +95,36 @@ const AppContextProvider = (props) => {
 
     // Fetch user data when component mounts or token changes
     useEffect(() => {
-        // Only fetch if we have a token but no user data
-        if (token && !user && !isLoadingUser) {
+        if (token && !user) {
+            // Only fetch if we have a token but no user data
             fetchUser();
-            loadCreditData();
+        } else if (!token) {
+            // No token means logged out
+            setIsLoadingUser(false);
+        } else if (token && user) {
+            // We have both token and user, ensure loading is false
+            setIsLoadingUser(false);
         }
-    }, [token]);
+    }, [token, user]);
+
+    // Load site stats on mount
+    useEffect(() => {
+        loadSiteStats();
+    }, []);
+
+    // Load subscription data when we have a token
+    useEffect(() => {
+        if (token && user && subscription === null) {
+            console.log('Loading subscription for logged-in user...');
+            loadSubscriptionData();
+        }
+    }, [token, user, subscription]);
 
     const logout = () => {
         localStorage.removeItem('token');
         setToken('');
         setUser(null);
-        setCredit(0);
+        setSubscription(null);
         setIsLoadingUser(false);
     };
     
@@ -106,9 +138,11 @@ const AppContextProvider = (props) => {
         setToken,
         logout,
         fetchUser,
-        credit,
-        setCredit,
-        loadCreditData,
+        subscription,
+        setSubscription,
+        loadSubscriptionData,
+        siteStats,
+        loadSiteStats,
         isLoadingUser
     };
 

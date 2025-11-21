@@ -12,12 +12,10 @@ import {
   updateReadingStatus,
   createBook,
   getReviewsByUser,
-
   getUserListsPublic,
-
-  // getUserListsPublic,
-  getFollowingReviews
-// >>>>>>> origin/master
+  getFollowingReviews,
+  updateReview,
+  deleteReview
 } from '../controllers/BookController.js';
 import authUser from '../middlewares/authPost.js';
 
@@ -34,11 +32,12 @@ bookRouter.get('/lists', (req, res, next) => {
   console.log('Route /lists hit');
   next();
 }, authUser, getUserLists); // Get user's all lists
-// <<<<<<< HEAD
-// =======
 bookRouter.get('/reviews/following', authUser, getFollowingReviews); // Get reviews from following
-// >>>>>>> origin/master
 bookRouter.post('/create', authUser, createBook); // Create new book
+
+// Review management routes
+bookRouter.put('/review/:reviewId', authUser, updateReview); // Update a review
+bookRouter.delete('/review/:reviewId', authUser, deleteReview); // Delete a review
 
 // Book-specific routes
 bookRouter.get('/:id', getBookDetails); // Get book details

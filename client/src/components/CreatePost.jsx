@@ -3,7 +3,7 @@ import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
 const CreatePost = ({ onPostCreated }) => {
-  const { backendUrl, token } = useContext(AppContext);
+  const { backendUrl, token, loadSiteStats } = useContext(AppContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -51,6 +51,8 @@ const CreatePost = ({ onPostCreated }) => {
         if (onPostCreated) {
           onPostCreated(response.data.post);
         }
+        // Refresh global stats (posts count)
+        try { loadSiteStats && loadSiteStats(); } catch(e) { /* ignore */ }
       } else {
         setError(response.data.message || 'Failed to create post');
       }

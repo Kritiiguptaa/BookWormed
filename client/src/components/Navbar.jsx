@@ -1,15 +1,16 @@
 import { useContext, useState, useEffect } from 'react';
 import { assets } from '../assests/assets.js';
 // 1. Imported useNavigate
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'; 
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
 const Navbar = () => {
-    // 2. Added 'credit' to context
-    const { user, setShowLogin, logout, credit, backendUrl, token, isLoadingUser } = useContext(AppContext);
+    // 2. Added 'subscription' to context
+    const { user, setShowLogin, logout, subscription, backendUrl, token, isLoadingUser } = useContext(AppContext);
     // 3. Initialized navigate hook
     const navigate = useNavigate();
+    const location = useLocation();
     const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
@@ -40,18 +41,62 @@ const Navbar = () => {
                 <div className="flex items-center justify-between h-16">
                     {/* Left Side Links */}
                     <div className="flex items-center space-x-8">
-                        <Link to="/" className="text-2xl font-bold text-emerald-400">BookWorm</Link>
+                        <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">BookWormed</Link>
                         <div className="hidden md:flex items-baseline space-x-4">
-                            <Link to="/" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Home</Link>
-                            <Link to="/books" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Books</Link>
+                            <NavLink
+                                to="/"
+                                onClick={(e) => { if (location.pathname === '/') { e.preventDefault(); window.location.reload(); } }}
+                                className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                            >
+                                Home
+                            </NavLink>
+                            <NavLink
+                                to="/books"
+                                onClick={(e) => { if (location.pathname === '/books') { e.preventDefault(); window.location.reload(); } }}
+                                className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                            >
+                                Books
+                            </NavLink>
                             {user && (
-                                <Link to="/my-lists" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">My Lists</Link>
+                                <NavLink
+                                    to="/recommendations"
+                                    onClick={(e) => { if (location.pathname === '/recommendations') { e.preventDefault(); window.location.reload(); } }}
+                                    className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                                >
+                                    Recommendations ⭐
+                                </NavLink>
                             )}
-                            <Link to="/posts" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Posts</Link>
-                            <Link to="/groups" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Groups</Link>
-                            <Link to="/about" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">About</Link>
                             {user && (
-                                <Link to="/friends" className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">Following</Link>
+                                <NavLink
+                                    to="/my-lists"
+                                    onClick={(e) => { if (location.pathname === '/my-lists') { e.preventDefault(); window.location.reload(); } }}
+                                    className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                                >
+                                    My Lists ⭐
+                                </NavLink>
+                            )}
+                            <NavLink
+                                to="/posts"
+                                onClick={(e) => { if (location.pathname === '/posts') { e.preventDefault(); window.location.reload(); } }}
+                                className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                            >
+                                Posts
+                            </NavLink>
+                            <NavLink
+                                to="/about"
+                                onClick={(e) => { if (location.pathname === '/about') { e.preventDefault(); window.location.reload(); } }}
+                                className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                            >
+                                About
+                            </NavLink>
+                            {user && (
+                                <NavLink
+                                    to="/friends"
+                                    onClick={(e) => { if (location.pathname === '/friends') { e.preventDefault(); window.location.reload(); } }}
+                                    className={({ isActive }) => `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive ? 'text-white bg-gray-700' : 'text-gray-300 hover:text-white hover:bg-gray-700'}`}
+                                >
+                                    Following
+                                </NavLink>
                             )}
                         </div>
                     </div>
@@ -65,13 +110,15 @@ const Navbar = () => {
                                     Search
                                 </Link>
 
-                                {/* === 4. ADDED CREDITS BUTTON === */}
+                                {/* === 4. SUBSCRIPTION BUTTON === */}
                                 <button
-                                    onClick={() => navigate('/buy')}
+                                    onClick={() => navigate('/subscription')}
                                     className="flex items-center gap-2 text-white px-3 py-2 rounded-md text-sm font-medium hover:text-white hover:bg-gray-700 transition-colors"
                                 >
-                                    <img className="w-5" src={assets.credit_star} alt="Credits" />
-                                    <p className="text-xs sm:text-sm font-medium">Credits Left: {credit}</p>
+                                    <img className="w-5" src={assets.credit_star} alt="Subscription" />
+                                    <p className="text-xs sm:text-sm font-medium">
+                                        {subscription?.hasPremium ? (subscription.status === 'trial' ? 'Trial Active' : 'Premium') : 'Free'}
+                                    </p>
                                 </button>
                                 {/* ================================ */}
 
@@ -88,12 +135,7 @@ const Navbar = () => {
                                 </Link>
 
                                 {/* User info - Click to view profile */}
-                                {isLoadingUser ? (
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
-                                        <span className="text-gray-400 max-sm:hidden">Loading...</span>
-                                    </div>
-                                ) : user && user._id ? (
+                                {user && user._id ? (
                                     <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
                                         <img
                                             className="h-8 w-8 rounded-full object-cover"
@@ -103,12 +145,12 @@ const Navbar = () => {
                                         />
                                         <span className="text-gray-300 max-sm:hidden">{`Hi, @${user.username || user.email?.split('@')[0] || 'user'}`}</span>
                                     </Link>
-                                ) : token ? (
+                                ) : (
                                     <div className="flex items-center gap-2">
                                         <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
                                         <span className="text-gray-400 max-sm:hidden">Loading...</span>
                                     </div>
-                                ) : null}
+                                )}
                                 
                                 {/* Logout Button */}
                                 <button

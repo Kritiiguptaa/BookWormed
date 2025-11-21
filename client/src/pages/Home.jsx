@@ -4,9 +4,9 @@ import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
 const Home = () => {
-  const { user, setShowLogin, backendUrl } = useContext(AppContext);
+  const { user, setShowLogin, backendUrl, siteStats, loadSiteStats } = useContext(AppContext);
   const navigate = useNavigate();
-  const [stats, setStats] = useState({ users: 0, books: 0, reviews: 0, posts: 0 });
+  // local stats no longer needed; use siteStats from context
   const [featuredBooks, setFeaturedBooks] = useState([]);
   const [recentPosts, setRecentPosts] = useState([]);
 
@@ -50,14 +50,12 @@ const Home = () => {
         }
         
         setFeaturedBooks(books);
-        setStats(prev => ({ ...prev, books: booksResponse.data.total || 0 }));
       }
 
       // Fetch recent posts
       const postsResponse = await axios.get(`${backendUrl}/api/post/all?limit=3`);
       if (postsResponse.data.success) {
         setRecentPosts(postsResponse.data.posts);
-        setStats(prev => ({ ...prev, posts: postsResponse.data.totalPosts || 0 }));
       }
     } catch (error) {
       console.error('Error fetching home data:', error);
@@ -175,15 +173,15 @@ const Home = () => {
             {/* Stats */}
             <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
-                <div className="text-4xl font-bold text-white mb-2">{stats.books}+</div>
+                <div className="text-4xl font-bold text-white mb-2">10,000+</div>
                 <div className="text-gray-400">Books</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-white mb-2">{stats.reviews}+</div>
+                <div className="text-4xl font-bold text-white mb-2">{siteStats?.reviews ?? 0}+</div>
                 <div className="text-gray-400">Reviews</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-white mb-2">{stats.posts}+</div>
+                <div className="text-4xl font-bold text-white mb-2">{siteStats?.posts ?? 0}+</div>
                 <div className="text-gray-400">Posts</div>
               </div>
               <div className="text-center">

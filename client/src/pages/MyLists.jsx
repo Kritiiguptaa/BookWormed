@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 
 const MyLists = () => {
-  const { backendUrl, token, setShowLogin } = useContext(AppContext);
+  const { backendUrl, token, setShowLogin, subscription } = useContext(AppContext);
+  const navigate = useNavigate();
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -14,8 +15,24 @@ const MyLists = () => {
       setShowLogin(true);
       return;
     }
+    
+    // Wait for subscription to load before checking premium access
+    if (subscription === null) {
+      console.log('Waiting for subscription data to load...');
+      setLoading(true); // Show loading while waiting for subscription
+      return;
+    }
+    
+    // Check for premium access
+    if (!subscription.hasPremium) {
+      console.log('No premium access, redirecting to subscription page');
+      navigate('/subscription');
+      return;
+    }
+    
+    console.log('User has premium access, fetching lists...');
     fetchLists();
-  }, [token]);
+  }, [token, subscription]);
 
   const fetchLists = async () => {
     try {
@@ -35,7 +52,44 @@ const MyLists = () => {
       if (response.data.success) {
         console.log('Lists received:', response.data.lists.length);
         console.log('Lists array:', response.data.lists);
-        setLists(response.data.lists);
+        
+        // Supplement cover images from books_full.json if missing
+        let listsWithCovers = response.data.lists;
+        try {
+          const booksResponse = await fetch('/books_full.json');
+          const allBooks = await booksResponse.json();
+          
+          // Create a map for quick lookup
+          const imageMap = new Map();
+          allBooks.forEach(b => {
+            const key = `${String(b.Book || '').toLowerCase().trim()}___${String(b.Author || '').toLowerCase().trim()}`;
+            if (b.Image_URL) {
+              imageMap.set(key, b.Image_URL);
+            }
+          });
+          
+          // Supplement missing cover images
+          listsWithCovers = response.data.lists.map(item => {
+            if (item.book && !item.book.coverImage) {
+              const bookKey = `${item.book.title?.toLowerCase()?.trim()}___${item.book.author?.toLowerCase()?.trim()}`;
+              const coverUrl = imageMap.get(bookKey);
+              if (coverUrl) {
+                return {
+                  ...item,
+                  book: {
+                    ...item.book,
+                    coverImage: coverUrl
+                  }
+                };
+              }
+            }
+            return item;
+          });
+        } catch (error) {
+          console.error('Error supplementing cover images:', error);
+        }
+        
+        setLists(listsWithCovers);
       } else {
         console.error('Response was not successful:', response.data);
       }

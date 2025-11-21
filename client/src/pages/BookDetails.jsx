@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const BookDetails = () => {
   const { id } = useParams();
-  const { backendUrl, token, user, setShowLogin } = useContext(AppContext);
+  const { backendUrl, token, user, setShowLogin, loadSiteStats } = useContext(AppContext);
   const [book, setBook] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,6 +18,8 @@ const BookDetails = () => {
   const [selectedList, setSelectedList] = useState('');
   const [currentListType, setCurrentListType] = useState(null);
   const [isInList, setIsInList] = useState(false);
+  const [editingReviewId, setEditingReviewId] = useState(null);
+  const [deletingReviewId, setDeletingReviewId] = useState(null);
 
   useEffect(() => {
     fetchBookDetails();
@@ -137,6 +139,11 @@ const BookDetails = () => {
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     
+    // If editing, use the update handler instead
+    if (editingReviewId) {
+      return handleUpdateReview(e);
+    }
+    
     if (!token) {
       setShowLogin(true);
       return;
@@ -164,12 +171,97 @@ const BookDetails = () => {
         setReviewRating(0);
         setShowReviewForm(false);
         fetchBookDetails(); // Refresh to get updated ratings
+        try { loadSiteStats && loadSiteStats(); } catch (e) { /* ignore */ }
       }
     } catch (error) {
       console.error('Error submitting review:', error, error.response?.data);
       const serverMsg = error.response?.data?.message || error.response?.data || error.message;
       alert(serverMsg || 'Failed to submit review');
     }
+  };
+
+  const handleEditReview = (review) => {
+    setEditingReviewId(review._id);
+    setReviewText(review.reviewText);
+    setReviewRating(review.rating);
+    setReviewVisibility(review.visibility || 'public');
+    setShowReviewForm(true);
+    // Scroll to review form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleUpdateReview = async (e) => {
+    e.preventDefault();
+    if (!token) {
+      setShowLogin(true);
+      return;
+    }
+    if (!editingReviewId || !reviewRating || !reviewText.trim()) {
+      alert('Please provide both rating and review text');
+      return;
+    }
+    try {
+      const response = await axios.put(
+        `${backendUrl}/api/book/review/${editingReviewId}`,
+        { rating: reviewRating, reviewText: reviewText.trim(), visibility: reviewVisibility },
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        // Update the review in the list
+        setReviews(prev => prev.map(r => r._id === editingReviewId ? response.data.review : r));
+        setReviewText('');
+        setReviewRating(0);
+        setReviewVisibility('public');
+        setEditingReviewId(null);
+        setShowReviewForm(false);
+        alert('Review updated successfully!');
+        // Refresh book details to get updated ratings
+        fetchBookDetails();
+      }
+    } catch (error) {
+      console.error('Error updating review', error, error.response?.data);
+      const serverMsg = error.response?.data?.message || error.response?.data || error.message;
+      alert(serverMsg || 'Error updating review');
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!token) {
+      setShowLogin(true);
+      return;
+    }
+    if (!confirm('Are you sure you want to delete this review?')) {
+      return;
+    }
+    try {
+      setDeletingReviewId(reviewId);
+      const response = await axios.delete(
+        `${backendUrl}/api/book/review/${reviewId}`,
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        // Remove the review from the list
+        setReviews(prev => prev.filter(r => r._id !== reviewId));
+        alert('Review deleted successfully!');
+        // Refresh book details to get updated ratings
+        fetchBookDetails();
+        try { loadSiteStats && loadSiteStats(); } catch (e) { /* ignore */ }
+      }
+    } catch (error) {
+      console.error('Error deleting review', error, error.response?.data);
+      const serverMsg = error.response?.data?.message || error.response?.data || error.message;
+      alert(serverMsg || 'Error deleting review');
+    } finally {
+      setDeletingReviewId(null);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReviewId(null);
+    setReviewText('');
+    setReviewRating(0);
+    setReviewVisibility('public');
+    setShowReviewForm(false);
   };
 
   const handleAddToList = async () => {
@@ -272,12 +364,6 @@ const BookDetails = () => {
   return (
     <div className="min-h-screen bg-gray-900 py-6">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Debug info */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="bg-yellow-900 text-yellow-200 p-2 mb-4 text-xs rounded">
-            Debug: Token={token ? 'Yes' : 'No'}, BookID={id}, IsInList={isInList ? 'Yes' : 'No'}
-          </div>
-        )}
         
         {/* Book Header */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-6 mb-6">
@@ -465,6 +551,11 @@ const BookDetails = () => {
           {/* Review Form */}
           {showReviewForm && (
             <form onSubmit={handleSubmitReview} className="mb-6 p-4 bg-gray-700 rounded-lg">
+              {editingReviewId && (
+                <div className="bg-blue-900/30 border border-blue-500 rounded p-2 mb-3 text-sm text-blue-300">
+                  ✏️ Editing review
+                </div>
+              )}
               <div className="mb-4">
                 <label className="block text-sm text-gray-300 mb-2">Your Rating</label>
                 <div className="flex items-center gap-2">
@@ -487,11 +578,11 @@ const BookDetails = () => {
                   type="submit"
                   className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
                 >
-                  Submit Review
+                  {editingReviewId ? 'Update Review' : 'Submit Review'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={editingReviewId ? handleCancelEdit : () => {
                     setShowReviewForm(false);
                     setReviewText('');
                     setReviewRating(0);
@@ -524,8 +615,28 @@ const BookDetails = () => {
                       <span className="font-semibold text-white">@{review.userName || 'unknown'}</span>
                     </Link>
                     <span className="ml-auto text-xs text-gray-400">
-                      {new Date(review.createdAt).toLocaleDateString()} {review.isEdited && '(edited)'}
+                      {new Date(review.createdAt).toLocaleDateString()} {review.isEdited && <span className="text-gray-500">(edited)</span>}
                     </span>
+                    {/* Edit/Delete buttons for own reviews */}
+                    {user && review.user === user._id && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditReview(review)}
+                          className="text-blue-400 hover:text-blue-300 text-sm px-2 py-1"
+                          title="Edit review"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteReview(review._id)}
+                          disabled={deletingReviewId === review._id}
+                          className="text-red-400 hover:text-red-300 text-sm px-2 py-1 disabled:opacity-50"
+                          title="Delete review"
+                        >
+                          {deletingReviewId === review._id ? '⏳' : '🗑️ Delete'}
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-400 mb-1">
                     {renderStars(review.rating)}

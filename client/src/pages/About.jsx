@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../context/AppContext';
 
 const About = () => {
   const features = [
@@ -119,7 +120,7 @@ const About = () => {
         <div className="bg-gradient-to-r from-blue-900 to-emerald-900 rounded-lg p-8 mb-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-white mb-2">1000+</div>
+              <div className="text-4xl font-bold text-white mb-2">10,000+</div>
               <div className="text-gray-300">Books in Library</div>
             </div>
             <div>
@@ -127,7 +128,7 @@ const About = () => {
               <div className="text-gray-300">Active Readers</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-white mb-2">2000+</div>
+              <div className="text-4xl font-bold text-white mb-2">{useContext(AppContext)?.siteStats?.reviews ?? '0'}+</div>
               <div className="text-gray-300">Reviews & Ratings</div>
             </div>
           </div>

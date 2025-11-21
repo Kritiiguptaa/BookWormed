@@ -52,7 +52,9 @@ const registerUser = async (req, res) => {
       name,
       username,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      subscriptionStatus: 'trial',
+      trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
     });
 
     const user = await newUser.save();
@@ -222,13 +224,43 @@ const getFriends = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
-const userCredits=async(req,res)=>{
+const getUserSubscription=async(req,res)=>{
     try{
-        const {userId}=req.body
+        const userId = req.body.userId
         const user=await userModel.findById(userId)
-        res.json({success:true, credits:user.creditBalance, user:{name:user.name}})
+        
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+        
+        const hasPremium = user.hasPremiumAccess();
+        const now = new Date();
+        
+        console.log('User subscription check:', {
+            userId,
+            status: user.subscriptionStatus,
+            plan: user.subscriptionPlan,
+            trialEndsAt: user.trialEndsAt,
+            currentTime: now,
+            trialEndsAtTimestamp: user.trialEndsAt?.getTime(),
+            currentTimestamp: now.getTime(),
+            isTrialValid: user.trialEndsAt && user.trialEndsAt > now,
+            hasPremium
+        });
+        
+        res.json({
+            success:true, 
+            subscription: {
+                status: user.subscriptionStatus,
+                plan: user.subscriptionPlan,
+                hasPremium,
+                trialEndsAt: user.trialEndsAt,
+                subscriptionEndDate: user.subscriptionEndDate
+            },
+            user:{name:user.name}
+        })
     }catch(error){
-        console.log(error.message)
+        console.log('Error in getUserSubscription:', error.message)
         res.json(
             {success:false, message:error.message }
         )
@@ -248,25 +280,25 @@ const paymentRazorpay = async(req,res)=>{
             res.json({success:false,message:'Missing Details'})
         }
 
-        let credits, plan, amount, date  //intialization
+        let plan, amount, date, duration  //intialization
 
         switch(planId){
-            case 'Basic':
-                plan = 'Basic'
-                credits=100
-                amount=10
+            case 'Monthly':
+                plan = 'monthly'
+                amount=100 // ₹100
+                duration=30 // days
                 break;
 
-            case 'Advanced':
-                plan = 'Advanced'
-                credits=500
-                amount=50
+            case 'Quarterly':
+                plan = 'quarterly'
+                amount=250 // ₹250
+                duration=90 // days (3 months)
                 break;
 
-            case 'Business':
-                plan = 'Business'
-                credits=5000
-                amount=250
+            case 'Yearly':
+                plan = 'yearly'
+                amount=1150 // ₹1150
+                duration=365 // days
                 break;
 
             default:
@@ -275,7 +307,7 @@ const paymentRazorpay = async(req,res)=>{
         date=Date.now();   //store current time stamp
 
         const transactionData={
-            userId,plan,amount,credits,date  //store this transaction data in mongodb
+            userId,plan,amount,date,duration  //store this transaction data in mongodb
         }
 
         const newTransaction= await transactionModel.create(transactionData)
@@ -311,10 +343,21 @@ const verifyRazorpay=async(req,res)=>{
                 return res.json({success:false,message:"Payment Failed"})
             }
             const userData=await userModel.findById(transactionData.userId)
-            const creditBalance=userData.creditBalance + transactionData.credits
-            await userModel.findByIdAndUpdate(userData._id,{creditBalance})
+            
+            // Calculate subscription end date based on duration
+            const now = new Date();
+            const endDate = new Date(now.getTime() + transactionData.duration * 24 * 60 * 60 * 1000);
+            
+            // Update user subscription
+            await userModel.findByIdAndUpdate(userData._id,{
+                subscriptionStatus: 'active',
+                subscriptionPlan: transactionData.plan,
+                subscriptionStartDate: now,
+                subscriptionEndDate: endDate,
+                trialEndsAt: null // Clear trial when paid subscription starts
+            })
             await transactionModel.findByIdAndUpdate(transactionData._id,{payment:true})
-            res.json({success:true,message:"Credits Added"})
+            res.json({success:true,message:"Subscription Activated"})
         }else{
             res.json({success:false,message:"Payment Failed"})
         }
@@ -347,4 +390,4 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,userCredits,paymentRazorpay,verifyRazorpay}
+export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay}

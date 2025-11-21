@@ -1,5 +1,6 @@
 import Post from '../models/postModel.js';
 import { createNotificationHelper } from './NotificationController.js';
+import userModel from '../models/userModel.js';
 
 // Create a new post
 export const createPost = async (req, res) => {
@@ -22,6 +23,21 @@ export const createPost = async (req, res) => {
     });
 
     await newPost.save();
+
+    // Notify all followers about the new post
+    try {
+      const user = await userModel.findById(userId).select('followers');
+      if (user && user.followers && user.followers.length > 0) {
+        // Create notifications for all followers
+        const notificationPromises = user.followers.map(followerId =>
+          createNotificationHelper(followerId, userId, 'new_post', { postId: newPost._id })
+        );
+        await Promise.all(notificationPromises);
+      }
+    } catch (notifError) {
+      console.error('Error creating follower notifications:', notifError);
+      // Don't fail the post creation if notifications fail
+    }
 
     res.status(201).json({
       success: true,

@@ -1,6 +1,8 @@
 import Book from '../models/bookModel.js';
 import Review from '../models/reviewModel.js';
 import UserList from '../models/userListModel.js';
+import userModel from '../models/userModel.js';
+import { createNotificationHelper } from './NotificationController.js';
 
 // Browse/Get all books with filters and pagination
 export const browseBooks = async (req, res) => {
@@ -192,6 +194,21 @@ export const rateBook = async (req, res) => {
     book.updateAverageRating();
     await book.save();
 
+    // Notify followers about the new rating (only for new ratings, not updates)
+    if (existingRatingIndex === -1) {
+      try {
+        const user = await userModel.findById(userId).select('followers');
+        if (user && user.followers && user.followers.length > 0) {
+          const notificationPromises = user.followers.map(followerId =>
+            createNotificationHelper(followerId, userId, 'new_rating', { bookId: id })
+          );
+          await Promise.all(notificationPromises);
+        }
+      } catch (notifError) {
+        console.error('Error creating follower notifications for rating:', notifError);
+      }
+    }
+
     res.status(200).json({
       success: true,
       message: existingRatingIndex !== -1 ? 'Rating updated' : 'Rating added',
@@ -323,6 +340,21 @@ export const addReview = async (req, res) => {
     book.updateAverageRating();
     await book.save();
 
+    // Notify followers about the new review (only for new reviews, not updates)
+    if (!review.isEdited) {
+      try {
+        const user = await userModel.findById(userId).select('followers');
+        if (user && user.followers && user.followers.length > 0) {
+          const notificationPromises = user.followers.map(followerId =>
+            createNotificationHelper(followerId, userId, 'new_review', { reviewId: review._id, bookId: id })
+          );
+          await Promise.all(notificationPromises);
+        }
+      } catch (notifError) {
+        console.error('Error creating follower notifications for review:', notifError);
+      }
+    }
+
     res.status(201).json({
       success: true,
       message: review.isEdited ? 'Review updated' : 'Review added',
@@ -364,12 +396,127 @@ export const getBookReviews = async (req, res) => {
   }
 };
 
+// Update a review
+export const updateReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const { rating, reviewText, visibility } = req.body;
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Please login to update reviews' });
+    }
+
+    if (!rating || !reviewText || rating < 1 || rating > 5) {
+      return res.status(400).json({ success: false, message: 'Valid rating and review text are required' });
+    }
+
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).json({ success: false, message: 'Review not found' });
+    }
+
+    // Check if the user owns this review
+    if (review.user.toString() !== userId) {
+      return res.status(403).json({ success: false, message: 'You can only edit your own reviews' });
+    }
+
+    const oldRating = review.rating;
+
+    // Update review
+    review.rating = rating;
+    review.reviewText = reviewText;
+    review.visibility = visibility || review.visibility;
+    review.isEdited = true;
+    review.editedAt = new Date();
+    await review.save();
+
+    // Update book rating if rating changed
+    if (oldRating !== rating) {
+      const book = await Book.findById(review.book);
+      if (book) {
+        const ratingIndex = book.ratings.findIndex(r => r.user.toString() === userId);
+        if (ratingIndex !== -1) {
+          book.ratings[ratingIndex].rating = rating;
+          book.updateAverageRating();
+          await book.save();
+        }
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Review updated successfully',
+      review
+    });
+  } catch (error) {
+    console.error('Error updating review:', error);
+    res.status(500).json({ success: false, message: 'Error updating review' });
+  }
+};
+
+// Delete a review
+export const deleteReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Please login to delete reviews' });
+    }
+
+    const review = await Review.findById(reviewId);
+
+    if (!review) {
+      return res.status(404).json({ success: false, message: 'Review not found' });
+    }
+
+    // Check if the user owns this review
+    if (review.user.toString() !== userId) {
+      return res.status(403).json({ success: false, message: 'You can only delete your own reviews' });
+    }
+
+    const bookId = review.book;
+
+    // Delete the review
+    await Review.findByIdAndDelete(reviewId);
+
+    // Update book: remove rating and update counts
+    const book = await Book.findById(bookId);
+    if (book) {
+      book.ratings = book.ratings.filter(r => r.user.toString() !== userId);
+      book.totalReviews = Math.max(0, book.totalReviews - 1);
+      book.updateAverageRating();
+      await book.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Review deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    res.status(500).json({ success: false, message: 'Error deleting review' });
+  }
+};
+
 // Add book to user list
 export const addToList = async (req, res) => {
   try {
     const { id } = req.params;
     const { listType, customListName, notes } = req.body;
     const userId = req.userId;
+
+    // Check if user has premium access
+    const user = await userModel.findById(userId);
+    if (!user || !user.hasPremiumAccess()) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Premium subscription required to add books to lists',
+        requiresPremium: true
+      });
+    }
 
     if (!listType) {
       return res.status(400).json({ success: false, message: 'List type is required' });

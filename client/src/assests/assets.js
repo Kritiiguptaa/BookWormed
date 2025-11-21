@@ -41,21 +41,21 @@ export const assets = {
 }
 export const plans = [
     {
-      id: 'Basic',
-      price: 10,
-      credits: 100,
-      desc: 'Best for personal use.'
+      id: 'Monthly',
+      price: 100,
+      duration: '1 month',
+      desc: 'Perfect for trying premium features.'
     },
     {
-      id: 'Advanced',
-      price: 50,
-      credits: 500,
-      desc: 'Best for business use.'
-    },
-    {
-      id: 'Business',
+      id: 'Quarterly',
       price: 250,
-      credits: 5000,
-      desc: 'Best for enterprise use.'
+      duration: '3 months',
+      desc: 'Great value - Save ₹50!'
+    },
+    {
+      id: 'Yearly',
+      price: 1150,
+      duration: '12 months',
+      desc: 'Best value - Save over ₹250!'
     },
   ]

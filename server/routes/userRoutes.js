@@ -9,7 +9,7 @@ import {
     getFriends,
     getUser,
     getUserProfile,
-    userCredits,
+    getUserSubscription,
     paymentRazorpay,
     verifyRazorpay
 } from '../controllers/UserController.js';
@@ -26,7 +26,7 @@ userRouter.post('/unfollow/:unfollowId', userAuth, unfollowUser);
 // userRouter.get('/friends/:userId', userAuth, getFriends);
 userRouter.get('/friends/', userAuth, getFriends);
 userRouter.get('/get', userAuth, getUser);
-userRouter.get('/credits', userAuth, userCredits)
+userRouter.get('/subscription', userAuth, getUserSubscription)
 userRouter.post('/pay-razor', userAuth, paymentRazorpay)
 userRouter.post('/verify-razor', verifyRazorpay)
 
