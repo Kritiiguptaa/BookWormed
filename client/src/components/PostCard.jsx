@@ -120,7 +120,10 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
 
     setIsUpdating(true);
     try {
-      const tagArray = editTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+      // Split by comma or # and clean up tags
+      const tagArray = editTags.split(/[,#]/)
+        .map(tag => tag.trim())
+        .filter(tag => tag);
       
       const response = await axios.put(
         `${backendUrl}/api/post/${post._id}`,
@@ -242,20 +245,20 @@ const PostCard = ({ post, onPostUpdate, onPostDelete }) => {
                 type="text"
                 value={editTags}
                 onChange={(e) => setEditTags(e.target.value)}
-                placeholder="Tags (comma separated)"
+                placeholder="Tags (comma or # separated)"
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={isUpdating}
               />
               {editTags && (
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {editTags.split(',').map((tag, index) => {
+                  {editTags.split(/[,#]/).map((tag, index) => {
                     const trimmedTag = tag.trim();
                     return trimmedTag ? (
                       <span
                         key={index}
                         className="bg-blue-900 text-blue-200 text-xs px-3 py-1 rounded-full"
                       >
-                        {trimmedTag}
+                        #{trimmedTag}
                       </span>
                     ) : null;
                   })}

@@ -7,33 +7,10 @@ import axios from 'axios';
 
 const Navbar = () => {
     // 2. Added 'subscription' to context
-    const { user, setShowLogin, logout, subscription, backendUrl, token, isLoadingUser } = useContext(AppContext);
+    const { user, setShowLogin, logout, subscription, backendUrl, token, isLoadingUser, notificationCount } = useContext(AppContext);
     // 3. Initialized navigate hook
     const navigate = useNavigate();
     const location = useLocation();
-    const [unreadCount, setUnreadCount] = useState(0);
-
-    useEffect(() => {
-        if (token && user) {
-            fetchUnreadCount();
-            // Poll for new notifications every 30 seconds
-            const interval = setInterval(fetchUnreadCount, 30000);
-            return () => clearInterval(interval);
-        }
-    }, [token, user]);
-
-    const fetchUnreadCount = async () => {
-        try {
-            const { data } = await axios.get(`${backendUrl}/api/notification/unread-count`, {
-                headers: { token }
-            });
-            if (data.success) {
-                setUnreadCount(data.unreadCount);
-            }
-        } catch (error) {
-            console.error('Error fetching unread count:', error);
-        }
-    };
 
     return (
         <header className="bg-gray-950/80 backdrop-blur-sm sticky top-0 z-40">
@@ -127,9 +104,9 @@ const Navbar = () => {
                                 {/* Notification Bell */}
                                 <Link to="/notifications" className="relative px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                                     <span className="text-xl">🔔</span>
-                                    {unreadCount > 0 && (
+                                    {notificationCount > 0 && (
                                         <span className="absolute top-1 right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                                            {unreadCount > 9 ? '9+' : unreadCount}
+                                            {notificationCount > 9 ? '9+' : notificationCount}
                                         </span>
                                     )}
                                 </Link>

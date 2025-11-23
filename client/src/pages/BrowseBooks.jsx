@@ -24,29 +24,18 @@ const BrowseBooks = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Define book categories
+  // Define book categories - only categories that have books in the dataset
   const bookCategories = [
     { value: '', label: 'All Categories' },
     { value: 'fiction', label: '📖 Fiction' },
     { value: 'non-fiction', label: '📚 Non-Fiction' },
     { value: 'mystery', label: '🔍 Mystery & Thriller' },
     { value: 'romance', label: '💕 Romance' },
-    { value: 'science-fiction', label: '🚀 Science Fiction' },
     { value: 'fantasy', label: '🐉 Fantasy' },
-    { value: 'horror', label: '👻 Horror' },
-    { value: 'biography', label: '👤 Biography & Memoir' },
     { value: 'history', label: '📜 History' },
-    { value: 'self-help', label: '💡 Self-Help' },
-    { value: 'business', label: '💼 Business & Economics' },
-    { value: 'science', label: '🔬 Science & Technology' },
-    { value: 'poetry', label: '✍️ Poetry' },
     { value: 'classics', label: '🎭 Classics' },
     { value: 'young-adult', label: '🎒 Young Adult' },
-    { value: 'children', label: '🧸 Children\'s Books' },
-    { value: 'cooking', label: '🍳 Cooking & Food' },
-    { value: 'travel', label: '✈️ Travel' },
-    { value: 'religion', label: '🙏 Religion & Spirituality' },
-    { value: 'philosophy', label: '🤔 Philosophy' }
+    { value: 'children', label: '🧸 Children\'s Books' }
   ];
 
   useEffect(() => {

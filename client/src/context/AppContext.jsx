@@ -14,6 +14,7 @@ const AppContextProvider = (props) => {
     const [subscription, setSubscription] = useState(null)
     const [siteStats, setSiteStats] = useState({ posts: 0, reviews: 0, books: 0 })
     const [isLoadingUser, setIsLoadingUser] = useState(!!localStorage.getItem('token'));
+    const [notificationCount, setNotificationCount] = useState(0);
     
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -98,12 +99,28 @@ const AppContextProvider = (props) => {
         if (token && !user) {
             // Only fetch if we have a token but no user data
             fetchUser();
+            fetchNotificationCount();
         } else if (!token) {
             // No token means logged out
             setIsLoadingUser(false);
         } else if (token && user) {
             // We have both token and user, ensure loading is false
             setIsLoadingUser(false);
+        }
+    }, [token, user]);
+
+    // Poll for notification updates every 30 seconds
+    useEffect(() => {
+        if (token && user) {
+            // Initial fetch
+            fetchNotificationCount();
+            
+            // Set up polling
+            const interval = setInterval(() => {
+                fetchNotificationCount();
+            }, 30000); // 30 seconds
+            
+            return () => clearInterval(interval);
         }
     }, [token, user]);
 
@@ -120,12 +137,27 @@ const AppContextProvider = (props) => {
         }
     }, [token, user, subscription]);
 
+    const fetchNotificationCount = async () => {
+        if (!token) return;
+        try {
+            const { data } = await axios.get(`${backendUrl}/api/notification/unread-count`, {
+                headers: { token }
+            });
+            if (data.success) {
+                setNotificationCount(data.unreadCount);
+            }
+        } catch (error) {
+            console.error('Error fetching notification count:', error);
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         setToken('');
         setUser(null);
         setSubscription(null);
         setIsLoadingUser(false);
+        setNotificationCount(0);
     };
     
     const value = {
@@ -143,7 +175,10 @@ const AppContextProvider = (props) => {
         loadSubscriptionData,
         siteStats,
         loadSiteStats,
-        isLoadingUser
+        isLoadingUser,
+        notificationCount,
+        setNotificationCount,
+        fetchNotificationCount
     };
 
     return (

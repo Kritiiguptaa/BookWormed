@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AppContext } from '../context/AppContext';
 
 const Notifications = () => {
-  const { backendUrl, token } = useContext(AppContext);
+  const { backendUrl, token, fetchNotificationCount } = useContext(AppContext);
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +48,11 @@ const Notifications = () => {
         )
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
+      
+      // Update bell icon count
+      if (fetchNotificationCount) {
+        fetchNotificationCount();
+      }
     } catch (error) {
       console.error('Error marking as read:', error);
     }
@@ -63,6 +68,11 @@ const Notifications = () => {
       
       setNotifications(prev => prev.map(notif => ({ ...notif, read: true })));
       setUnreadCount(0);
+      
+      // Update bell icon count
+      if (fetchNotificationCount) {
+        fetchNotificationCount();
+      }
     } catch (error) {
       console.error('Error marking all as read:', error);
     }

@@ -56,7 +56,7 @@ const About = () => {
     {
       name: "Suyash Gupta",
       role: "",
-      github: "suyashgupta01",
+      github: "SuyashN07",
       description: "Focused on creating seamless user experiences and implementing innovative features that enhance the learning ecosystem.",
       expertise: ["Frontend Development", "React", "Performance Optimization"],
       avatar: "https://ui-avatars.com/api/?name=Suyash+Gupta&size=200&background=f59e0b&color=fff&bold=true"
