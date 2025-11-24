@@ -22,7 +22,7 @@ key_cycle = itertools.cycle(keys)
 
 original_clean_file = 'updated_goodreads_data.xlsx'
 raw_file = 'goodreads_data.xlsx'
-output_json_filename = 'final_book_data.json'
+output_json_filename = 'final_book_data_fixed.json'
 output_excel_filename = 'final_book_data.xlsx'
 
 

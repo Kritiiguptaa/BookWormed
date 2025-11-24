@@ -14,29 +14,57 @@ const BrowseBooks = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
   const [filters, setFilters] = useState({
-    genre: '',
     category: '',
-    author: '',
-    year: '',
     minRating: '',
     sortBy: 'newest'
   });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [useClientPagination, setUseClientPagination] = useState(false);
+  const CLIENT_PAGE_SIZE = 20;
 
-  // Define book categories - only categories that have books in the dataset
-  const bookCategories = [
-    { value: '', label: 'All Categories' },
-    { value: 'fiction', label: '📖 Fiction' },
-    { value: 'non-fiction', label: '📚 Non-Fiction' },
-    { value: 'mystery', label: '🔍 Mystery & Thriller' },
-    { value: 'romance', label: '💕 Romance' },
-    { value: 'fantasy', label: '🐉 Fantasy' },
-    { value: 'history', label: '📜 History' },
-    { value: 'classics', label: '🎭 Classics' },
-    { value: 'young-adult', label: '🎒 Young Adult' },
-    { value: 'children', label: '🧸 Children\'s Books' }
+  // Genres loaded from data (client/public/genres.json)
+  const [genresList, setGenresList] = useState([{ value: '', label: 'Popular Categories' }]);
+
+  useEffect(() => {
+    const loadGenres = async () => {
+      try {
+        const resp = await fetch('/genres.json');
+        if (resp.ok) {
+          const data = await resp.json();
+          // Ensure default option at start
+          const opts = [{ value: '', label: 'Popular Categories' }, ...data];
+          setGenresList(opts);
+        }
+      } catch (e) {
+        console.warn('Failed to load genres.json', e);
+      }
+    };
+    loadGenres();
+  }, []);
+
+  // Popular genres to show as quick filters (values should match genresList.value)
+  const popularGenres = [
+    'romance',
+    'fiction',
+    'history',
+    'mystery',
+    'horror',
+    'fantasy',
+    'classics',
+    'philosophy',
+    'literature',
+    'poetry',
+    'non-fiction'
   ];
+
+  const handleCategoryInputChange = (val) => {
+    // Try to map typed value to an existing genre option (match normalized label)
+    const match = genresList.find(g => normalizeSearch(g.label) === normalizeSearch(val) || g.value === String(val).toLowerCase());
+    const newVal = match ? match.value : String(val || '').toLowerCase();
+    setFilters(prev => ({ ...prev, category: newVal }));
+    setPage(1);
+  };
 
   useEffect(() => {
     // Try backend fetch first; fallback to local sample data
@@ -46,6 +74,35 @@ const BrowseBooks = () => {
   const fetchBooks = async () => {
     try {
       setLoading(true);
+      // If category or genre filters are active, load the full client dataset
+      // so filtering happens over the entire collection rather than backend pagination.
+      if (filters.category && String(filters.category).trim() !== '') {
+        try {
+          const publicResp = await fetch('/books_full.json');
+          if (publicResp.ok) {
+            const pubData = await publicResp.json();
+            const mappedPub = pubData.map((b, idx) => ({
+              _id: b._id || `public-${idx}`,
+              title: b.Book || b.title || '',
+              author: b.Author || b.author || '',
+              synopsis: b.Description || b.synopsis || '',
+              genres: parseGenres(b.Genres || b.genres),
+              averageRating: b.Avg_Rating || b.AvgRating || b.averageRating || 0,
+              totalRatings: b.Num_Ratings || b.NumRatings || b.totalRatings || 0,
+              coverImage: sanitizeImageUrl(b.Image_URL || b.Image || b.coverImage || ''),
+              amazonUrl: b.Amazon_URL || b.AmazonURL || b.Amazon || b.AmazonUrl || '',
+              url: b.URL || b.url || ''
+            }));
+            setBooks(mappedPub);
+            setUseClientPagination(true);
+            setTotalPages(Math.max(1, Math.ceil(mappedPub.length / CLIENT_PAGE_SIZE)));
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.warn('Failed to load public books for category/genre full-filter fallback:', e);
+        }
+      }
       // If the user has entered a search query, prefer the full client JSON
       // so we can show all matching results without backend pagination.
       if (searchQuery && String(searchQuery).trim() !== '') {
@@ -54,16 +111,12 @@ const BrowseBooks = () => {
           if (publicResp.ok) {
             const pubData = await publicResp.json();
             const mappedPub = pubData.map((b, idx) => {
-              let genres = b.Genres || b.genres || [];
-              if (typeof genres === 'string' && genres.trim().startsWith('[')) {
-                try { genres = JSON.parse(genres.replace(/'/g, '"')); } catch (e) { genres = [genres]; }
-              }
               return {
                 _id: b._id || `public-${idx}`,
                 title: b.Book || b.title || '',
                 author: b.Author || b.author || '',
                 synopsis: b.Description || b.synopsis || '',
-                genres: genres || [],
+                genres: parseGenres(b.Genres || b.genres),
                 averageRating: b.Avg_Rating || b.AvgRating || b.averageRating || 0,
                 totalRatings: b.Num_Ratings || b.NumRatings || b.totalRatings || 0,
                 coverImage: sanitizeImageUrl(b.Image_URL || b.Image || b.coverImage || ''),
@@ -75,6 +128,34 @@ const BrowseBooks = () => {
             setTotalPages(1);
             setLoading(false);
             return;
+          }
+          // If the user has applied a category or genre filter, prefer the full client JSON
+          // so filtering by genre/category is applied to the whole dataset (not just paginated server results).
+          if (filters.category && String(filters.category).trim() !== '') {
+            try {
+              const publicResp2 = await fetch('/books_full.json');
+              if (publicResp2.ok) {
+                const pubData2 = await publicResp2.json();
+                const mappedPub2 = pubData2.map((b, idx) => ({
+                  _id: b._id || `public-${idx}`,
+                  title: b.Book || b.title || '',
+                  author: b.Author || b.author || '',
+                  synopsis: b.Description || b.synopsis || '',
+                  genres: parseGenres(b.Genres || b.genres),
+                  averageRating: b.Avg_Rating || b.AvgRating || b.averageRating || 0,
+                  totalRatings: b.Num_Ratings || b.NumRatings || b.totalRatings || 0,
+                  coverImage: sanitizeImageUrl(b.Image_URL || b.Image || b.coverImage || ''),
+                  amazonUrl: b.Amazon_URL || b.AmazonURL || b.Amazon || b.AmazonUrl || '',
+                  url: b.URL || b.url || ''
+                }));
+                setBooks(mappedPub2);
+                setTotalPages(1);
+                setLoading(false);
+                return;
+              }
+            } catch (e) {
+              console.warn('Failed to load public books for category/genre filter fallback:', e);
+            }
           }
         } catch (e) {
           console.warn('Failed to load public books for search fallback:', e);
@@ -99,18 +180,36 @@ const BrowseBooks = () => {
               serverBooks = serverBooks.map(sb => {
                 const key = normalizeKey(sb.title || sb.Book || '', sb.author || sb.Author || '');
                 const entry = pubMap.get(key);
-                if ((!sb.coverImage || sb.coverImage === '') && entry && entry.coverImage) {
-                  return { ...sb, coverImage: entry.coverImage };
+                // supplement missing coverImage and genres from public data when available
+                const cover = (!sb.coverImage || sb.coverImage === '') && entry && entry.coverImage ? entry.coverImage : (sb.coverImage || '');
+                // prefer existing server genres, otherwise use public raw genres
+                let genres = sb.genres && Array.isArray(sb.genres) && sb.genres.length ? sb.genres : [];
+                if (( !genres || genres.length === 0 ) && entry && entry.raw) {
+                  const rawG = entry.raw.Genres || entry.raw.genres || [];
+                  genres = Array.isArray(rawG) ? rawG : (typeof rawG === 'string' ? parseGenres(rawG) : []);
                 }
-                return sb;
+                return { ...sb, coverImage: cover, genres };
               });
             }
           } catch (e) {
             // ignore public JSON errors and use server data as-is
             console.warn('Failed to load public books for image supplement:', e);
           }
+          // If the user provided a search query, also apply client-side filtering
+          // so they can search by title or author even when server returned results.
+          if (searchQuery && String(searchQuery).trim() !== '') {
+            const qNorm = normalizeSearch(searchQuery);
+            if (qNorm !== '') {
+              serverBooks = serverBooks.filter(b => {
+                const t = normalizeSearch(b.title || '');
+                const a = normalizeSearch(b.author || '');
+                return (t.includes(qNorm) || a.includes(qNorm));
+              });
+            }
+          }
 
           setBooks(serverBooks);
+          setUseClientPagination(false);
           setTotalPages(response.data.totalPages || 1);
           return;
         }
@@ -120,27 +219,24 @@ const BrowseBooks = () => {
 
       // Try loading public dataset generated from your Excel (client/public/books_full.json)
       try {
+        console.log('Attempting to load /books_full.json...');
         const publicResp = await fetch('/books_full.json');
+        console.log('Fetch response status:', publicResp.status, publicResp.ok);
         if (publicResp.ok) {
           const pubData = await publicResp.json();
+          console.log('Loaded', pubData.length, 'books from /books_full.json');
+          console.log('Sample book raw data:', pubData[0]);
           const mappedPub = pubData.map((b, idx) => {
-            // normalize genres field (some rows store genres as stringified list)
-            let genres = b.Genres || b.genres || [];
-            if (typeof genres === 'string' && genres.trim().startsWith('[')) {
-              try {
-                genres = JSON.parse(genres.replace(/'/g, '"'));
-              } catch (e) {
-                // fallback: keep as single string
-                genres = [genres];
+              const parsedGenres = parseGenres(b.Genres || b.genres);
+              if (idx < 3) {
+                console.log('Book', idx, ':', b.Book, 'raw genres:', b.Genres, 'typeof:', typeof b.Genres, 'parsed:', parsedGenres);
               }
-            }
-
               return {
               _id: b._id || `public-${idx}`,
               title: b.Book || b.title || '',
               author: b.Author || b.author || '',
               synopsis: b.Description || b.synopsis || '',
-              genres: genres || [],
+              genres: parseGenres(b.Genres || b.genres),
               averageRating: b.Avg_Rating || b.AvgRating || b.averageRating || 0,
               totalRatings: b.Num_Ratings || b.NumRatings || b.totalRatings || 0,
               coverImage: sanitizeImageUrl(b.Image_URL || b.Image || b.coverImage || ''),
@@ -149,7 +245,8 @@ const BrowseBooks = () => {
             };
           });
           setBooks(mappedPub);
-          setTotalPages(1);
+          setUseClientPagination(true);
+          setTotalPages(Math.max(1, Math.ceil(mappedPub.length / CLIENT_PAGE_SIZE)));
           return;
         }
       } catch (err) {
@@ -157,20 +254,29 @@ const BrowseBooks = () => {
       }
 
       // Use local sample data (map fields to expected shape)
-      const mapped = localBooks.map((b, idx) => ({
+      console.log('Using local sample data from localBooks');
+      console.log('Sample local book:', localBooks[0]);
+      const mapped = localBooks.map((b, idx) => {
+        const parsedGenres = parseGenres(b.Genres);
+        if (idx < 3) {
+          console.log('Local book', idx, ':', b.Book, 'raw genres:', b.Genres, 'parsed:', parsedGenres);
+        }
+        return {
         _id: `local-${idx}`,
         title: b.Book,
         author: b.Author,
         synopsis: b.Description,
-        genres: b.Genres || [],
+        genres: parsedGenres,
         averageRating: b.Avg_Rating || 0,
         totalRatings: b.Num_Ratings || 0,
         coverImage: b.Image_URL || '',
         url: b.URL || ''
-      }));
+      };
+      });
 
       setBooks(mapped);
-      setTotalPages(1);
+      setUseClientPagination(true);
+      setTotalPages(Math.max(1, Math.ceil(mapped.length / CLIENT_PAGE_SIZE)));
     } catch (error) {
       console.error('Error fetching books:', error);
     } finally {
@@ -202,15 +308,56 @@ const BrowseBooks = () => {
     return stars;
   };
 
+  // Normalize strings for search comparisons: lowercase and strip non-alphanumerics
+  const normalizeSearch = (s) => {
+    try {
+      return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    } catch (e) {
+      return '';
+    }
+  };
+
+  // Parse genres field to ensure it's always an array
+  const parseGenres = (g) => {
+    if (!g) return [];
+    if (Array.isArray(g)) return g;
+    if (typeof g === 'string') {
+      const trimmed = g.trim();
+      if (trimmed.startsWith('[')) {
+        try {
+          // Handle Python-style lists with single quotes
+          const jsonStr = trimmed.replace(/'/g, '"');
+          const parsed = JSON.parse(jsonStr);
+          return Array.isArray(parsed) ? parsed : [g];
+        } catch (e) {
+          // If parsing fails, try extracting quoted strings
+          const matches = trimmed.match(/'([^']+)'/g);
+          if (matches) {
+            return matches.map(m => m.slice(1, -1));
+          }
+          return [g];
+        }
+      }
+      return [g];
+    }
+    return [String(g)];
+  };
+
   const filteredAndSortedBooks = () => {
     let list = Array.isArray(books) ? [...books] : [];
 
     try {
 
-    // search by title or author
+    // search by title or author (normalized so punctuation/spaces are ignored)
     if (searchQuery && searchQuery.trim() !== '') {
-      const q = String(searchQuery).toLowerCase();
-      list = list.filter(b => String(b.title || '').toLowerCase().includes(q) || String(b.author || '').toLowerCase().includes(q));
+      const qNorm = normalizeSearch(searchQuery);
+      if (qNorm !== '') {
+        list = list.filter(b => {
+          const t = normalizeSearch(b.title || '');
+          const a = normalizeSearch(b.author || '');
+          return (t.includes(qNorm) || a.includes(qNorm));
+        });
+      }
     }
 
     // min rating filter
@@ -219,26 +366,33 @@ const BrowseBooks = () => {
       list = list.filter(b => (b.averageRating || 0) >= min);
     }
 
-    // genre filter
-    if (filters.genre) {
-      const g = String(filters.genre).toLowerCase();
-      list = list.filter(b => (b.genres || []).some(gg => String(gg).toLowerCase().includes(g)));
-    }
+    // genre filter removed; use category/searchable genres instead
 
-    // category filter
+    // category filter - match against book's genres array
     if (filters.category) {
-      const cat = String(filters.category).toLowerCase();
+      const catNorm = normalizeSearch(filters.category);
+      console.log('Filtering by category:', filters.category, 'normalized:', catNorm);
+      const beforeCount = list.length;
       list = list.filter(b => {
-        const genresStr = (b.genres || []).join(' ').toLowerCase();
-        const titleStr = String(b.title || '').toLowerCase();
-        const synopsisStr = String(b.synopsis || '').toLowerCase();
-        const combinedText = `${genresStr} ${titleStr} ${synopsisStr}`;
-        
-        // Match category to genres or content
-        return combinedText.includes(cat) || 
-               (cat === 'fiction' && !combinedText.includes('non-fiction')) ||
-               (cat === 'non-fiction' && combinedText.includes('non-fiction'));
+        // genres should already be an array from data loading
+        const bookGenres = Array.isArray(b.genres) ? b.genres : parseGenres(b.genres);
+        console.log('Book:', b.title, 'raw genres:', b.genres, 'parsed:', bookGenres);
+        if (bookGenres.length === 0) {
+          console.log('No genres for:', b.title);
+          return false;
+        }
+        // Check if any genre in the book matches the selected category
+        const matches = bookGenres.some(g => {
+          const genreNorm = normalizeSearch(g);
+          const match = genreNorm.includes(catNorm) || catNorm.includes(genreNorm);
+          if (match) {
+            console.log('MATCH found:', g, 'normalized:', genreNorm, 'matches', catNorm);
+          }
+          return match;
+        });
+        return matches;
       });
+      console.log('Filtered from', beforeCount, 'to', list.length, 'books');
     }
 
     // sorting
@@ -259,10 +413,7 @@ const BrowseBooks = () => {
 
   const isFiltersEmpty = () => {
     return (
-      (!filters.genre || filters.genre === '') &&
       (!filters.category || filters.category === '') &&
-      (!filters.author || filters.author === '') &&
-      (!filters.year || filters.year === '') &&
       (!filters.minRating || filters.minRating === '') &&
       (filters.sortBy === 'newest')
     );
@@ -273,11 +424,26 @@ const BrowseBooks = () => {
     const all = filteredAndSortedBooks();
     const noSearch = !searchQuery || searchQuery.trim() === '';
     if (noSearch && isFiltersEmpty()) {
-      // show only first 20 by default
-      return all.slice(0, 20);
+      // show only first page by default
+      return all.slice(0, CLIENT_PAGE_SIZE);
+    }
+    if (useClientPagination) {
+      const start = (page - 1) * CLIENT_PAGE_SIZE;
+      return all.slice(start, start + CLIENT_PAGE_SIZE);
     }
     return all;
   };
+
+  // Keep totalPages in sync for client-side pagination when books/filters change
+  useEffect(() => {
+    if (useClientPagination) {
+      const all = filteredAndSortedBooks();
+      const tp = Math.max(1, Math.ceil(all.length / CLIENT_PAGE_SIZE));
+      setTotalPages(tp);
+      if (page > tp) setPage(tp);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [books, filters, searchQuery, useClientPagination]);
 
   const openDetails = (book) => {
     setSelectedBook(book);
@@ -547,34 +713,25 @@ const BrowseBooks = () => {
               onChange={handleFilterChange}
               className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {bookCategories.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
+              <option value="">Popular Categories</option>
+              {popularGenres.map(genre => (
+                <option key={genre} value={genre}>{genre.charAt(0).toUpperCase() + genre.slice(1)}</option>
               ))}
             </select>
             <input
               type="text"
-              name="genre"
-              placeholder="Or filter by genre"
-              value={filters.genre}
-              onChange={handleFilterChange}
+              list="all-genres-list"
+              placeholder="Or search all genres..."
+              value={filters.category ? (genresList.find(g => g.value === filters.category)?.label || filters.category) : ''}
+              onChange={(e) => handleCategoryInputChange(e.target.value)}
               className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <input
-              type="text"
-              name="author"
-              placeholder="Filter by author"
-              value={filters.author}
-              onChange={handleFilterChange}
-              className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="number"
-              name="year"
-              placeholder="Publication year"
-              value={filters.year}
-              onChange={handleFilterChange}
-              className="px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <datalist id="all-genres-list">
+              {genresList.filter(g => g.value !== '').map(genre => (
+                <option key={genre.value} value={genre.label} />
+              ))}
+            </datalist>
+            {/* removed separate "filter by genre" input - use the searchable genres input above */}
             <select
               name="minRating"
               value={filters.minRating}
@@ -601,10 +758,7 @@ const BrowseBooks = () => {
             <button
               onClick={() => {
                 setFilters({
-                  genre: '',
                   category: '',
-                  author: '',
-                  year: '',
                   minRating: '',
                   sortBy: 'newest'
                 });

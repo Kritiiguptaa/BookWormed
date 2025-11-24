@@ -1,0 +1,2466 @@
+[
+  {
+    "value": "12th century",
+    "label": "12th Century"
+  },
+  {
+    "value": "15th century",
+    "label": "15th Century"
+  },
+  {
+    "value": "16th century",
+    "label": "16th Century"
+  },
+  {
+    "value": "17th century",
+    "label": "17th Century"
+  },
+  {
+    "value": "18th century",
+    "label": "18th Century"
+  },
+  {
+    "value": "19th century",
+    "label": "19th Century"
+  },
+  {
+    "value": "20th century",
+    "label": "20th Century"
+  },
+  {
+    "value": "21st century",
+    "label": "21st Century"
+  },
+  {
+    "value": "abuse",
+    "label": "Abuse"
+  },
+  {
+    "value": "academia",
+    "label": "Academia"
+  },
+  {
+    "value": "academic",
+    "label": "Academic"
+  },
+  {
+    "value": "action",
+    "label": "Action"
+  },
+  {
+    "value": "activism",
+    "label": "Activism"
+  },
+  {
+    "value": "adhd",
+    "label": "Adhd"
+  },
+  {
+    "value": "adoption",
+    "label": "Adoption"
+  },
+  {
+    "value": "adult",
+    "label": "Adult"
+  },
+  {
+    "value": "adult fiction",
+    "label": "Adult Fiction"
+  },
+  {
+    "value": "adventure",
+    "label": "Adventure"
+  },
+  {
+    "value": "africa",
+    "label": "Africa"
+  },
+  {
+    "value": "african american",
+    "label": "African American"
+  },
+  {
+    "value": "african american literature",
+    "label": "African American Literature"
+  },
+  {
+    "value": "african literature",
+    "label": "African Literature"
+  },
+  {
+    "value": "agriculture",
+    "label": "Agriculture"
+  },
+  {
+    "value": "alchemy",
+    "label": "Alchemy"
+  },
+  {
+    "value": "algeria",
+    "label": "Algeria"
+  },
+  {
+    "value": "aliens",
+    "label": "Aliens"
+  },
+  {
+    "value": "alternate history",
+    "label": "Alternate History"
+  },
+  {
+    "value": "alternate universe",
+    "label": "Alternate Universe"
+  },
+  {
+    "value": "amazon",
+    "label": "Amazon"
+  },
+  {
+    "value": "american",
+    "label": "American"
+  },
+  {
+    "value": "american civil war",
+    "label": "American Civil War"
+  },
+  {
+    "value": "american history",
+    "label": "American History"
+  },
+  {
+    "value": "american revolution",
+    "label": "American Revolution"
+  },
+  {
+    "value": "american revolutionary war",
+    "label": "American Revolutionary War"
+  },
+  {
+    "value": "americana",
+    "label": "Americana"
+  },
+  {
+    "value": "amish",
+    "label": "Amish"
+  },
+  {
+    "value": "anarchism",
+    "label": "Anarchism"
+  },
+  {
+    "value": "ancient",
+    "label": "Ancient"
+  },
+  {
+    "value": "ancient history",
+    "label": "Ancient History"
+  },
+  {
+    "value": "angels",
+    "label": "Angels"
+  },
+  {
+    "value": "animal fiction",
+    "label": "Animal Fiction"
+  },
+  {
+    "value": "animals",
+    "label": "Animals"
+  },
+  {
+    "value": "anthologies",
+    "label": "Anthologies"
+  },
+  {
+    "value": "anthropology",
+    "label": "Anthropology"
+  },
+  {
+    "value": "anti racist",
+    "label": "Anti Racist"
+  },
+  {
+    "value": "apocalyptic",
+    "label": "Apocalyptic"
+  },
+  {
+    "value": "archaeology",
+    "label": "Archaeology"
+  },
+  {
+    "value": "architecture",
+    "label": "Architecture"
+  },
+  {
+    "value": "art",
+    "label": "Art"
+  },
+  {
+    "value": "art design",
+    "label": "Art Design"
+  },
+  {
+    "value": "art history",
+    "label": "Art History"
+  },
+  {
+    "value": "arthurian",
+    "label": "Arthurian"
+  },
+  {
+    "value": "artificial intelligence",
+    "label": "Artificial Intelligence"
+  },
+  {
+    "value": "asexual",
+    "label": "Asexual"
+  },
+  {
+    "value": "asia",
+    "label": "Asia"
+  },
+  {
+    "value": "asian literature",
+    "label": "Asian Literature"
+  },
+  {
+    "value": "astrology",
+    "label": "Astrology"
+  },
+  {
+    "value": "astronomy",
+    "label": "Astronomy"
+  },
+  {
+    "value": "atheism",
+    "label": "Atheism"
+  },
+  {
+    "value": "audiobook",
+    "label": "Audiobook"
+  },
+  {
+    "value": "australia",
+    "label": "Australia"
+  },
+  {
+    "value": "autistic spectrum disorder",
+    "label": "Autistic Spectrum Disorder"
+  },
+  {
+    "value": "autobiography",
+    "label": "Autobiography"
+  },
+  {
+    "value": "aviation",
+    "label": "Aviation"
+  },
+  {
+    "value": "bande dessinã©e",
+    "label": "Bande DessinÃ©e"
+  },
+  {
+    "value": "banned books",
+    "label": "Banned Books"
+  },
+  {
+    "value": "baseball",
+    "label": "Baseball"
+  },
+  {
+    "value": "basketball",
+    "label": "Basketball"
+  },
+  {
+    "value": "batman",
+    "label": "Batman"
+  },
+  {
+    "value": "bdsm",
+    "label": "BDSM"
+  },
+  {
+    "value": "beauty and the beast",
+    "label": "Beauty and The Beast"
+  },
+  {
+    "value": "biblical fiction",
+    "label": "Biblical Fiction"
+  },
+  {
+    "value": "biography",
+    "label": "Biography"
+  },
+  {
+    "value": "biography memoir",
+    "label": "Biography Memoir"
+  },
+  {
+    "value": "biology",
+    "label": "Biology"
+  },
+  {
+    "value": "birds",
+    "label": "Birds"
+  },
+  {
+    "value": "bizarro fiction",
+    "label": "Bizarro Fiction"
+  },
+  {
+    "value": "boarding school",
+    "label": "Boarding School"
+  },
+  {
+    "value": "book club",
+    "label": "Book Club"
+  },
+  {
+    "value": "books about books",
+    "label": "Books About Books"
+  },
+  {
+    "value": "botswana",
+    "label": "Botswana"
+  },
+  {
+    "value": "brain",
+    "label": "Brain"
+  },
+  {
+    "value": "brazil",
+    "label": "Brazil"
+  },
+  {
+    "value": "british literature",
+    "label": "British Literature"
+  },
+  {
+    "value": "buddhism",
+    "label": "Buddhism"
+  },
+  {
+    "value": "buisness",
+    "label": "Buisness"
+  },
+  {
+    "value": "business",
+    "label": "Business"
+  },
+  {
+    "value": "canada",
+    "label": "Canada"
+  },
+  {
+    "value": "canadian literature",
+    "label": "Canadian Literature"
+  },
+  {
+    "value": "catholic",
+    "label": "Catholic"
+  },
+  {
+    "value": "cats",
+    "label": "Cats"
+  },
+  {
+    "value": "chapter books",
+    "label": "Chapter Books"
+  },
+  {
+    "value": "chemistry",
+    "label": "Chemistry"
+  },
+  {
+    "value": "chick lit",
+    "label": "Chick Lit"
+  },
+  {
+    "value": "childrens",
+    "label": "Childrens"
+  },
+  {
+    "value": "childrens classics",
+    "label": "Childrens Classics"
+  },
+  {
+    "value": "china",
+    "label": "China"
+  },
+  {
+    "value": "chinese literature",
+    "label": "Chinese Literature"
+  },
+  {
+    "value": "christian",
+    "label": "Christian"
+  },
+  {
+    "value": "christian fantasy",
+    "label": "Christian Fantasy"
+  },
+  {
+    "value": "christian fiction",
+    "label": "Christian Fiction"
+  },
+  {
+    "value": "christian historical fiction",
+    "label": "Christian Historical Fiction"
+  },
+  {
+    "value": "christian living",
+    "label": "Christian Living"
+  },
+  {
+    "value": "christian non fiction",
+    "label": "Christian Non Fiction"
+  },
+  {
+    "value": "christian romance",
+    "label": "Christian Romance"
+  },
+  {
+    "value": "christianity",
+    "label": "Christianity"
+  },
+  {
+    "value": "christmas",
+    "label": "Christmas"
+  },
+  {
+    "value": "church",
+    "label": "Church"
+  },
+  {
+    "value": "cities",
+    "label": "Cities"
+  },
+  {
+    "value": "civil war",
+    "label": "Civil War"
+  },
+  {
+    "value": "classic literature",
+    "label": "Classic Literature"
+  },
+  {
+    "value": "classical music",
+    "label": "Classical Music"
+  },
+  {
+    "value": "classics",
+    "label": "Classics"
+  },
+  {
+    "value": "clean romance",
+    "label": "Clean Romance"
+  },
+  {
+    "value": "climate change",
+    "label": "Climate Change"
+  },
+  {
+    "value": "climate change fiction",
+    "label": "Climate Change Fiction"
+  },
+  {
+    "value": "collections",
+    "label": "Collections"
+  },
+  {
+    "value": "college",
+    "label": "College"
+  },
+  {
+    "value": "comedian",
+    "label": "Comedian"
+  },
+  {
+    "value": "comedy",
+    "label": "Comedy"
+  },
+  {
+    "value": "comic book",
+    "label": "Comic Book"
+  },
+  {
+    "value": "comic strips",
+    "label": "Comic Strips"
+  },
+  {
+    "value": "comics",
+    "label": "Comics"
+  },
+  {
+    "value": "coming of age",
+    "label": "Coming Of Age"
+  },
+  {
+    "value": "comix",
+    "label": "Comix"
+  },
+  {
+    "value": "communication",
+    "label": "Communication"
+  },
+  {
+    "value": "computer science",
+    "label": "Computer Science"
+  },
+  {
+    "value": "conspiracy theories",
+    "label": "Conspiracy Theories"
+  },
+  {
+    "value": "contemporary",
+    "label": "Contemporary"
+  },
+  {
+    "value": "contemporary romance",
+    "label": "Contemporary Romance"
+  },
+  {
+    "value": "cookbooks",
+    "label": "Cookbooks"
+  },
+  {
+    "value": "cooking",
+    "label": "Cooking"
+  },
+  {
+    "value": "counselling",
+    "label": "Counselling"
+  },
+  {
+    "value": "counter culture",
+    "label": "Counter Culture"
+  },
+  {
+    "value": "counting",
+    "label": "Counting"
+  },
+  {
+    "value": "cozy mystery",
+    "label": "Cozy Mystery"
+  },
+  {
+    "value": "crafts",
+    "label": "Crafts"
+  },
+  {
+    "value": "crime",
+    "label": "Crime"
+  },
+  {
+    "value": "criticism",
+    "label": "Criticism"
+  },
+  {
+    "value": "cthulhu mythos",
+    "label": "Cthulhu Mythos"
+  },
+  {
+    "value": "culinary",
+    "label": "Culinary"
+  },
+  {
+    "value": "cults",
+    "label": "Cults"
+  },
+  {
+    "value": "cultural",
+    "label": "Cultural"
+  },
+  {
+    "value": "cyberpunk",
+    "label": "Cyberpunk"
+  },
+  {
+    "value": "cycling",
+    "label": "Cycling"
+  },
+  {
+    "value": "czech literature",
+    "label": "Czech Literature"
+  },
+  {
+    "value": "danish",
+    "label": "Danish"
+  },
+  {
+    "value": "dark",
+    "label": "Dark"
+  },
+  {
+    "value": "dark fantasy",
+    "label": "Dark Fantasy"
+  },
+  {
+    "value": "dc comics",
+    "label": "Dc Comics"
+  },
+  {
+    "value": "death",
+    "label": "Death"
+  },
+  {
+    "value": "demons",
+    "label": "Demons"
+  },
+  {
+    "value": "denmark",
+    "label": "Denmark"
+  },
+  {
+    "value": "design",
+    "label": "Design"
+  },
+  {
+    "value": "detective",
+    "label": "Detective"
+  },
+  {
+    "value": "diary",
+    "label": "Diary"
+  },
+  {
+    "value": "diets",
+    "label": "Diets"
+  },
+  {
+    "value": "dinosaurs",
+    "label": "Dinosaurs"
+  },
+  {
+    "value": "disability",
+    "label": "Disability"
+  },
+  {
+    "value": "divination",
+    "label": "Divination"
+  },
+  {
+    "value": "divorce",
+    "label": "Divorce"
+  },
+  {
+    "value": "dogs",
+    "label": "Dogs"
+  },
+  {
+    "value": "dragonlance",
+    "label": "Dragonlance"
+  },
+  {
+    "value": "dragons",
+    "label": "Dragons"
+  },
+  {
+    "value": "drama",
+    "label": "Drama"
+  },
+  {
+    "value": "drawing",
+    "label": "Drawing"
+  },
+  {
+    "value": "dungeons and dragons",
+    "label": "Dungeons and Dragons"
+  },
+  {
+    "value": "dutch literature",
+    "label": "Dutch Literature"
+  },
+  {
+    "value": "dying earth",
+    "label": "Dying Earth"
+  },
+  {
+    "value": "dystopia",
+    "label": "Dystopia"
+  },
+  {
+    "value": "ecology",
+    "label": "Ecology"
+  },
+  {
+    "value": "economics",
+    "label": "Economics"
+  },
+  {
+    "value": "education",
+    "label": "Education"
+  },
+  {
+    "value": "edwardian",
+    "label": "Edwardian"
+  },
+  {
+    "value": "egypt",
+    "label": "Egypt"
+  },
+  {
+    "value": "egyptian literature",
+    "label": "Egyptian Literature"
+  },
+  {
+    "value": "elves",
+    "label": "Elves"
+  },
+  {
+    "value": "emotion",
+    "label": "Emotion"
+  },
+  {
+    "value": "engineering",
+    "label": "Engineering"
+  },
+  {
+    "value": "english literature",
+    "label": "English Literature"
+  },
+  {
+    "value": "entrepreneurship",
+    "label": "Entrepreneurship"
+  },
+  {
+    "value": "environment",
+    "label": "Environment"
+  },
+  {
+    "value": "epic",
+    "label": "Epic"
+  },
+  {
+    "value": "epic fantasy",
+    "label": "Epic Fantasy"
+  },
+  {
+    "value": "erotic romance",
+    "label": "Erotic Romance"
+  },
+  {
+    "value": "erotica",
+    "label": "Erotica"
+  },
+  {
+    "value": "espionage",
+    "label": "Espionage"
+  },
+  {
+    "value": "essays",
+    "label": "Essays"
+  },
+  {
+    "value": "ethiopia",
+    "label": "Ethiopia"
+  },
+  {
+    "value": "eugenics",
+    "label": "Eugenics"
+  },
+  {
+    "value": "european history",
+    "label": "European History"
+  },
+  {
+    "value": "european literature",
+    "label": "European Literature"
+  },
+  {
+    "value": "evolution",
+    "label": "Evolution"
+  },
+  {
+    "value": "fae",
+    "label": "Fae"
+  },
+  {
+    "value": "fairies",
+    "label": "Fairies"
+  },
+  {
+    "value": "fairy tale retellings",
+    "label": "Fairy Tale Retellings"
+  },
+  {
+    "value": "fairy tales",
+    "label": "Fairy Tales"
+  },
+  {
+    "value": "faith",
+    "label": "Faith"
+  },
+  {
+    "value": "family",
+    "label": "Family"
+  },
+  {
+    "value": "fan fiction",
+    "label": "Fan Fiction"
+  },
+  {
+    "value": "fantasy",
+    "label": "Fantasy"
+  },
+  {
+    "value": "fantasy romance",
+    "label": "Fantasy Romance"
+  },
+  {
+    "value": "far right",
+    "label": "Far Right"
+  },
+  {
+    "value": "fat",
+    "label": "Fat"
+  },
+  {
+    "value": "fat acceptance",
+    "label": "Fat Acceptance"
+  },
+  {
+    "value": "fat studies",
+    "label": "Fat Studies"
+  },
+  {
+    "value": "female authors",
+    "label": "Female Authors"
+  },
+  {
+    "value": "feminism",
+    "label": "Feminism"
+  },
+  {
+    "value": "femme femme",
+    "label": "Femme Femme"
+  },
+  {
+    "value": "fiction",
+    "label": "Fiction"
+  },
+  {
+    "value": "fighters",
+    "label": "Fighters"
+  },
+  {
+    "value": "figure skating",
+    "label": "Figure Skating"
+  },
+  {
+    "value": "film",
+    "label": "Film"
+  },
+  {
+    "value": "finance",
+    "label": "Finance"
+  },
+  {
+    "value": "finnish literature",
+    "label": "Finnish Literature"
+  },
+  {
+    "value": "fitness",
+    "label": "Fitness"
+  },
+  {
+    "value": "flash fiction",
+    "label": "Flash Fiction"
+  },
+  {
+    "value": "folk tales",
+    "label": "Folk Tales"
+  },
+  {
+    "value": "folklore",
+    "label": "Folklore"
+  },
+  {
+    "value": "food",
+    "label": "Food"
+  },
+  {
+    "value": "food and drink",
+    "label": "Food and Drink"
+  },
+  {
+    "value": "food writing",
+    "label": "Food Writing"
+  },
+  {
+    "value": "foodie",
+    "label": "Foodie"
+  },
+  {
+    "value": "football",
+    "label": "Football"
+  },
+  {
+    "value": "forgotten realms",
+    "label": "Forgotten Realms"
+  },
+  {
+    "value": "fostering",
+    "label": "Fostering"
+  },
+  {
+    "value": "france",
+    "label": "France"
+  },
+  {
+    "value": "french literature",
+    "label": "French Literature"
+  },
+  {
+    "value": "french revolution",
+    "label": "French Revolution"
+  },
+  {
+    "value": "futurism",
+    "label": "Futurism"
+  },
+  {
+    "value": "futuristic",
+    "label": "Futuristic"
+  },
+  {
+    "value": "games",
+    "label": "Games"
+  },
+  {
+    "value": "gaming",
+    "label": "Gaming"
+  },
+  {
+    "value": "gardening",
+    "label": "Gardening"
+  },
+  {
+    "value": "gay",
+    "label": "Gay"
+  },
+  {
+    "value": "gay fiction",
+    "label": "Gay Fiction"
+  },
+  {
+    "value": "gender",
+    "label": "Gender"
+  },
+  {
+    "value": "gender studies",
+    "label": "Gender Studies"
+  },
+  {
+    "value": "genderfluid",
+    "label": "Genderfluid"
+  },
+  {
+    "value": "genetics",
+    "label": "Genetics"
+  },
+  {
+    "value": "geography",
+    "label": "Geography"
+  },
+  {
+    "value": "geology",
+    "label": "Geology"
+  },
+  {
+    "value": "german literature",
+    "label": "German Literature"
+  },
+  {
+    "value": "germany",
+    "label": "Germany"
+  },
+  {
+    "value": "ghana",
+    "label": "Ghana"
+  },
+  {
+    "value": "ghost stories",
+    "label": "Ghost Stories"
+  },
+  {
+    "value": "ghosts",
+    "label": "Ghosts"
+  },
+  {
+    "value": "global warming",
+    "label": "Global Warming"
+  },
+  {
+    "value": "go",
+    "label": "Go"
+  },
+  {
+    "value": "god",
+    "label": "God"
+  },
+  {
+    "value": "gods",
+    "label": "Gods"
+  },
+  {
+    "value": "gothic",
+    "label": "Gothic"
+  },
+  {
+    "value": "gothic horror",
+    "label": "Gothic Horror"
+  },
+  {
+    "value": "government",
+    "label": "Government"
+  },
+  {
+    "value": "graphic novels",
+    "label": "Graphic Novels"
+  },
+  {
+    "value": "graphic novels comics",
+    "label": "Graphic Novels Comics"
+  },
+  {
+    "value": "greece",
+    "label": "Greece"
+  },
+  {
+    "value": "greek mythology",
+    "label": "Greek Mythology"
+  },
+  {
+    "value": "guidebook",
+    "label": "Guidebook"
+  },
+  {
+    "value": "halloween",
+    "label": "Halloween"
+  },
+  {
+    "value": "hard science fiction",
+    "label": "Hard Science Fiction"
+  },
+  {
+    "value": "health",
+    "label": "Health"
+  },
+  {
+    "value": "health care",
+    "label": "Health Care"
+  },
+  {
+    "value": "heroic fantasy",
+    "label": "Heroic Fantasy"
+  },
+  {
+    "value": "high fantasy",
+    "label": "High Fantasy"
+  },
+  {
+    "value": "high school",
+    "label": "High School"
+  },
+  {
+    "value": "hinduism",
+    "label": "Hinduism"
+  },
+  {
+    "value": "hip hop",
+    "label": "Hip Hop"
+  },
+  {
+    "value": "historical",
+    "label": "Historical"
+  },
+  {
+    "value": "historical fantasy",
+    "label": "Historical Fantasy"
+  },
+  {
+    "value": "historical fiction",
+    "label": "Historical Fiction"
+  },
+  {
+    "value": "historical mystery",
+    "label": "Historical Mystery"
+  },
+  {
+    "value": "historical romance",
+    "label": "Historical Romance"
+  },
+  {
+    "value": "history",
+    "label": "History"
+  },
+  {
+    "value": "history of science",
+    "label": "History Of Science"
+  },
+  {
+    "value": "hockey",
+    "label": "Hockey"
+  },
+  {
+    "value": "holiday",
+    "label": "Holiday"
+  },
+  {
+    "value": "holocaust",
+    "label": "Holocaust"
+  },
+  {
+    "value": "home economics",
+    "label": "Home Economics"
+  },
+  {
+    "value": "homeschool",
+    "label": "Homeschool"
+  },
+  {
+    "value": "horror",
+    "label": "Horror"
+  },
+  {
+    "value": "horse racing",
+    "label": "Horse Racing"
+  },
+  {
+    "value": "horses",
+    "label": "Horses"
+  },
+  {
+    "value": "how to",
+    "label": "How To"
+  },
+  {
+    "value": "hugo awards",
+    "label": "Hugo Awards"
+  },
+  {
+    "value": "humor",
+    "label": "Humor"
+  },
+  {
+    "value": "hungarian literature",
+    "label": "Hungarian Literature"
+  },
+  {
+    "value": "hungary",
+    "label": "Hungary"
+  },
+  {
+    "value": "illness",
+    "label": "Illness"
+  },
+  {
+    "value": "india",
+    "label": "India"
+  },
+  {
+    "value": "indian literature",
+    "label": "Indian Literature"
+  },
+  {
+    "value": "indonesian literature",
+    "label": "Indonesian Literature"
+  },
+  {
+    "value": "inspirational",
+    "label": "Inspirational"
+  },
+  {
+    "value": "international",
+    "label": "International"
+  },
+  {
+    "value": "international development",
+    "label": "International Development"
+  },
+  {
+    "value": "international relations",
+    "label": "International Relations"
+  },
+  {
+    "value": "internet",
+    "label": "Internet"
+  },
+  {
+    "value": "iran",
+    "label": "Iran"
+  },
+  {
+    "value": "ireland",
+    "label": "Ireland"
+  },
+  {
+    "value": "irish literature",
+    "label": "Irish Literature"
+  },
+  {
+    "value": "islam",
+    "label": "Islam"
+  },
+  {
+    "value": "israel",
+    "label": "Israel"
+  },
+  {
+    "value": "italian literature",
+    "label": "Italian Literature"
+  },
+  {
+    "value": "italy",
+    "label": "Italy"
+  },
+  {
+    "value": "japan",
+    "label": "Japan"
+  },
+  {
+    "value": "japanese literature",
+    "label": "Japanese Literature"
+  },
+  {
+    "value": "jewish",
+    "label": "Jewish"
+  },
+  {
+    "value": "josei",
+    "label": "Josei"
+  },
+  {
+    "value": "journal",
+    "label": "Journal"
+  },
+  {
+    "value": "journaling",
+    "label": "Journaling"
+  },
+  {
+    "value": "journalism",
+    "label": "Journalism"
+  },
+  {
+    "value": "judaica",
+    "label": "Judaica"
+  },
+  {
+    "value": "judaism",
+    "label": "Judaism"
+  },
+  {
+    "value": "juvenile",
+    "label": "Juvenile"
+  },
+  {
+    "value": "kenya",
+    "label": "Kenya"
+  },
+  {
+    "value": "kids",
+    "label": "Kids"
+  },
+  {
+    "value": "language",
+    "label": "Language"
+  },
+  {
+    "value": "latin american",
+    "label": "Latin American"
+  },
+  {
+    "value": "latin american literature",
+    "label": "Latin American Literature"
+  },
+  {
+    "value": "law",
+    "label": "Law"
+  },
+  {
+    "value": "lds",
+    "label": "Lds"
+  },
+  {
+    "value": "lds fiction",
+    "label": "Lds Fiction"
+  },
+  {
+    "value": "lds non fiction",
+    "label": "Lds Non Fiction"
+  },
+  {
+    "value": "leadership",
+    "label": "Leadership"
+  },
+  {
+    "value": "lebanon",
+    "label": "Lebanon"
+  },
+  {
+    "value": "legal thriller",
+    "label": "Legal Thriller"
+  },
+  {
+    "value": "lesbian",
+    "label": "Lesbian"
+  },
+  {
+    "value": "lesbian romance",
+    "label": "Lesbian Romance"
+  },
+  {
+    "value": "lgbt",
+    "label": "LGBT"
+  },
+  {
+    "value": "liberia",
+    "label": "Liberia"
+  },
+  {
+    "value": "light novel",
+    "label": "Light Novel"
+  },
+  {
+    "value": "linguistics",
+    "label": "Linguistics"
+  },
+  {
+    "value": "literary criticism",
+    "label": "Literary Criticism"
+  },
+  {
+    "value": "literary fiction",
+    "label": "Literary Fiction"
+  },
+  {
+    "value": "literature",
+    "label": "Literature"
+  },
+  {
+    "value": "logic",
+    "label": "Logic"
+  },
+  {
+    "value": "love",
+    "label": "Love"
+  },
+  {
+    "value": "love inspired",
+    "label": "Love Inspired"
+  },
+  {
+    "value": "love inspired historical",
+    "label": "Love Inspired Historical"
+  },
+  {
+    "value": "love inspired suspense",
+    "label": "Love Inspired Suspense"
+  },
+  {
+    "value": "love story",
+    "label": "Love Story"
+  },
+  {
+    "value": "lovecraftian",
+    "label": "Lovecraftian"
+  },
+  {
+    "value": "m f romance",
+    "label": "M F Romance"
+  },
+  {
+    "value": "m m contemporary",
+    "label": "M M Contemporary"
+  },
+  {
+    "value": "m m f",
+    "label": "M M F"
+  },
+  {
+    "value": "m m romance",
+    "label": "M M Romance"
+  },
+  {
+    "value": "magic",
+    "label": "Magic"
+  },
+  {
+    "value": "magical realism",
+    "label": "Magical Realism"
+  },
+  {
+    "value": "malawi",
+    "label": "Malawi"
+  },
+  {
+    "value": "management",
+    "label": "Management"
+  },
+  {
+    "value": "manga",
+    "label": "Manga"
+  },
+  {
+    "value": "marathi",
+    "label": "Marathi"
+  },
+  {
+    "value": "maritime",
+    "label": "Maritime"
+  },
+  {
+    "value": "marriage",
+    "label": "Marriage"
+  },
+  {
+    "value": "martial arts",
+    "label": "Martial Arts"
+  },
+  {
+    "value": "mathematics",
+    "label": "Mathematics"
+  },
+  {
+    "value": "mauritius",
+    "label": "Mauritius"
+  },
+  {
+    "value": "media tie in",
+    "label": "Media Tie In"
+  },
+  {
+    "value": "medical",
+    "label": "Medical"
+  },
+  {
+    "value": "medicine",
+    "label": "Medicine"
+  },
+  {
+    "value": "medieval",
+    "label": "Medieval"
+  },
+  {
+    "value": "medieval history",
+    "label": "Medieval History"
+  },
+  {
+    "value": "medieval romance",
+    "label": "Medieval Romance"
+  },
+  {
+    "value": "memoir",
+    "label": "Memoir"
+  },
+  {
+    "value": "menage",
+    "label": "Menage"
+  },
+  {
+    "value": "mental health",
+    "label": "Mental Health"
+  },
+  {
+    "value": "mental illness",
+    "label": "Mental Illness"
+  },
+  {
+    "value": "mermaids",
+    "label": "Mermaids"
+  },
+  {
+    "value": "metaphysics",
+    "label": "Metaphysics"
+  },
+  {
+    "value": "microhistory",
+    "label": "Microhistory"
+  },
+  {
+    "value": "middle grade",
+    "label": "Middle Grade"
+  },
+  {
+    "value": "military fiction",
+    "label": "Military Fiction"
+  },
+  {
+    "value": "military history",
+    "label": "Military History"
+  },
+  {
+    "value": "military romance",
+    "label": "Military Romance"
+  },
+  {
+    "value": "military science fiction",
+    "label": "Military Science Fiction"
+  },
+  {
+    "value": "modern",
+    "label": "Modern"
+  },
+  {
+    "value": "modern classics",
+    "label": "Modern Classics"
+  },
+  {
+    "value": "money",
+    "label": "Money"
+  },
+  {
+    "value": "monsters",
+    "label": "Monsters"
+  },
+  {
+    "value": "morocco",
+    "label": "Morocco"
+  },
+  {
+    "value": "mountaineering",
+    "label": "Mountaineering"
+  },
+  {
+    "value": "murder mystery",
+    "label": "Murder Mystery"
+  },
+  {
+    "value": "music",
+    "label": "Music"
+  },
+  {
+    "value": "musicals",
+    "label": "Musicals"
+  },
+  {
+    "value": "musicians",
+    "label": "Musicians"
+  },
+  {
+    "value": "mystery",
+    "label": "Mystery"
+  },
+  {
+    "value": "mystery thriller",
+    "label": "Mystery Thriller"
+  },
+  {
+    "value": "mysticism",
+    "label": "Mysticism"
+  },
+  {
+    "value": "mythology",
+    "label": "Mythology"
+  },
+  {
+    "value": "native american history",
+    "label": "Native American History"
+  },
+  {
+    "value": "native americans",
+    "label": "Native Americans"
+  },
+  {
+    "value": "natural history",
+    "label": "Natural History"
+  },
+  {
+    "value": "nature",
+    "label": "Nature"
+  },
+  {
+    "value": "naval history",
+    "label": "Naval History"
+  },
+  {
+    "value": "neuroscience",
+    "label": "Neuroscience"
+  },
+  {
+    "value": "new adult",
+    "label": "New Adult"
+  },
+  {
+    "value": "new adult romance",
+    "label": "New Adult Romance"
+  },
+  {
+    "value": "new age",
+    "label": "New Age"
+  },
+  {
+    "value": "new weird",
+    "label": "New Weird"
+  },
+  {
+    "value": "new york",
+    "label": "New York"
+  },
+  {
+    "value": "nigeria",
+    "label": "Nigeria"
+  },
+  {
+    "value": "nobel prize",
+    "label": "Nobel Prize"
+  },
+  {
+    "value": "noir",
+    "label": "Noir"
+  },
+  {
+    "value": "nonfiction",
+    "label": "Nonfiction"
+  },
+  {
+    "value": "nordic noir",
+    "label": "Nordic Noir"
+  },
+  {
+    "value": "novella",
+    "label": "Novella"
+  },
+  {
+    "value": "novels",
+    "label": "Novels"
+  },
+  {
+    "value": "nursery rhymes",
+    "label": "Nursery Rhymes"
+  },
+  {
+    "value": "nutrition",
+    "label": "Nutrition"
+  },
+  {
+    "value": "occult",
+    "label": "Occult"
+  },
+  {
+    "value": "outdoors",
+    "label": "Outdoors"
+  },
+  {
+    "value": "own",
+    "label": "Own"
+  },
+  {
+    "value": "paganism",
+    "label": "Paganism"
+  },
+  {
+    "value": "pakistan",
+    "label": "Pakistan"
+  },
+  {
+    "value": "palaeontology",
+    "label": "Palaeontology"
+  },
+  {
+    "value": "paranormal",
+    "label": "Paranormal"
+  },
+  {
+    "value": "paranormal romance",
+    "label": "Paranormal Romance"
+  },
+  {
+    "value": "parenting",
+    "label": "Parenting"
+  },
+  {
+    "value": "personal development",
+    "label": "Personal Development"
+  },
+  {
+    "value": "personal finance",
+    "label": "Personal Finance"
+  },
+  {
+    "value": "philosophy",
+    "label": "Philosophy"
+  },
+  {
+    "value": "photography",
+    "label": "Photography"
+  },
+  {
+    "value": "physics",
+    "label": "Physics"
+  },
+  {
+    "value": "picture books",
+    "label": "Picture Books"
+  },
+  {
+    "value": "pirates",
+    "label": "Pirates"
+  },
+  {
+    "value": "plantagenet",
+    "label": "Plantagenet"
+  },
+  {
+    "value": "plays",
+    "label": "Plays"
+  },
+  {
+    "value": "poetry",
+    "label": "Poetry"
+  },
+  {
+    "value": "poetry plays",
+    "label": "Poetry Plays"
+  },
+  {
+    "value": "poland",
+    "label": "Poland"
+  },
+  {
+    "value": "police",
+    "label": "Police"
+  },
+  {
+    "value": "polish literature",
+    "label": "Polish Literature"
+  },
+  {
+    "value": "political science",
+    "label": "Political Science"
+  },
+  {
+    "value": "politics",
+    "label": "Politics"
+  },
+  {
+    "value": "polyamory",
+    "label": "Polyamory"
+  },
+  {
+    "value": "polygamy",
+    "label": "Polygamy"
+  },
+  {
+    "value": "pop culture",
+    "label": "Pop Culture"
+  },
+  {
+    "value": "popular science",
+    "label": "Popular Science"
+  },
+  {
+    "value": "portugal",
+    "label": "Portugal"
+  },
+  {
+    "value": "portuguese literature",
+    "label": "Portuguese Literature"
+  },
+  {
+    "value": "post apocalyptic",
+    "label": "Post Apocalyptic"
+  },
+  {
+    "value": "poverty",
+    "label": "Poverty"
+  },
+  {
+    "value": "prayer",
+    "label": "Prayer"
+  },
+  {
+    "value": "prehistoric",
+    "label": "Prehistoric"
+  },
+  {
+    "value": "prehistory",
+    "label": "Prehistory"
+  },
+  {
+    "value": "presidents",
+    "label": "Presidents"
+  },
+  {
+    "value": "princesses",
+    "label": "Princesses"
+  },
+  {
+    "value": "productivity",
+    "label": "Productivity"
+  },
+  {
+    "value": "programming",
+    "label": "Programming"
+  },
+  {
+    "value": "prostitution",
+    "label": "Prostitution"
+  },
+  {
+    "value": "psychiatry",
+    "label": "Psychiatry"
+  },
+  {
+    "value": "psychoanalysis",
+    "label": "Psychoanalysis"
+  },
+  {
+    "value": "psychological thriller",
+    "label": "Psychological Thriller"
+  },
+  {
+    "value": "psychology",
+    "label": "Psychology"
+  },
+  {
+    "value": "pulp",
+    "label": "Pulp"
+  },
+  {
+    "value": "punk",
+    "label": "Punk"
+  },
+  {
+    "value": "queer",
+    "label": "Queer"
+  },
+  {
+    "value": "rabbits",
+    "label": "Rabbits"
+  },
+  {
+    "value": "race",
+    "label": "Race"
+  },
+  {
+    "value": "read for school",
+    "label": "Read For School"
+  },
+  {
+    "value": "realistic fiction",
+    "label": "Realistic Fiction"
+  },
+  {
+    "value": "reference",
+    "label": "Reference"
+  },
+  {
+    "value": "regency",
+    "label": "Regency"
+  },
+  {
+    "value": "regency romance",
+    "label": "Regency Romance"
+  },
+  {
+    "value": "relationships",
+    "label": "Relationships"
+  },
+  {
+    "value": "religion",
+    "label": "Religion"
+  },
+  {
+    "value": "research",
+    "label": "Research"
+  },
+  {
+    "value": "retellings",
+    "label": "Retellings"
+  },
+  {
+    "value": "reverse harem",
+    "label": "Reverse Harem"
+  },
+  {
+    "value": "robots",
+    "label": "Robots"
+  },
+  {
+    "value": "rock n roll",
+    "label": "Rock N Roll"
+  },
+  {
+    "value": "roman",
+    "label": "Roman"
+  },
+  {
+    "value": "romance",
+    "label": "Romance"
+  },
+  {
+    "value": "romania",
+    "label": "Romania"
+  },
+  {
+    "value": "romanian literature",
+    "label": "Romanian Literature"
+  },
+  {
+    "value": "romantic",
+    "label": "Romantic"
+  },
+  {
+    "value": "romantic suspense",
+    "label": "Romantic Suspense"
+  },
+  {
+    "value": "romanticism",
+    "label": "Romanticism"
+  },
+  {
+    "value": "russia",
+    "label": "Russia"
+  },
+  {
+    "value": "russian history",
+    "label": "Russian History"
+  },
+  {
+    "value": "russian literature",
+    "label": "Russian Literature"
+  },
+  {
+    "value": "russian revolution",
+    "label": "Russian Revolution"
+  },
+  {
+    "value": "rwanda",
+    "label": "Rwanda"
+  },
+  {
+    "value": "satanism",
+    "label": "Satanism"
+  },
+  {
+    "value": "scandinavian literature",
+    "label": "Scandinavian Literature"
+  },
+  {
+    "value": "school",
+    "label": "School"
+  },
+  {
+    "value": "school stories",
+    "label": "School Stories"
+  },
+  {
+    "value": "science",
+    "label": "Science"
+  },
+  {
+    "value": "science fiction",
+    "label": "Science Fiction"
+  },
+  {
+    "value": "science fiction fantasy",
+    "label": "Science Fiction Fantasy"
+  },
+  {
+    "value": "science fiction romance",
+    "label": "Science Fiction Romance"
+  },
+  {
+    "value": "scotland",
+    "label": "Scotland"
+  },
+  {
+    "value": "seinen",
+    "label": "Seinen"
+  },
+  {
+    "value": "self help",
+    "label": "Self Help"
+  },
+  {
+    "value": "serbian literature",
+    "label": "Serbian Literature"
+  },
+  {
+    "value": "sexuality",
+    "label": "Sexuality"
+  },
+  {
+    "value": "shapeshifters",
+    "label": "Shapeshifters"
+  },
+  {
+    "value": "shojo",
+    "label": "Shojo"
+  },
+  {
+    "value": "short stories",
+    "label": "Short Stories"
+  },
+  {
+    "value": "short story collection",
+    "label": "Short Story Collection"
+  },
+  {
+    "value": "sierra leone",
+    "label": "Sierra Leone"
+  },
+  {
+    "value": "singularity",
+    "label": "Singularity"
+  },
+  {
+    "value": "skepticism",
+    "label": "Skepticism"
+  },
+  {
+    "value": "soccer",
+    "label": "Soccer"
+  },
+  {
+    "value": "social",
+    "label": "Social"
+  },
+  {
+    "value": "social issues",
+    "label": "Social Issues"
+  },
+  {
+    "value": "social justice",
+    "label": "Social Justice"
+  },
+  {
+    "value": "social media",
+    "label": "Social Media"
+  },
+  {
+    "value": "social science",
+    "label": "Social Science"
+  },
+  {
+    "value": "social work",
+    "label": "Social Work"
+  },
+  {
+    "value": "society",
+    "label": "Society"
+  },
+  {
+    "value": "sociology",
+    "label": "Sociology"
+  },
+  {
+    "value": "software",
+    "label": "Software"
+  },
+  {
+    "value": "somalia",
+    "label": "Somalia"
+  },
+  {
+    "value": "south africa",
+    "label": "South Africa"
+  },
+  {
+    "value": "southern",
+    "label": "Southern"
+  },
+  {
+    "value": "southern gothic",
+    "label": "Southern Gothic"
+  },
+  {
+    "value": "space",
+    "label": "Space"
+  },
+  {
+    "value": "space opera",
+    "label": "Space Opera"
+  },
+  {
+    "value": "spain",
+    "label": "Spain"
+  },
+  {
+    "value": "spanish civil war",
+    "label": "Spanish Civil War"
+  },
+  {
+    "value": "spanish literature",
+    "label": "Spanish Literature"
+  },
+  {
+    "value": "speculative fiction",
+    "label": "Speculative Fiction"
+  },
+  {
+    "value": "spirituality",
+    "label": "Spirituality"
+  },
+  {
+    "value": "splatterpunk",
+    "label": "Splatterpunk"
+  },
+  {
+    "value": "sports",
+    "label": "Sports"
+  },
+  {
+    "value": "sports romance",
+    "label": "Sports Romance"
+  },
+  {
+    "value": "spy thriller",
+    "label": "Spy Thriller"
+  },
+  {
+    "value": "star trek",
+    "label": "Star Trek"
+  },
+  {
+    "value": "star wars",
+    "label": "Star Wars"
+  },
+  {
+    "value": "steampunk",
+    "label": "Steampunk"
+  },
+  {
+    "value": "storytime",
+    "label": "Storytime"
+  },
+  {
+    "value": "street art",
+    "label": "Street Art"
+  },
+  {
+    "value": "sudan",
+    "label": "Sudan"
+  },
+  {
+    "value": "superheroes",
+    "label": "Superheroes"
+  },
+  {
+    "value": "superman",
+    "label": "Superman"
+  },
+  {
+    "value": "supernatural",
+    "label": "Supernatural"
+  },
+  {
+    "value": "surreal",
+    "label": "Surreal"
+  },
+  {
+    "value": "survival",
+    "label": "Survival"
+  },
+  {
+    "value": "suspense",
+    "label": "Suspense"
+  },
+  {
+    "value": "sustainability",
+    "label": "Sustainability"
+  },
+  {
+    "value": "sweden",
+    "label": "Sweden"
+  },
+  {
+    "value": "swedish literature",
+    "label": "Swedish Literature"
+  },
+  {
+    "value": "sword and planet",
+    "label": "Sword and Planet"
+  },
+  {
+    "value": "sword and sorcery",
+    "label": "Sword and Sorcery"
+  },
+  {
+    "value": "taoism",
+    "label": "Taoism"
+  },
+  {
+    "value": "tarot",
+    "label": "Tarot"
+  },
+  {
+    "value": "tasmania",
+    "label": "Tasmania"
+  },
+  {
+    "value": "tea",
+    "label": "Tea"
+  },
+  {
+    "value": "teaching",
+    "label": "Teaching"
+  },
+  {
+    "value": "technical",
+    "label": "Technical"
+  },
+  {
+    "value": "technology",
+    "label": "Technology"
+  },
+  {
+    "value": "teen",
+    "label": "Teen"
+  },
+  {
+    "value": "terrorism",
+    "label": "Terrorism"
+  },
+  {
+    "value": "textbooks",
+    "label": "Textbooks"
+  },
+  {
+    "value": "the united states of america",
+    "label": "The United States Of America"
+  },
+  {
+    "value": "the world",
+    "label": "The World"
+  },
+  {
+    "value": "theatre",
+    "label": "Theatre"
+  },
+  {
+    "value": "thelema",
+    "label": "Thelema"
+  },
+  {
+    "value": "theology",
+    "label": "Theology"
+  },
+  {
+    "value": "theory",
+    "label": "Theory"
+  },
+  {
+    "value": "thriller",
+    "label": "Thriller"
+  },
+  {
+    "value": "time travel",
+    "label": "Time Travel"
+  },
+  {
+    "value": "trains",
+    "label": "Trains"
+  },
+  {
+    "value": "transgender",
+    "label": "Transgender"
+  },
+  {
+    "value": "transport",
+    "label": "Transport"
+  },
+  {
+    "value": "travel",
+    "label": "Travel"
+  },
+  {
+    "value": "travelogue",
+    "label": "Travelogue"
+  },
+  {
+    "value": "true crime",
+    "label": "True Crime"
+  },
+  {
+    "value": "true story",
+    "label": "True Story"
+  },
+  {
+    "value": "tudor period",
+    "label": "Tudor Period"
+  },
+  {
+    "value": "turkish",
+    "label": "Turkish"
+  },
+  {
+    "value": "turkish literature",
+    "label": "Turkish Literature"
+  },
+  {
+    "value": "tv",
+    "label": "Tv"
+  },
+  {
+    "value": "ukraine",
+    "label": "Ukraine"
+  },
+  {
+    "value": "ukrainian literature",
+    "label": "Ukrainian Literature"
+  },
+  {
+    "value": "unfinished",
+    "label": "Unfinished"
+  },
+  {
+    "value": "unicorns",
+    "label": "Unicorns"
+  },
+  {
+    "value": "united states",
+    "label": "United States"
+  },
+  {
+    "value": "urban",
+    "label": "Urban"
+  },
+  {
+    "value": "urban fantasy",
+    "label": "Urban Fantasy"
+  },
+  {
+    "value": "urban planning",
+    "label": "Urban Planning"
+  },
+  {
+    "value": "urbanism",
+    "label": "Urbanism"
+  },
+  {
+    "value": "us presidents",
+    "label": "Us Presidents"
+  },
+  {
+    "value": "utopia",
+    "label": "Utopia"
+  },
+  {
+    "value": "vampires",
+    "label": "Vampires"
+  },
+  {
+    "value": "vegan",
+    "label": "Vegan"
+  },
+  {
+    "value": "vegetarian",
+    "label": "Vegetarian"
+  },
+  {
+    "value": "victorian",
+    "label": "Victorian"
+  },
+  {
+    "value": "video games",
+    "label": "Video Games"
+  },
+  {
+    "value": "war",
+    "label": "War"
+  },
+  {
+    "value": "weird fiction",
+    "label": "Weird Fiction"
+  },
+  {
+    "value": "weird west",
+    "label": "Weird West"
+  },
+  {
+    "value": "werewolves",
+    "label": "Werewolves"
+  },
+  {
+    "value": "westerns",
+    "label": "Westerns"
+  },
+  {
+    "value": "wicca",
+    "label": "Wicca"
+  },
+  {
+    "value": "wildlife",
+    "label": "Wildlife"
+  },
+  {
+    "value": "witchcraft",
+    "label": "Witchcraft"
+  },
+  {
+    "value": "witches",
+    "label": "Witches"
+  },
+  {
+    "value": "wolves",
+    "label": "Wolves"
+  },
+  {
+    "value": "womens",
+    "label": "Womens"
+  },
+  {
+    "value": "womens fiction",
+    "label": "Womens Fiction"
+  },
+  {
+    "value": "womens studies",
+    "label": "Womens Studies"
+  },
+  {
+    "value": "world history",
+    "label": "World History"
+  },
+  {
+    "value": "world war i",
+    "label": "World War I"
+  },
+  {
+    "value": "world war ii",
+    "label": "World War II"
+  },
+  {
+    "value": "writing",
+    "label": "Writing"
+  },
+  {
+    "value": "young adult",
+    "label": "Young Adult"
+  },
+  {
+    "value": "young adult contemporary",
+    "label": "Young Adult Contemporary"
+  },
+  {
+    "value": "young adult fantasy",
+    "label": "Young Adult Fantasy"
+  },
+  {
+    "value": "young adult paranormal",
+    "label": "Young Adult Paranormal"
+  },
+  {
+    "value": "young adult romance",
+    "label": "Young Adult Romance"
+  },
+  {
+    "value": "young readers",
+    "label": "Young Readers"
+  },
+  {
+    "value": "zen",
+    "label": "Zen"
+  },
+  {
+    "value": "zimbabwe",
+    "label": "Zimbabwe"
+  },
+  {
+    "value": "zombies",
+    "label": "Zombies"
+  }
+]
