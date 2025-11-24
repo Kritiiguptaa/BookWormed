@@ -11,13 +11,19 @@ import {
     getUserProfile,
     getUserSubscription,
     paymentRazorpay,
-    verifyRazorpay
+    verifyRazorpay,
+    forgotPassword,
+    resetPassword,
+    sendVerificationCode
 } from '../controllers/UserController.js';
 import userAuth from '../middlewares/auth.js';
 const userRouter = express.Router();
 
+userRouter.post('/send-verification', sendVerificationCode);
 userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
+userRouter.post('/forgot-password', forgotPassword);
+userRouter.post('/reset-password', resetPassword);
 userRouter.get('/check-username/:username', checkUsernameAvailability);
 userRouter.get('/search/:query', searchUsers);
 userRouter.get('/profile/:userId', getUserProfile);

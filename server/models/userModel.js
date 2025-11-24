@@ -21,7 +21,16 @@ const userSchema = new mongoose.Schema({
     },
     subscriptionStartDate: { type: Date },
     subscriptionEndDate: { type: Date },
-    trialEndsAt: { type: Date }
+    trialEndsAt: { type: Date },
+    
+    // Password reset fields
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
+    
+    // Email verification fields
+    emailVerified: { type: Boolean, default: false },
+    verificationCode: { type: String },
+    verificationExpires: { type: Date }
 }, { timestamps: true 
     
 });

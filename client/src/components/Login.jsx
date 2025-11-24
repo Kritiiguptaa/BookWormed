@@ -16,6 +16,9 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [usernameAvailable, setUsernameAvailable] = useState(null)
   const [checkingUsername, setCheckingUsername] = useState(false)
+  const [resetToken, setResetToken] = useState('')
+  const [verificationCode, setVerificationCode] = useState('')
+  const [pendingSignupData, setPendingSignupData] = useState(null)
 
   // 🔍 Check username availability with debounce
   useEffect(() => {
@@ -52,23 +55,61 @@ const Login = () => {
         } else {
           toast.error(data.message)
         }
-      } else {
+      } else if (state === 'Forgot Password') {
+        const { data } = await axios.post(backendUrl + '/api/user/forgot-password', { email })
+        if (data.success) {
+          toast.success('Password reset link sent to your email!')
+          setState('Reset Password')
+        } else {
+          toast.error(data.message)
+        }
+      } else if (state === 'Reset Password') {
+        const { data } = await axios.post(backendUrl + '/api/user/reset-password', { 
+          token: resetToken, 
+          newPassword: password 
+        })
+        if (data.success) {
+          toast.success('Password reset successful! You can now login.')
+          setState('Login')
+          setEmail('')
+          setPassword('')
+          setResetToken('')
+        } else {
+          toast.error(data.message)
+        }
+      } else if (state === 'Sign Up') {
         // prevent submission if username already taken
         if (usernameAvailable === false) {
           toast.error('Username already taken')
           return
         }
 
+        // Validate Gmail only
+        if (!email.toLowerCase().endsWith('@gmail.com')) {
+          toast.error('Please use a valid Gmail address')
+          return
+        }
+
+        // Send verification code
+        const { data } = await axios.post(backendUrl + '/api/user/send-verification', { email })
+        if (data.success) {
+          toast.success('Verification code sent to your email!')
+          setPendingSignupData({ name, username, email, password })
+          setState('Verify Email')
+        } else {
+          toast.error(data.message)
+        }
+      } else if (state === 'Verify Email') {
+        // Verify code and complete registration
         const { data } = await axios.post(backendUrl + '/api/user/register', {
-          name,
-          username,
-          email,
-          password
+          ...pendingSignupData,
+          verificationCode
         })
         if (data.success) {
           setToken(data.token)
           setUser(data.user)
           localStorage.setItem('token', data.token)
+          toast.success('Email verified! Welcome to BookWormed!')
           setShowLogin(false)
         } else {
           toast.error(data.message)
@@ -97,9 +138,17 @@ const Login = () => {
         className="relative bg-white p-10 rounded-xl text-slate-500 max-h-[90vh] overflow-y-auto"
       >
         <h1 className="text-center text-2xl text-neutral-700 font-medium">{state}</h1>
-        <p className="text-center text-sm">Welcome! Please sign in to continue</p>
+        <p className="text-center text-sm">
+          {state === 'Forgot Password' 
+            ? 'Enter your email to receive a reset link'
+            : state === 'Reset Password'
+            ? 'Enter the token from your email and new password'
+            : state === 'Verify Email'
+            ? 'Enter the 6-digit code sent to your email'
+            : 'Welcome! Please sign in to continue'}
+        </p>
 
-        {state !== 'Login' && (
+        {state === 'Sign Up' && (
           <>
             <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
               <img className="h-5" src={assets.profile_icon} alt="" />
@@ -147,46 +196,128 @@ const Login = () => {
           </>
         )}
 
-        <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
-          <img src={assets.email_icon} alt="" />
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            type="email"
-            className="outline-none text-sm"
-            placeholder="Email id"
-            required
-          />
-        </div>
+        {(state === 'Sign Up' || state === 'Forgot Password' || state === 'Login') && (
+          <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
+            <img src={assets.email_icon} alt="" />
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              type="email"
+              className="outline-none text-sm"
+              placeholder={state === 'Sign Up' ? 'Email id (Gmail only)' : 'Email id'}
+              required
+            />
+          </div>
+        )}
 
-        <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
-          <img src={assets.lock_icon} alt="" />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            type="password"
-            className="outline-none text-sm"
-            placeholder="Password"
-            required
-          />
-        </div>
+        {(state === 'Sign Up' || state === 'Login') && (
+          <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
+            <img src={assets.lock_icon} alt="" />
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              type="password"
+              className="outline-none text-sm"
+              placeholder="Password"
+              required
+            />
+          </div>
+        )}
 
-        <p className="text-sm text-blue-600 my-4 cursor-pointer">Forgot Password?</p>
+        {state === 'Reset Password' && (
+          <>
+            <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
+              <img src={assets.lock_icon} alt="" />
+              <input
+                onChange={(e) => setResetToken(e.target.value)}
+                value={resetToken}
+                type="text"
+                className="outline-none text-sm"
+                placeholder="Reset Token from Email"
+                required
+              />
+            </div>
+            <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
+              <img src={assets.lock_icon} alt="" />
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+                type="password"
+                className="outline-none text-sm"
+                placeholder="New Password"
+                required
+              />
+            </div>
+          </>
+        )}
+
+        {state === 'Verify Email' && (
+          <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
+            <img src={assets.lock_icon} alt="" />
+            <input
+              onChange={(e) => setVerificationCode(e.target.value)}
+              value={verificationCode}
+              type="text"
+              className="outline-none text-sm"
+              placeholder="Enter 6-digit code"
+              maxLength="6"
+              required
+            />
+          </div>
+        )}
+
+        {state === 'Login' && (
+          <p 
+            className="text-sm text-blue-600 my-4 cursor-pointer hover:underline" 
+            onClick={() => setState('Forgot Password')}
+          >
+            Forgot Password?
+          </p>
+        )}
 
         <button className="bg-blue-600 w-full text-white py-2 rounded-full">
-          {state === 'Login' ? 'Login' : 'Create Account'}
+          {state === 'Login' 
+            ? 'Login' 
+            : state === 'Forgot Password' 
+            ? 'Send Reset Link' 
+            : state === 'Reset Password' 
+            ? 'Reset Password' 
+            : state === 'Verify Email'
+            ? 'Verify Email'
+            : 'Send Verification Code'}
         </button>
 
         {state === 'Login' ? (
           <p className="mt-5 text-center">
-            Don't have an account?
+            Don't have an account?{' '}
             <span className="text-blue-600 cursor-pointer" onClick={() => setState('Sign Up')}>
               Sign up
             </span>
           </p>
+        ) : state === 'Forgot Password' ? (
+          <p className="mt-5 text-center">
+            Remember your password?{' '}
+            <span className="text-blue-600 cursor-pointer" onClick={() => setState('Login')}>
+              Log in
+            </span>
+          </p>
+        ) : state === 'Reset Password' ? (
+          <p className="mt-5 text-center">
+            Back to{' '}
+            <span className="text-blue-600 cursor-pointer" onClick={() => setState('Login')}>
+              Log in
+            </span>
+          </p>
+        ) : state === 'Verify Email' ? (
+          <p className="mt-5 text-center">
+            Didn't receive code?{' '}
+            <span className="text-blue-600 cursor-pointer" onClick={() => setState('Sign Up')}>
+              Resend
+            </span>
+          </p>
         ) : (
           <p className="mt-5 text-center">
-            Already have an account?
+            Already have an account?{' '}
             <span className="text-blue-600 cursor-pointer" onClick={() => setState('Login')}>
               Log in
             </span>

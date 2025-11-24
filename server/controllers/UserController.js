@@ -4,6 +4,8 @@ import razorpay from 'razorpay';
 import bcrypt from 'bcryptjs'    //password protection
 import jwt from 'jsonwebtoken'   //user authentication
 import { createNotificationHelper } from './NotificationController.js';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 // import stripe from "stripe";
 const getUser = async (req, res) => {
   try {
@@ -24,22 +26,28 @@ const getUser = async (req, res) => {
 };
 const registerUser = async (req, res) => {
   try {
-    const { name,username ,email, password } = req.body;
+    const { name, username, email, password, verificationCode } = req.body;
 
     // Check missing fields
-    if (!name ||!username || !email ||  !password) {
+    if (!name || !username || !email || !password || !verificationCode) {
       return res.json({ success: false, message: 'Missing Details' });
     }
 
-    // Check if email already exists
-    const existingEmail = await userModel.findOne({ email });
-    if (existingEmail) {
-      return res.json({ success: false, message: 'Email already registered' });
+    // Verify email code first
+    const hashedCode = crypto.createHash('sha256').update(verificationCode).digest('hex');
+    const tempUser = await userModel.findOne({
+      email,
+      verificationCode: hashedCode,
+      verificationExpires: { $gt: Date.now() }
+    });
+
+    if (!tempUser) {
+      return res.json({ success: false, message: 'Invalid or expired verification code' });
     }
 
     // Check if username already exists
     const existingUsername = await userModel.findOne({ username });
-    if (existingUsername) {
+    if (existingUsername && existingUsername._id.toString() !== tempUser._id.toString()) {
       return res.json({ success: false, message: 'Username already taken' });
     }
 
@@ -47,28 +55,19 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(5);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
-    const newUser = new userModel({
-      name,
-      username,
-      email,
-      password: hashedPassword,
-      subscriptionStatus: 'trial',
-      trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
-    });
+    // Update user with registration details
+    tempUser.name = name;
+    tempUser.username = username;
+    tempUser.password = hashedPassword;
+    tempUser.emailVerified = true;
+    tempUser.verificationCode = undefined;
+    tempUser.verificationExpires = undefined;
+    tempUser.subscriptionStatus = 'trial';
+    tempUser.trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 
-    const user = await newUser.save();
+    const user = await tempUser.save();
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
-    // Send response
-    // res.json({
-    //   success: true,
-    //   token,
-    //   user: {
-    //     name: user.name,
-    //     username: user.username
-    //   }
-    // });
     const { password: _, ...userData } = user._doc;
     res.json({ success: true, token, user: userData });
 
@@ -390,4 +389,199 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay}
+// Forgot Password - Send reset token via email
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.json({ success: false, message: 'Email is required' });
+    }
+
+    // Find user by email
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({ success: false, message: 'No account found with this email' });
+    }
+
+    // Generate reset token (6-digit code for simplicity)
+    const resetToken = crypto.randomInt(100000, 999999).toString();
+    
+    // Hash token before saving (for security)
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    
+    // Save hashed token and expiry to user (expires in 15 minutes)
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+    await user.save();
+
+    // Setup email transporter (using Gmail as example)
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER, // Your email
+        pass: process.env.EMAIL_PASS  // Your email app password
+      }
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'BookWormed - Password Reset Request',
+      html: `
+        <h2>Password Reset Request</h2>
+        <p>Hi ${user.name},</p>
+        <p>You requested to reset your password. Use the following code to reset it:</p>
+        <h1 style="color: #2563eb; letter-spacing: 5px;">${resetToken}</h1>
+        <p>This code will expire in 15 minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+        <br>
+        <p>Best regards,<br>BookWormed Team</p>
+      `
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    res.json({ 
+      success: true, 
+      message: 'Password reset code sent to your email' 
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: 'Error sending reset email. Please try again.' });
+  }
+};
+
+// Reset Password - Verify token and update password
+const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.json({ success: false, message: 'Token and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    // Hash the provided token to compare with stored hashed token
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Find user with matching token and valid expiry
+    const user = await userModel.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.json({ success: false, message: 'Invalid or expired reset token' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password and clear reset token fields
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ 
+      success: true, 
+      message: 'Password reset successfully! You can now login with your new password.' 
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: 'Error resetting password. Please try again.' });
+  }
+};
+
+// Send Email Verification Code
+const sendVerificationCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.json({ success: false, message: 'Email is required' });
+    }
+
+    // Validate Gmail only
+    if (!email.toLowerCase().endsWith('@gmail.com')) {
+      return res.json({ success: false, message: 'Only Gmail addresses are allowed' });
+    }
+
+    // Check if email already exists and is verified
+    const existingUser = await userModel.findOne({ email, emailVerified: true });
+    if (existingUser) {
+      return res.json({ success: false, message: 'Email already registered' });
+    }
+
+    // Generate 6-digit verification code
+    const verificationCode = crypto.randomInt(100000, 999999).toString();
+    const hashedCode = crypto.createHash('sha256').update(verificationCode).digest('hex');
+
+    // Create or update temporary user record
+    let tempUser = await userModel.findOne({ email });
+    if (tempUser) {
+      tempUser.verificationCode = hashedCode;
+      tempUser.verificationExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+      await tempUser.save();
+    } else {
+      tempUser = new userModel({
+        email,
+        verificationCode: hashedCode,
+        verificationExpires: Date.now() + 15 * 60 * 1000,
+        emailVerified: false,
+        name: 'temp',
+        username: 'temp_' + Date.now(),
+        password: 'temp'
+      });
+      await tempUser.save();
+    }
+
+    // Setup email transporter
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+      }
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'BookWormed - Email Verification',
+      html: `
+        <h2>Welcome to BookWormed!</h2>
+        <p>Thank you for signing up. Please use the following code to verify your email:</p>
+        <h1 style="color: #2563eb; letter-spacing: 5px;">${verificationCode}</h1>
+        <p>This code will expire in 15 minutes.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+        <br>
+        <p>Best regards,<br>BookWormed Team</p>
+      `
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    res.json({ 
+      success: true, 
+      message: 'Verification code sent to your email' 
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: 'Error sending verification email. Please try again.' });
+  }
+};
+
+export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay,forgotPassword,resetPassword,sendVerificationCode}
