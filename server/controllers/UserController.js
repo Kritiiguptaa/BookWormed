@@ -305,8 +305,14 @@ const paymentRazorpay = async(req,res)=>{
         }
         date=Date.now();   //store current time stamp
 
+        const credits = duration; // assign credits proportional to duration (days)
         const transactionData={
-            userId,plan,amount,date,duration  //store this transaction data in mongodb
+          userId,
+          plan,
+          amount,
+          date,
+          duration,
+          credits  // store credits so schema validation passes
         }
 
         const newTransaction= await transactionModel.create(transactionData)

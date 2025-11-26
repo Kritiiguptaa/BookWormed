@@ -12,43 +12,76 @@ const Subscription = () => {
   const navigate=useNavigate()
 
   const initPay=async (order)=>{
-    const options={
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'Subscription Payment',
-      description: 'Premium Subscription',
-      order_id: order.id,
-      receipt: order.receipt,
-      handler: async(response)=>{
-        // console.log(response);
-        try{
-          const {data}=await axios.post(backendUrl+'/api/user/verify-razor',response,{headers:{token}})
-          if(data.success){
-            loadSubscriptionData();
-            navigate('/')
-            toast.success('Subscription activated!')
+    // Defensive checks and logging to help diagnose why checkout may not open
+    try {
+      const key = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      console.log('initPay called with order:', order);
+      console.log('Razorpay key:', key ? '[present]' : '[missing]');
+
+      if (!key) {
+        toast.error('Razorpay key not configured (VITE_RAZORPAY_KEY_ID)');
+        return;
+      }
+
+      if (!window || !window.Razorpay) {
+        console.error('window.Razorpay is undefined. Checkout script may not have loaded.');
+        toast.error('Payment SDK not loaded. Check console for details.');
+        return;
+      }
+
+      const options = {
+        key,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'Subscription Payment',
+        description: 'Premium Subscription',
+        order_id: order.id,
+        receipt: order.receipt,
+        handler: async(response)=>{
+          try{
+            console.log('Razorpay handler response:', response);
+            const {data}=await axios.post(backendUrl+'/api/user/verify-razor',response,{headers:{token}})
+            console.log('verify-razor response:', data);
+            if(data.success){
+              loadSubscriptionData();
+              navigate('/')
+              toast.success('Subscription activated!')
+            } else {
+              toast.error(data.message || 'Verification failed')
+            }
+          }catch(error){
+            console.error('Error verifying razorpay payment:', error);
+            toast.error(error.response?.data?.message || error.message)
           }
-        }catch(error){
-          toast.error(error.message)
         }
       }
+
+      const rzp = new window.Razorpay(options)
+      rzp.open()
+    } catch (err) {
+      console.error('initPay error:', err)
+      toast.error(err.message || 'Payment initiation failed')
     }
-    const rzp= new window.Razorpay(options)
-    rzp.open()
   }
 
   const paymentRazorpay = async(planId)=>{
     try{
       if(!user){
         setShowLogin(true)
+        return
       }
+
+      console.log('Requesting order for plan:', planId)
       const {data}= await axios.post(backendUrl + '/api/user/pay-razor', {planId},{headers:{token}})
-      if(data.success){
+      console.log('pay-razor response:', data)
+      if(data && data.success && data.order){
         initPay(data.order)
+      } else {
+        toast.error(data?.message || 'Failed to create order')
       }
     }catch(error){
-      toast.error(error.message)
+      console.error('paymentRazorpay error:', error)
+      toast.error(error.response?.data?.message || error.message)
     }
   }
 
