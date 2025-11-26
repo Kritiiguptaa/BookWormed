@@ -36,10 +36,11 @@ app.get('/', (req,res) => res.send("API Working"))
 
 // app.listen(PORT, () => console.log('Server running on port ' + PORT));
 // For Vercel: export the app instead of listening
-export default app;
+
 
 // For local development only
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`Server running locally on port ${PORT}`));
 }
 
+export default app;
