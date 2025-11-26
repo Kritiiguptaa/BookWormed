@@ -1,10 +1,12 @@
 import pandas as pd
 import os
+import json
+import re
 
 # --- Same file names as your main script ---
 original_clean_file = 'updated_goodreads_data.xlsx'
 raw_file = 'goodreads_data.xlsx'
-output_json_filename = 'final_book_data.json'
+output_json_filename = 'final_book_data_fixed.json'
 output_excel_filename = 'final_book_data.xlsx'
 client_public_path = os.path.join('..', 'client', 'public')
 client_books_file = os.path.join(client_public_path, 'books_full.json')
@@ -68,6 +70,36 @@ try:
             columns_for_client.append(c)
 
     client_df = df[columns_for_client].copy()
+
+    # Ensure Genres is serializable and normalized as a real JSON array
+    def parse_genres_field(g):
+        # handle pandas NA
+        if pd.isna(g):
+            return []
+        # already a list
+        if isinstance(g, list):
+            return [str(x).strip() for x in g if x]
+        s = str(g).strip()
+        if not s:
+            return []
+        # handle Python-style list strings like "['Fantasy', 'Fiction']"
+        if s.startswith('[') and s.endswith(']'):
+            try:
+                js = s.replace("'", '"')
+                arr = json.loads(js)
+                if isinstance(arr, list):
+                    return [str(x).strip() for x in arr if x]
+            except Exception:
+                # fallback: extract quoted items
+                items = re.findall(r"'([^']+)'", s)
+                if items:
+                    return [it.strip() for it in items]
+        # fallback: split by comma/semicolon
+        parts = [p.strip() for p in re.split(r',|;', s) if p.strip()]
+        return parts
+
+    if 'Genres' in client_df.columns:
+        client_df['Genres'] = client_df['Genres'].apply(parse_genres_field)
 
     # Ensure Genres is serializable (if stored as string, keep as-is)
     client_df.to_json(client_books_file, orient='records', force_ascii=False, indent=2)
