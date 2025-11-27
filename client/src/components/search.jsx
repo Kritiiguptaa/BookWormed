@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '../context/AppContext';
 import { assets } from '../assests/assets';
 
@@ -11,6 +11,7 @@ const Search = () => {
   const [bookResults, setBookResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const { backendUrl, user, token, fetchUser } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const handleSearch = async (searchQuery) => {
     if (!searchQuery.trim()) {
@@ -102,7 +103,7 @@ const Search = () => {
             👤 Search Users
           </button>
           <button
-            onClick={() => setSearchType('books')}
+            onClick={() => navigate('/books')}
             className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
               searchType === 'books'
                 ? 'bg-blue-500 text-white'
