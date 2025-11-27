@@ -36,3 +36,13 @@ app.get('/', (req,res) => res.send("API Working"))
 
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
 
+
+//for deployment uncomment it
+
+// if (process.env.NODE_ENV !== "production") {
+//   app.listen(PORT, () => console.log(`Server running locally on ${PORT}`));
+// }
+
+// export default app;
+
+

@@ -17,3 +17,11 @@
   color: #e0e0e0;
   font-weight: 300;
 }
+
+/* Ensure the page background and prevent horizontal overflow which caused
+   a white vertical strip on some viewports */
+html, body, #root {
+  height: 100%;
+  background-color: #0b1220; /* dark background matching app */
+  overflow-x: hidden;
+}
