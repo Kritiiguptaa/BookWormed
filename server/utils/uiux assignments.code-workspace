@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "Any-Face-Clustering",
+			"path": "../../../../../../Any-Face-Clustering"
+		},
+		{
+			"name": "BookWormed",
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "uiux assignments"
+	}
+}

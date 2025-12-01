@@ -10,6 +10,7 @@ import About from './pages/About'
 import UserProfile from './pages/UserProfile'
 import Notifications from './pages/Notifications'
 import Recommendations from './pages/Recommendations'
+import Settings from './pages/Settings'
 import Navbar from './components/Navbar'
 import Friends from './components/friends.jsx'
 import Search from './components/search.jsx';
@@ -54,6 +55,7 @@ const App = () => {
         <Route path='/notifications' element={<ProtectedRoute><Notifications/></ProtectedRoute>}/>
         <Route path='/subscription' element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
         <Route path='/profile/:userId' element={<ProtectedRoute><UserProfile/></ProtectedRoute>}/>
+        <Route path='/settings' element={<ProtectedRoute><Settings/></ProtectedRoute>}/>
       </Routes>
       <Footer />
     </div>

@@ -21,6 +21,7 @@ const UserProfile = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('about');
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [showFollowersModal, setShowFollowersModal] = useState(false);
   const [showFollowingModal, setShowFollowingModal] = useState(false);
   const [followers, setFollowers] = useState([]);
@@ -134,6 +135,10 @@ const UserProfile = () => {
     const targetUserId = userId || user?._id;
     if (!targetUserId) return;
 
+    // Prevent multiple simultaneous requests (race condition prevention)
+    if (isFollowLoading) return;
+
+    setIsFollowLoading(true);
     try {
       if (isFollowing) {
         // Unfollow
@@ -160,6 +165,8 @@ const UserProfile = () => {
     } catch (error) {
       console.error('Error toggling follow:', error);
       alert('Failed to update follow status');
+    } finally {
+      setIsFollowLoading(false);
     }
   };
 
@@ -222,9 +229,19 @@ const UserProfile = () => {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 mb-6">
               <div className="flex items-end gap-6">
                 {/* Profile Picture */}
-                <div className="w-32 h-32 rounded-full border-4 border-gray-800 bg-gray-700 flex items-center justify-center text-5xl">
+                <div className="w-32 h-32 rounded-full border-4 border-gray-800 bg-gray-700 flex items-center justify-center text-5xl overflow-hidden">
                   {user.profilePicture ? (
-                    <img src={user.profilePicture} alt={user?.username || user?.email?.split('@')[0] || 'User'} className="w-full h-full rounded-full object-cover" />
+                    <img 
+                      src={user.profilePicture} 
+                      alt={user?.username || user?.email?.split('@')[0] || 'User'} 
+                      className="w-full h-full rounded-full object-cover"
+                      onError={(e) => {
+                        console.error('Image failed to load:', user.profilePicture);
+                        e.target.style.display = 'none';
+                        e.target.parentElement.innerHTML = '<span class="text-5xl">👤</span>';
+                      }}
+                      onLoad={() => console.log('Profile picture loaded successfully:', user.profilePicture)}
+                    />
                   ) : (
                     <span>👤</span>
                   )}
@@ -242,13 +259,16 @@ const UserProfile = () => {
                 <div className="flex gap-3 mt-4 md:mt-0">
                   <button 
                     onClick={handleFollowToggle}
+                    disabled={isFollowLoading}
                     className={`px-6 py-2 rounded-lg transition-colors font-semibold ${
-                      isFollowing
+                      isFollowLoading
+                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                        : isFollowing
                         ? 'bg-gray-600 text-white hover:bg-gray-700'
                         : 'bg-blue-500 text-white hover:bg-blue-600'
                     }`}
                   >
-                    {isFollowing ? 'Unfollow' : 'Follow'}
+                    {isFollowLoading ? 'Loading...' : (isFollowing ? 'Unfollow' : 'Follow')}
                   </button>
                   <button 
                     onClick={handleMessage}
@@ -256,6 +276,18 @@ const UserProfile = () => {
                   >
                     💬 Message
                   </button>
+                </div>
+              )}
+              
+              {/* Edit Profile Button for Own Profile */}
+              {currentUser && currentUser._id === (userId || user?._id) && (
+                <div className="flex gap-3 mt-4 md:mt-0">
+                  <Link
+                    to="/settings"
+                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
+                  >
+                    ⚙️ Edit Profile
+                  </Link>
                 </div>
               )}
             </div>

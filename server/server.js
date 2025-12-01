@@ -30,8 +30,8 @@ app.use(helmet({
 // Rate limiting for authentication endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 requests per window
-  message: { success: false, message: 'Too many login attempts. Please try again after 15 minutes.' },
+  max: 50, // 50 requests per window (increased for development)
+  message: { success: false, message: 'Too many requests. Please try again after 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -39,7 +39,7 @@ const authLimiter = rateLimit({
 // Rate limiting for email endpoints (forgot password, verification)
 const emailLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 email requests per hour per IP
+  max: 10, // 10 email requests per hour per IP (increased for development)
   message: { success: false, message: 'Too many email requests. Please try again after 1 hour.' },
   standardHeaders: true,
   legacyHeaders: false,

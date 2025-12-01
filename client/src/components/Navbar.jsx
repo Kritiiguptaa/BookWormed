@@ -194,6 +194,34 @@ const Navbar = () => {
                                         )}
                                     </Link>
 
+                                {/* User info - Click to view profile */}
+                                {user && user._id ? (
+                                    <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
+                                        {user.profilePicture ? (
+                                            <img
+                                                className="h-8 w-8 rounded-full object-cover border border-gray-600"
+                                                src={user.profilePicture}
+                                                alt="User Avatar"
+                                                title="View Profile"
+                                                onError={(e) => {
+                                                    console.error('Navbar: Image failed to load:', user.profilePicture);
+                                                    e.target.src = assets.profile_icon;
+                                                }}
+                                            />
+                                        ) : (
+                                            <img
+                                                className="h-8 w-8 rounded-full object-cover"
+                                                src={assets.profile_icon}
+                                                alt="User Avatar"
+                                                title="View Profile"
+                                            />
+                                        )}
+                                        <span className="text-gray-300 max-sm:hidden">{`Hi, @${user.username || user.email?.split('@')[0] || 'user'}`}</span>
+                                    </Link>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
+                                        <span className="text-gray-400 max-sm:hidden">Loading...</span>
                                     {/* Profile dropdown */}
                                     <div className="relative" ref={profileRef}>
                                         <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-800">

@@ -1,5 +1,7 @@
 import userModel from "../models/userModel.js"
 import transactionModel from "../models/transactionModel.js"
+import Post from "../models/postModel.js"
+import Review from "../models/reviewModel.js"
 import razorpay from 'razorpay';
 import bcrypt from 'bcryptjs'    //password protection
 import jwt from 'jsonwebtoken'   //user authentication
@@ -7,6 +9,7 @@ import { createNotificationHelper } from './NotificationController.js';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import { logAuthFailure, logAuthSuccess, logAccountLockout, logPasswordReset, logPaymentAttempt } from '../utils/logger.js';
+import { validateAndSanitizeText } from '../utils/sanitize.js';
 // import stripe from "stripe";
 const getUser = async (req, res) => {
   try {
@@ -98,6 +101,19 @@ const registerUser = async (req, res) => {
     const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     const refreshToken = jwt.sign({ id: user._id, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
+    // Store refresh token in database
+    if (!user.refreshTokens) user.refreshTokens = [];
+    user.refreshTokens.push({
+      token: refreshToken,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    });
+    // Keep only last 5 refresh tokens per user
+    if (user.refreshTokens.length > 5) {
+      user.refreshTokens = user.refreshTokens.slice(-5);
+    }
+    await user.save();
+
     // Log successful registration
     logAuthSuccess(user._id, user.email, req.ip || 'unknown');
 
@@ -139,12 +155,25 @@ const loginUser=async(req,res)=>{
         const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
         const refreshToken = jwt.sign({ id: user._id, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: '30d' });
         
+        // Store refresh token in database
+        if (!user.refreshTokens) user.refreshTokens = [];
+        user.refreshTokens.push({
+          token: refreshToken,
+          createdAt: new Date(),
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        });
+        // Keep only last 5 refresh tokens per user
+        if (user.refreshTokens.length > 5) {
+          user.refreshTokens = user.refreshTokens.slice(-5);
+        }
+        
         // Reset login attempts on successful login
         if (user.loginAttempts > 0 || user.lockUntil) {
             user.loginAttempts = 0;
             user.lockUntil = undefined;
-            await user.save();
         }
+        
+        await user.save();
         
         // Log successful login
         logAuthSuccess(user._id, user.email, req.ip || 'unknown');
@@ -705,13 +734,36 @@ const refreshAccessToken = async (req, res) => {
       return res.status(401).json({ success: false, message: 'User not found' });
     }
 
+    // Verify refresh token exists in user's stored tokens
+    const tokenExists = user.refreshTokens?.some(rt => rt.token === refreshToken && rt.expiresAt > new Date());
+    if (!tokenExists) {
+      return res.status(401).json({ success: false, message: 'Refresh token invalid or expired' });
+    }
+
     // Issue new access token (1 day)
     const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    // Optionally rotate refresh token (issue new one and remove old)
+    const newRefreshToken = jwt.sign({ id: user._id, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    
+    // Remove old refresh token and add new one
+    user.refreshTokens = user.refreshTokens.filter(rt => rt.token !== refreshToken);
+    user.refreshTokens.push({
+      token: newRefreshToken,
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+    });
+    
+    // Clean up expired tokens
+    user.refreshTokens = user.refreshTokens.filter(rt => rt.expiresAt > new Date());
+    
+    await user.save();
 
     res.json({ 
       success: true, 
       token: newAccessToken,
-      message: 'Access token refreshed successfully'
+      refreshToken: newRefreshToken,
+      message: 'Tokens refreshed successfully'
     });
 
   } catch (error) {
@@ -723,4 +775,360 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay,forgotPassword,resetPassword,sendVerificationCode,refreshAccessToken}
+// Update user profile (name, username, bio, profilePicture, coverImage)
+const updateProfile = async (req, res) => {
+  try {
+    console.log('[updateProfile] Request received');
+    const userId = req.body.userId; // from auth middleware
+    const { name, username, bio, profilePicture, coverImage } = req.body;
+    console.log('[updateProfile] userId:', userId);
+    console.log('[updateProfile] Data:', { name, username, bio, profilePicture, coverImage });
+
+    // Find the user
+    const user = await userModel.findById(userId);
+    if (!user) {
+      console.log('[updateProfile] User not found');
+      return res.json({ success: false, message: 'User not found' });
+    }
+    console.log('[updateProfile] User found:', user.email);
+
+    // If username is being changed, check availability
+    if (username && username !== user.username) {
+      const existingUser = await userModel.findOne({ username });
+      if (existingUser) {
+        return res.json({ success: false, message: 'Username already taken' });
+      }
+      
+      // Validate username length
+      if (username.length < 3 || username.length > 30) {
+        return res.json({ success: false, message: 'Username must be between 3 and 30 characters' });
+      }
+      
+      const oldUsername = user.username;
+      user.username = username;
+      
+      // Propagate username change to all posts
+      await Post.updateMany(
+        { author: user._id },
+        { $set: { authorName: username } }
+      );
+      
+      // Propagate username change to all reviews
+      await Review.updateMany(
+        { user: user._id },
+        { $set: { userName: username } }
+      );
+      
+      // Propagate username change to all comments in posts
+      await Post.updateMany(
+        { 'comments.user': user._id },
+        { $set: { 'comments.$[elem].userName': username } },
+        { arrayFilters: [{ 'elem.user': user._id }] }
+      );
+      
+      console.log(`[updateProfile] Username changed from ${oldUsername} to ${username}, propagated to all content`);
+    }
+
+    // Update name if provided
+    if (name) {
+      if (name.length < 2 || name.length > 50) {
+        return res.json({ success: false, message: 'Name must be between 2 and 50 characters' });
+      }
+      user.name = name;
+    }
+
+    // Update bio if provided
+    if (bio !== undefined) {
+      if (bio.length > 500) {
+        return res.json({ success: false, message: 'Bio must be 500 characters or less' });
+      }
+      user.bio = bio;
+    }
+
+    // Update profile picture if provided
+    if (profilePicture !== undefined) {
+      user.profilePicture = profilePicture;
+    }
+
+    // Update cover image if provided
+    if (coverImage !== undefined) {
+      user.coverImage = coverImage;
+    }
+
+    await user.save();
+    console.log('[updateProfile] Profile saved successfully');
+    console.log('[updateProfile] Updated profilePicture:', user.profilePicture);
+
+    const { password, ...userData } = user._doc;
+    res.json({ success: true, message: 'Profile updated successfully', user: userData });
+
+  } catch (error) {
+    console.log('[updateProfile] Error:', error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// Change password for logged-in user
+const changePassword = async (req, res) => {
+  try {
+    console.log('[changePassword] Request received');
+    const userId = req.body.userId; // from auth middleware
+    const { currentPassword, newPassword } = req.body;
+    console.log('[changePassword] userId:', userId);
+    console.log('[changePassword] Has currentPassword:', !!currentPassword);
+    console.log('[changePassword] Has newPassword:', !!newPassword);
+
+    // Validate inputs
+    if (!currentPassword || !newPassword) {
+      console.log('[changePassword] Missing password fields');
+      return res.json({ success: false, message: 'Please provide both current and new password' });
+    }
+
+    // Find user
+    const user = await userModel.findById(userId);
+    if (!user) {
+      console.log('[changePassword] User not found');
+      return res.json({ success: false, message: 'User not found' });
+    }
+    console.log('[changePassword] User found:', user.email);
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    console.log('[changePassword] Password match:', isMatch);
+    if (!isMatch) {
+      console.log('[changePassword] Current password incorrect');
+      return res.json({ success: false, message: 'Current password is incorrect' });
+    }
+
+    // Validate new password strength
+    if (newPassword.length < 8) {
+      return res.json({ success: false, message: 'New password must be at least 8 characters long' });
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.json({ success: false, message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+    console.log('[changePassword] Password updated successfully');
+
+    // Send email notification
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.SENDER_EMAIL,
+          pass: process.env.SENDER_PASSWORD
+        }
+      });
+
+      const mailOptions = {
+        from: process.env.SENDER_EMAIL,
+        to: user.email,
+        subject: 'Password Changed Successfully',
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2>Password Changed</h2>
+            <p>Your password has been successfully changed.</p>
+            <p>If you did not make this change, please contact support immediately.</p>
+            <p>Time: ${new Date().toLocaleString()}</p>
+          </div>
+        `
+      };
+
+      await transporter.sendMail(mailOptions);
+    } catch (emailError) {
+      console.log('Email notification failed:', emailError);
+      // Continue even if email fails
+    }
+
+    console.log('[changePassword] Success - sending response');
+    res.json({ success: true, message: 'Password changed successfully' });
+
+  } catch (error) {
+    console.log('[changePassword] Error:', error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// Delete user account
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.body.userId; // from auth middleware
+    const { password, confirmText } = req.body;
+
+    // Validate confirmation text
+    if (confirmText !== 'DELETE') {
+      return res.json({ success: false, message: 'Please type DELETE to confirm account deletion' });
+    }
+
+    // Find user
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.json({ success: false, message: 'User not found' });
+    }
+
+    // Verify password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.json({ success: false, message: 'Incorrect password' });
+    }
+
+    // Import models dynamically to avoid circular dependencies
+    const { default: postModel } = await import('../models/postModel.js');
+    const { default: reviewModel } = await import('../models/reviewModel.js');
+    const { default: userListModel } = await import('../models/userListModel.js');
+    const { default: notificationModel } = await import('../models/notificationModel.js');
+
+    // Delete user's content
+    await postModel.deleteMany({ author: userId });
+    await reviewModel.deleteMany({ user: userId });
+    await userListModel.deleteMany({ user: userId });
+    await notificationModel.deleteMany({ 
+      $or: [
+        { sender: userId },
+        { recipient: userId }
+      ]
+    });
+
+    // Remove user from followers/following lists
+    await userModel.updateMany(
+      { followers: userId },
+      { $pull: { followers: userId } }
+    );
+    await userModel.updateMany(
+      { following: userId },
+      { $pull: { following: userId } }
+    );
+
+    // Delete the user
+    await userModel.findByIdAndDelete(userId);
+
+    res.json({ success: true, message: 'Account deleted successfully' });
+
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// Block a user
+const blockUser = async (req, res) => {
+  try {
+    const userId = req.body.userId; // Current user from auth middleware
+    const { blockUserId } = req.params;
+
+    if (!blockUserId) {
+      return res.json({ success: false, message: 'User ID to block is required' });
+    }
+
+    if (userId === blockUserId) {
+      return res.json({ success: false, message: 'Cannot block yourself' });
+    }
+
+    const currentUser = await userModel.findById(userId);
+    const userToBlock = await userModel.findById(blockUserId);
+
+    if (!currentUser || !userToBlock) {
+      return res.json({ success: false, message: 'User not found' });
+    }
+
+    // Check if already blocked
+    if (currentUser.blockedUsers.includes(blockUserId)) {
+      return res.json({ success: false, message: 'User already blocked' });
+    }
+
+    // Add to blocked list
+    currentUser.blockedUsers.push(blockUserId);
+
+    // Remove from followers/following if they exist
+    currentUser.following = currentUser.following.filter(id => id.toString() !== blockUserId);
+    currentUser.followers = currentUser.followers.filter(id => id.toString() !== blockUserId);
+    
+    userToBlock.following = userToBlock.following.filter(id => id.toString() !== userId);
+    userToBlock.followers = userToBlock.followers.filter(id => id.toString() !== userId);
+
+    await currentUser.save();
+    await userToBlock.save();
+
+    res.json({ 
+      success: true, 
+      message: `User ${userToBlock.username} has been blocked`,
+      blockedUserId: blockUserId
+    });
+
+  } catch (error) {
+    console.error('Error blocking user:', error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// Unblock a user
+const unblockUser = async (req, res) => {
+  try {
+    const userId = req.body.userId; // Current user from auth middleware
+    const { unblockUserId } = req.params;
+
+    if (!unblockUserId) {
+      return res.json({ success: false, message: 'User ID to unblock is required' });
+    }
+
+    const currentUser = await userModel.findById(userId);
+    const userToUnblock = await userModel.findById(unblockUserId);
+
+    if (!currentUser || !userToUnblock) {
+      return res.json({ success: false, message: 'User not found' });
+    }
+
+    // Check if user is actually blocked
+    if (!currentUser.blockedUsers.includes(unblockUserId)) {
+      return res.json({ success: false, message: 'User is not blocked' });
+    }
+
+    // Remove from blocked list
+    currentUser.blockedUsers = currentUser.blockedUsers.filter(id => id.toString() !== unblockUserId);
+    await currentUser.save();
+
+    res.json({ 
+      success: true, 
+      message: `User ${userToUnblock.username} has been unblocked`,
+      unblockedUserId: unblockUserId
+    });
+
+  } catch (error) {
+    console.error('Error unblocking user:', error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+// Get blocked users list
+const getBlockedUsers = async (req, res) => {
+  try {
+    const userId = req.body.userId; // Current user from auth middleware
+
+    const user = await userModel.findById(userId)
+      .populate('blockedUsers', 'username email profilePicture')
+      .select('blockedUsers');
+
+    if (!user) {
+      return res.json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ 
+      success: true, 
+      blockedUsers: user.blockedUsers || []
+    });
+
+  } catch (error) {
+    console.error('Error fetching blocked users:', error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay,forgotPassword,resetPassword,sendVerificationCode,refreshAccessToken,updateProfile,changePassword,deleteAccount,blockUser,unblockUser,getBlockedUsers}
