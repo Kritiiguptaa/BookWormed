@@ -167,7 +167,6 @@ const Navbar = () => {
 
                         <div className="hidden md:flex items-center space-x-2">
                             {user ? (
-                                // Logged-in state
                                 <div className="flex items-center gap-2">
                                     <Link to="/search" className="px-2 py-1 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-colors">
                                         Search
@@ -194,40 +193,21 @@ const Navbar = () => {
                                         )}
                                     </Link>
 
-                                {/* User info - Click to view profile */}
-                                {user && user._id ? (
+                                    {/* Merged profile: avatar/name -> profile link, separate chevron dropdown for actions */}
                                     <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
-                                        {user.profilePicture ? (
-                                            <img
-                                                className="h-8 w-8 rounded-full object-cover border border-gray-600"
-                                                src={user.profilePicture}
-                                                alt="User Avatar"
-                                                title="View Profile"
-                                                onError={(e) => {
-                                                    console.error('Navbar: Image failed to load:', user.profilePicture);
-                                                    e.target.src = assets.profile_icon;
-                                                }}
-                                            />
-                                        ) : (
-                                            <img
-                                                className="h-8 w-8 rounded-full object-cover"
-                                                src={assets.profile_icon}
-                                                alt="User Avatar"
-                                                title="View Profile"
-                                            />
-                                        )}
-                                        <span className="text-gray-300 max-sm:hidden">{`Hi, @${user.username || user.email?.split('@')[0] || 'user'}`}</span>
+                                        <img
+                                            className="h-8 w-8 rounded-full object-cover border border-gray-600"
+                                            src={user.profilePicture || assets.profile_icon}
+                                            alt="User Avatar"
+                                            title="View Profile"
+                                            onError={(e) => { e.target.src = assets.profile_icon; }}
+                                        />
+                                        <span className="text-gray-300 hidden xl:inline">{`Hi, @${user.username || user.email?.split('@')[0] || 'user'}`}</span>
                                     </Link>
-                                ) : (
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
-                                        <span className="text-gray-400 max-sm:hidden">Loading...</span>
-                                    {/* Profile dropdown */}
+
                                     <div className="relative" ref={profileRef}>
-                                        <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-800">
-                                            <img className="h-8 w-8 rounded-full object-cover" src={assets.profile_icon} alt="User Avatar" />
-                                            <span className="text-gray-300 hidden xl:inline">{`@${user.username || user.email?.split('@')[0] || 'user'}`}</span>
-                                            <svg className="h-4 w-4 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                                        <button onClick={() => setProfileOpen(!profileOpen)} className="p-1 rounded-full hover:bg-gray-700">
+                                            <svg className="h-5 w-5 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                                         </button>
                                         {profileOpen && (
                                             <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
@@ -240,7 +220,7 @@ const Navbar = () => {
                                         )}
                                     </div>
                                 </div>
-                            ) : (
+                            ) : !isLoadingUser ? (
                                 // Logged-out state: account dropdown
                                 <div className="relative">
                                     <button onClick={() => setProfileOpen(!profileOpen)} className="bg-blue-500 text-white px-4 py-2 rounded-full">Account ▾</button>
@@ -253,6 +233,9 @@ const Navbar = () => {
                                         </div>
                                     )}
                                 </div>
+                            ) : (
+                                // Loading state
+                                <div className="h-8 w-8 rounded-full bg-gray-700 animate-pulse"></div>
                             )}
                         </div>
                     </div>

@@ -38,13 +38,13 @@ const emailLimiter = rateLimit({
 
 userRouter.post('/send-verification', emailLimiter, sendVerificationCode);
 // Email rate limiter for forgot password and verification
-const emailLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 requests per hour per IP
-  message: { success: false, message: 'Too many email requests. Please try again after 1 hour.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
+// const emailLimiter = rateLimit({
+//   windowMs: 60 * 60 * 1000, // 1 hour
+//   max: 3, // 3 requests per hour per IP
+//   message: { success: false, message: 'Too many email requests. Please try again after 1 hour.' },
+//   standardHeaders: true,
+//   legacyHeaders: false,
+// });
 
 userRouter.post('/send-verification', emailLimiter, sendVerificationCode);
 userRouter.post('/register', registerUser);
