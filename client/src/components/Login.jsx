@@ -19,11 +19,31 @@ const Login = () => {
   const [resetToken, setResetToken] = useState('')
   const [verificationCode, setVerificationCode] = useState('')
   const [pendingSignupData, setPendingSignupData] = useState(null)
+  const [nameError, setNameError] = useState('')
+  const [usernameError, setUsernameError] = useState('')
+
+  // Validate name length
+  useEffect(() => {
+    if (name.length > 0 && (name.length < 2 || name.length > 50)) {
+      setNameError(`Name must be 2-50 characters (current: ${name.length})`)
+    } else {
+      setNameError('')
+    }
+  }, [name])
+
+  // Validate username length
+  useEffect(() => {
+    if (username.length > 0 && (username.length < 3 || username.length > 30)) {
+      setUsernameError(`Username must be 3-30 characters (current: ${username.length})`)
+    } else {
+      setUsernameError('')
+    }
+  }, [username])
 
   // 🔍 Check username availability with debounce
   useEffect(() => {
     const check = async () => {
-      if (!username.trim()) {
+      if (!username.trim() || usernameError) {
         setUsernameAvailable(null)
         return
       }
@@ -78,6 +98,18 @@ const Login = () => {
           toast.error(data.message)
         }
       } else if (state === 'Sign Up') {
+        // Validate name length
+        if (name.length < 2 || name.length > 50) {
+          toast.error('Name must be between 2 and 50 characters')
+          return
+        }
+
+        // Validate username length
+        if (username.length < 3 || username.length > 30) {
+          toast.error('Username must be between 3 and 30 characters')
+          return
+        }
+
         // prevent submission if username already taken
         if (usernameAvailable === false) {
           toast.error('Username already taken')
@@ -158,9 +190,15 @@ const Login = () => {
                 type="text"
                 className="outline-none text-sm"
                 placeholder="Full name"
+                maxLength="50"
                 required
               />
             </div>
+            {nameError && (
+              <p className="text-xs mt-1 text-red-600">
+                {nameError}
+              </p>
+            )}
 
             {/* 🧍 Username input */}
             <div className="border px-6 py-2 flex items-center gap-2 rounded-full mt-4">
@@ -171,10 +209,16 @@ const Login = () => {
                 type="text"
                 className="outline-none text-sm"
                 placeholder="Choose a username"
+                maxLength="30"
                 required
               />
             </div>
-            {username && (
+            {usernameError && (
+              <p className="text-xs mt-1 text-red-600">
+                {usernameError}
+              </p>
+            )}
+            {username && !usernameError && (
               <p
                 className={`text-xs mt-1 ${
                   usernameAvailable === null

@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import {
     registerUser,
     loginUser,
@@ -14,15 +15,26 @@ import {
     verifyRazorpay,
     forgotPassword,
     resetPassword,
-    sendVerificationCode
+    sendVerificationCode,
+    refreshAccessToken
 } from '../controllers/UserController.js';
 import userAuth from '../middlewares/auth.js';
 const userRouter = express.Router();
 
-userRouter.post('/send-verification', sendVerificationCode);
+// Email rate limiter for forgot password and verification
+const emailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // 3 requests per hour per IP
+  message: { success: false, message: 'Too many email requests. Please try again after 1 hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+userRouter.post('/send-verification', emailLimiter, sendVerificationCode);
 userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
-userRouter.post('/forgot-password', forgotPassword);
+userRouter.post('/refresh-token', refreshAccessToken);
+userRouter.post('/forgot-password', emailLimiter, forgotPassword);
 userRouter.post('/reset-password', resetPassword);
 userRouter.get('/check-username/:username', checkUsernameAvailability);
 userRouter.get('/search/:query', searchUsers);

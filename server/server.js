@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express'
 import cors from 'cors'
+import helmet from 'helmet'
+import rateLimit from 'express-rate-limit'
 import userRouter from './routes/userRoutes.js';
 import postRouter from './routes/postRoutes.js';
 import bookRouter from './routes/bookRoutes.js';
@@ -20,17 +22,72 @@ const PORT = process.env.PORT || 4000
 const app = express();
 await connectDB()
 
+// Security Middlewares
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// Rate limiting for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 requests per window
+  message: { success: false, message: 'Too many login attempts. Please try again after 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting for email endpoints (forgot password, verification)
+const emailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // 3 email requests per hour per IP
+  message: { success: false, message: 'Too many email requests. Please try again after 1 hour.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// General API rate limiting
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: { success: false, message: 'Too many requests. Please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// CORS Configuration - Restrict to frontend origin
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 // Intialize Middlewares
 app.use(express.json())
-app.use(cors())
 // await connectDB()
 
 // API routes
-app.use('/api/user',userRouter)
+app.use('/api/user', authLimiter, userRouter)
 app.use('/api/post',postRouter)
 app.use('/api/book',bookRouter)
 app.use('/api/notification',notificationRouter)
 app.use('/api/stats', statsRouter)
+
+// Export rate limiters for specific routes
+export { emailLimiter }
 
 app.get('/', (req,res) => res.send("API Working"))
 

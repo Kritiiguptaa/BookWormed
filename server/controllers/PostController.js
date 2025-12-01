@@ -169,17 +169,23 @@ export const toggleLike = async (req, res) => {
     const { id } = req.params;
     const userId = req.userId;
 
-    const post = await Post.findById(id);
+    let post = await Post.findById(id);
 
     if (!post) {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
     const likeIndex = post.likes.indexOf(userId);
+    const isLiking = likeIndex === -1;
 
-    if (likeIndex === -1) {
-      // Like the post
-      post.likes.push(userId);
+    // Use atomic operation to prevent race conditions
+    if (isLiking) {
+      // Like the post - use $addToSet to prevent duplicates
+      post = await Post.findByIdAndUpdate(
+        id,
+        { $addToSet: { likes: userId } },
+        { new: true }
+      );
       
       // Create notification for post author
       await createNotificationHelper(
@@ -189,11 +195,13 @@ export const toggleLike = async (req, res) => {
         { postId: id }
       );
     } else {
-      // Unlike the post
-      post.likes.splice(likeIndex, 1);
+      // Unlike the post - use $pull to remove
+      post = await Post.findByIdAndUpdate(
+        id,
+        { $pull: { likes: userId } },
+        { new: true }
+      );
     }
-
-    await post.save();
 
     res.status(200).json({
       success: true,

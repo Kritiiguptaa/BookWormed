@@ -1,5 +1,5 @@
-import React, { useContext } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import React, { useContext, useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 
 import Home from './pages/Home'
 import Posts from './pages/Posts'
@@ -20,11 +20,18 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Login from './components/Login'
 import { AppContext } from './context/AppContext'
+import ProtectedRoute from './components/ProtectedRoute'
 // import Verify from './pages/Verify'
 
 const App = () => {
 
   const { showLogin } = useContext(AppContext)
+  const location = useLocation()
+
+  // Scroll to top whenever route changes
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   return (
     // <div className='px-4 sm:px-10 md:px-14 lg:px-28 min-h-screen bg-gray-900 '>
@@ -35,16 +42,18 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path="/search" element={<Search />} />
-        <Route path='/friends' element={<Friends/>}/>
         <Route path='/posts' element={<Posts/>}/>
         <Route path='/books' element={<BrowseBooks/>}/>
         <Route path='/books/:id' element={<BookDetails/>}/>
-        <Route path='/recommendations' element={<Recommendations/>}/>
-        <Route path='/my-lists' element={<MyLists/>}/>
         <Route path='/about' element={<About/>}/>
-        <Route path='/profile/:userId' element={<UserProfile/>}/>
-        <Route path='/notifications' element={<Notifications/>}/>
-        <Route path='/subscription' element={<Subscription />} />
+        
+        {/* Protected Routes - Require Authentication */}
+        <Route path='/friends' element={<ProtectedRoute><Friends/></ProtectedRoute>}/>
+        <Route path='/recommendations' element={<ProtectedRoute><Recommendations/></ProtectedRoute>}/>
+        <Route path='/my-lists' element={<ProtectedRoute><MyLists/></ProtectedRoute>}/>
+        <Route path='/notifications' element={<ProtectedRoute><Notifications/></ProtectedRoute>}/>
+        <Route path='/subscription' element={<ProtectedRoute><Subscription /></ProtectedRoute>} />
+        <Route path='/profile/:userId' element={<ProtectedRoute><UserProfile/></ProtectedRoute>}/>
       </Routes>
       <Footer />
     </div>

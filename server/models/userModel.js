@@ -30,7 +30,14 @@ const userSchema = new mongoose.Schema({
     // Email verification fields
     emailVerified: { type: Boolean, default: false },
     verificationCode: { type: String },
-    verificationExpires: { type: Date }
+    verificationExpires: { type: Date },
+    
+    // Account lockout fields
+    loginAttempts: { type: Number, default: 0 },
+    lockUntil: { type: Date },
+    
+    // Trial tracking to prevent abuse
+    hasUsedTrial: { type: Boolean, default: false }
 }, { timestamps: true 
     
 });

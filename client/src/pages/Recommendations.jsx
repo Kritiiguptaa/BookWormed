@@ -12,14 +12,20 @@ const Recommendations = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // Since this is a protected route, user/token should exist
     // Wait for subscription to load before checking premium access
-    if (user && subscription === null) {
+    if (!user || !token) {
+      console.log('No user/token in Recommendations');
+      return;
+    }
+
+    if (subscription === null) {
       console.log('Waiting for subscription data to load...');
       return;
     }
     
     // Check for premium access
-    if (user && subscription && !subscription.hasPremium) {
+    if (!subscription.hasPremium) {
       console.log('No premium access, redirecting to subscription page');
       navigate('/subscription');
       return;
@@ -29,13 +35,12 @@ const Recommendations = () => {
       setLoading(true);
       setError('');
       try {
-        // If user is logged in, try to fetch their lists first
-        if (token && user) {
-          const { data } = await axios.get(`${backendUrl}/api/book/lists`, {
-            headers: { token }
-          });
+        // Fetch user's lists
+        const { data } = await axios.get(`${backendUrl}/api/book/lists`, {
+          headers: { token }
+        });
 
-          if (data.success && Array.isArray(data.lists) && data.lists.length > 0) {
+        if (data.success && Array.isArray(data.lists) && data.lists.length > 0) {
             // collect genres from user's lists
             const allGenres = {};
             const bookIdsInLists = new Set();
@@ -127,46 +132,45 @@ const Recommendations = () => {
             setBooks(uniq.slice(0, 20));
             setLoading(false);
             return;
-          }
-        }
-
-        // Default for new/anonymous users: highest rated books
-        const res = await axios.get(`${backendUrl}/api/book/browse?sortBy=rating&limit=20`);
-        if (res.data?.success) {
-          let topBooks = res.data.books || [];
-          // Supplement with public dataset
-          try {
-            const pubResp = await fetch('/books_full.json');
-            if (pubResp.ok) {
-              const pubData = await pubResp.json();
-              const pubMap = makePubDataMap(pubData);
-              topBooks = topBooks.map(rb => {
-                if (!rb) return rb;
-                const key = normalizeKey(rb.title || rb.Book || '', rb.author || rb.Author || '');
-                const entry = pubMap.get(key);
-                if ((!rb.coverImage || rb.coverImage === '') && entry && entry.coverImage) {
-                  return { ...rb, coverImage: entry.coverImage };
+          } else {
+            // If no lists, fetch default highest rated books
+            const res = await axios.get(`${backendUrl}/api/book/browse?sortBy=rating&limit=20`);
+            if (res.data?.success) {
+              let topBooks = res.data.books || [];
+              // Supplement with public dataset
+              try {
+                const pubResp = await fetch('/books_full.json');
+                if (pubResp.ok) {
+                  const pubData = await pubResp.json();
+                  const pubMap = makePubDataMap(pubData);
+                  topBooks = topBooks.map(rb => {
+                    if (!rb) return rb;
+                    const key = normalizeKey(rb.title || rb.Book || '', rb.author || rb.Author || '');
+                    const entry = pubMap.get(key);
+                    if ((!rb.coverImage || rb.coverImage === '') && entry && entry.coverImage) {
+                      return { ...rb, coverImage: entry.coverImage };
+                    }
+                    return rb;
+                  });
                 }
-                return rb;
-              });
+              } catch (e) {
+                // ignore
+              }
+              setBooks(topBooks);
+            } else {
+              setError('Failed to load recommendations');
             }
-          } catch (e) {
-            // ignore
           }
-          setBooks(topBooks);
-        } else {
-          setError('Failed to load recommendations');
+        } catch (err) {
+          console.error('Recommendations error:', err);
+          setError(err.response?.data?.message || err.message || 'Error loading recommendations');
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.error('Recommendations error:', err);
-        setError(err.response?.data?.message || err.message || 'Error loading recommendations');
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    load();
-  }, [token, user, backendUrl, subscription, navigate]);
+      load();
+    }, [token, user, backendUrl, subscription, navigate]);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
