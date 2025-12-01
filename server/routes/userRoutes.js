@@ -16,7 +16,13 @@ import {
     forgotPassword,
     resetPassword,
     sendVerificationCode,
-    refreshAccessToken
+    refreshAccessToken,
+    updateProfile,
+    changePassword,
+    deleteAccount,
+    blockUser,
+    unblockUser,
+    getBlockedUsers
 } from '../controllers/UserController.js';
 import userAuth from '../middlewares/auth.js';
 const userRouter = express.Router();
@@ -47,5 +53,11 @@ userRouter.get('/get', userAuth, getUser);
 userRouter.get('/subscription', userAuth, getUserSubscription)
 userRouter.post('/pay-razor', userAuth, paymentRazorpay)
 userRouter.post('/verify-razor', verifyRazorpay)
+userRouter.put('/profile', userAuth, updateProfile)
+userRouter.put('/change-password', userAuth, changePassword)
+userRouter.delete('/account', userAuth, deleteAccount)
+userRouter.post('/block/:blockUserId', userAuth, blockUser)
+userRouter.delete('/block/:unblockUserId', userAuth, unblockUser)
+userRouter.get('/blocked-users', userAuth, getBlockedUsers)
 
 export default userRouter;

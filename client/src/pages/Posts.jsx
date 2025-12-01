@@ -138,7 +138,7 @@ const Posts = () => {
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-white mb-4">📚 Recent Reviews from People You Follow</h2>
                 <div className="space-y-4">
-                  {followingReviews.map((review) => (
+                  {followingReviews.filter(review => review.book && review.user).map((review) => (
                     <div key={review._id} className="bg-gray-800 border border-gray-700 rounded-lg p-4 hover:border-blue-500 transition-colors">
                       <div className="flex gap-4">
                         {/* Book Cover - Clickable */}

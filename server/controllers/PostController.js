@@ -1,6 +1,7 @@
 import Post from '../models/postModel.js';
 import { createNotificationHelper } from './NotificationController.js';
 import userModel from '../models/userModel.js';
+import { validateAndSanitizeText } from '../utils/sanitize.js';
 
 // Create a new post
 export const createPost = async (req, res) => {
@@ -13,9 +14,20 @@ export const createPost = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Title and content are required' });
     }
 
+    // Sanitize title and content to prevent XSS
+    const titleValidation = validateAndSanitizeText(title, 300);
+    const contentValidation = validateAndSanitizeText(content, 10000);
+
+    if (!titleValidation.valid) {
+      return res.status(400).json({ success: false, message: titleValidation.error });
+    }
+    if (!contentValidation.valid) {
+      return res.status(400).json({ success: false, message: contentValidation.error });
+    }
+
     const newPost = new Post({
-      title,
-      content,
+      title: titleValidation.sanitized,
+      content: contentValidation.sanitized,
       author: userId,
       authorName: userName,
       imageUrl: imageUrl || '',
@@ -116,10 +128,13 @@ export const updatePost = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Not authorized to update this post' });
     }
 
+    // Only update allowed fields - NEVER update author, authorName, or createdAt
+    // These fields are immutable after creation to maintain data integrity
     post.title = title || post.title;
     post.content = content || post.content;
     post.imageUrl = imageUrl !== undefined ? imageUrl : post.imageUrl;
     post.tags = tags || post.tags;
+    // Note: author, authorName, and createdAt are explicitly NOT updated
 
     await post.save();
 
@@ -138,6 +153,7 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
+    const { confirmed } = req.body; // Require confirmation flag
     const userId = req.userId;
 
     const post = await Post.findById(id);
@@ -149,6 +165,16 @@ export const deletePost = async (req, res) => {
     // Check if user is the author
     if (post.author.toString() !== userId) {
       return res.status(403).json({ success: false, message: 'Not authorized to delete this post' });
+    }
+
+    // Require explicit confirmation to prevent accidental deletion
+    if (!confirmed) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please confirm post deletion',
+        requiresConfirmation: true,
+        postTitle: post.title
+      });
     }
 
     await Post.findByIdAndDelete(id);
@@ -227,6 +253,12 @@ export const addComment = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Comment text is required' });
     }
 
+    // Sanitize comment text to prevent XSS
+    const textValidation = validateAndSanitizeText(text, 1000);
+    if (!textValidation.valid) {
+      return res.status(400).json({ success: false, message: textValidation.error });
+    }
+
     const post = await Post.findById(id);
 
     if (!post) {
@@ -236,7 +268,7 @@ export const addComment = async (req, res) => {
     const newComment = {
       user: userId,
       userName,
-      text: text.trim(),
+      text: textValidation.sanitized,
       createdAt: new Date()
     };
 

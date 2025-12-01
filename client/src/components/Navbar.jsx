@@ -114,12 +114,25 @@ const Navbar = () => {
                                 {/* User info - Click to view profile */}
                                 {user && user._id ? (
                                     <Link to={`/profile/${user._id}`} className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
-                                        <img
-                                            className="h-8 w-8 rounded-full object-cover"
-                                            src={assets.profile_icon}
-                                            alt="User Avatar"
-                                            title="View Profile"
-                                        />
+                                        {user.profilePicture ? (
+                                            <img
+                                                className="h-8 w-8 rounded-full object-cover border border-gray-600"
+                                                src={user.profilePicture}
+                                                alt="User Avatar"
+                                                title="View Profile"
+                                                onError={(e) => {
+                                                    console.error('Navbar: Image failed to load:', user.profilePicture);
+                                                    e.target.src = assets.profile_icon;
+                                                }}
+                                            />
+                                        ) : (
+                                            <img
+                                                className="h-8 w-8 rounded-full object-cover"
+                                                src={assets.profile_icon}
+                                                alt="User Avatar"
+                                                title="View Profile"
+                                            />
+                                        )}
                                         <span className="text-gray-300 max-sm:hidden">{`Hi, @${user.username || user.email?.split('@')[0] || 'user'}`}</span>
                                     </Link>
                                 ) : (

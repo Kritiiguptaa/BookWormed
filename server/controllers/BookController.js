@@ -3,6 +3,7 @@ import Review from '../models/reviewModel.js';
 import UserList from '../models/userListModel.js';
 import userModel from '../models/userModel.js';
 import { createNotificationHelper } from './NotificationController.js';
+import { validateAndSanitizeText, sanitizeSearchQuery } from '../utils/sanitize.js';
 
 // Browse/Get all books with filters and pagination
 export const browseBooks = async (req, res) => {
@@ -87,16 +88,22 @@ export const searchBooks = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Search query is required' });
     }
 
+    // Sanitize search query to prevent injection attacks
+    const sanitizedQuery = sanitizeSearchQuery(query);
+    if (!sanitizedQuery) {
+      return res.status(400).json({ success: false, message: 'Invalid search query' });
+    }
+
     const page = parseInt(req.query.page) || 1;
     const requestedLimit = parseInt(req.query.limit) || 20;
     // Enforce maximum limit to prevent abuse
     const limit = Math.min(requestedLimit, 100);
     const skip = (page - 1) * limit;
 
-    // Text search
+    // Text search with sanitized query
     const books = await Book.find(
       { 
-        $text: { $search: query },
+        $text: { $search: sanitizedQuery },
         isActive: true 
       },
       { score: { $meta: 'textScore' } }
@@ -107,7 +114,7 @@ export const searchBooks = async (req, res) => {
       .select('-ratings');
 
     const total = await Book.countDocuments({ 
-      $text: { $search: query },
+      $text: { $search: sanitizedQuery },
       isActive: true 
     });
 
@@ -117,7 +124,7 @@ export const searchBooks = async (req, res) => {
       currentPage: page,
       totalPages: Math.ceil(total / limit),
       totalBooks: total,
-      query
+      query: sanitizedQuery
     });
   } catch (error) {
     console.error('Error searching books:', error);
@@ -280,6 +287,12 @@ export const addReview = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Valid rating and review text are required' });
     }
 
+    // Sanitize review text to prevent XSS
+    const reviewValidation = validateAndSanitizeText(reviewText, 3000);
+    if (!reviewValidation.valid) {
+      return res.status(400).json({ success: false, message: reviewValidation.error });
+    }
+
     const book = await Book.findById(id);
 
     if (!book) {
@@ -292,7 +305,7 @@ export const addReview = async (req, res) => {
     if (review) {
       // Update existing review
       review.rating = rating;
-      review.reviewText = reviewText;
+      review.reviewText = reviewValidation.sanitized;
       review.isEdited = true;
       review.editedAt = new Date();
       await review.save();
@@ -303,7 +316,7 @@ export const addReview = async (req, res) => {
         user: userId,
         userName,
         rating,
-        reviewText,
+        reviewText: reviewValidation.sanitized,
         visibility: vis
       });
       try {
@@ -468,6 +481,7 @@ export const updateReview = async (req, res) => {
 export const deleteReview = async (req, res) => {
   try {
     const { reviewId } = req.params;
+    const { confirmed } = req.body; // Require confirmation flag
     const userId = req.userId;
 
     if (!userId) {
@@ -483,6 +497,15 @@ export const deleteReview = async (req, res) => {
     // Check if the user owns this review
     if (review.user.toString() !== userId) {
       return res.status(403).json({ success: false, message: 'You can only delete your own reviews' });
+    }
+
+    // Require explicit confirmation to prevent accidental deletion
+    if (!confirmed) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please confirm review deletion',
+        requiresConfirmation: true
+      });
     }
 
     const bookId = review.book;
