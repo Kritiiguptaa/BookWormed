@@ -470,7 +470,7 @@ const UserProfile = () => {
                         <img
                           src={item.book.coverImage}
                           alt={item.book.title}
-                          className="w-20 h-28 object-cover rounded"
+                          className="book-cover-sm"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.parentElement.innerHTML = '<div class="w-20 h-28 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center"><span class="text-3xl">📚</span></div>';

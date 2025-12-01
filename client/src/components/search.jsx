@@ -199,10 +199,10 @@ const Search = () => {
                     <img
                       src={book.coverImage}
                       alt={book.title}
-                      className="w-16 h-24 object-cover rounded"
+                      className="book-cover-sm"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.parentElement.innerHTML = '<div class="w-16 h-24 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center"><span class="text-2xl">📚</span></div>';
+                        e.target.parentElement.innerHTML = '<div class="w-20 h-28 bg-gradient-to-br from-gray-700 to-gray-600 rounded flex items-center justify-center"><span class="text-2xl">📚</span></div>';
                       }}
                     />
                   ) : (

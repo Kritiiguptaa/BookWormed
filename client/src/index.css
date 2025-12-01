@@ -25,3 +25,15 @@ html, body, #root {
   background-color: #0b1220; /* dark background matching app */
   overflow-x: hidden;
 }
+
+/* Book cover helpers: use `object-cover` so covers are uniformly cropped.
+   - `.book-cover` for larger cards (desktop grids)
+   - `.book-cover-sm` for small cards / list items
+*/
+.book-cover {
+  @apply w-full h-64 object-cover rounded;
+}
+
+.book-cover-sm {
+  @apply w-20 h-28 object-cover rounded;
+}

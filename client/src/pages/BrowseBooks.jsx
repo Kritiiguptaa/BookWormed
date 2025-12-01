@@ -790,7 +790,7 @@ const BrowseBooks = () => {
                     <img
                       src={book.coverImage}
                       alt={book.title}
-                      className="w-full h-64 object-cover"
+                      className="book-cover"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.parentElement.innerHTML = '<div class="w-full h-64 bg-gradient-to-br from-gray-700 to-gray-600 flex items-center justify-center"><span class="text-5xl">📚</span></div>';
