@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken'   //user authentication
 import { createNotificationHelper } from './NotificationController.js';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import { logAuthFailure, logAuthSuccess, logAccountLockout, logPasswordReset, logPaymentAttempt } from '../utils/logger.js';
 // import stripe from "stripe";
 const getUser = async (req, res) => {
   try {
@@ -33,6 +34,27 @@ const registerUser = async (req, res) => {
       return res.json({ success: false, message: 'Missing Details' });
     }
 
+    // Validate name length (2-50 characters)
+    if (name.length < 2 || name.length > 50) {
+      return res.json({ success: false, message: 'Name must be between 2 and 50 characters' });
+    }
+
+    // Validate username length (3-30 characters)
+    if (username.length < 3 || username.length > 30) {
+      return res.json({ success: false, message: 'Username must be between 3 and 30 characters' });
+    }
+
+    // Password strength validation
+    if (password.length < 8) {
+      return res.json({ success: false, message: 'Password must be at least 8 characters long' });
+    }
+    
+    // Check for at least one uppercase, one lowercase, and one number
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordRegex.test(password)) {
+      return res.json({ success: false, message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' });
+    }
+
     // Verify email code first
     const hashedCode = crypto.createHash('sha256').update(verificationCode).digest('hex');
     const tempUser = await userModel.findOne({
@@ -52,24 +74,35 @@ const registerUser = async (req, res) => {
     }
 
     // Hash password
-    const salt = await bcrypt.genSalt(5);
+    const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Update user with registration details
-    tempUser.name = name;
-    tempUser.username = username;
-    tempUser.password = hashedPassword;
+    // Update user with registration details (whitelist only allowed fields)
+    const allowedFields = { name, username, password: hashedPassword };
+    Object.assign(tempUser, allowedFields);
     tempUser.emailVerified = true;
     tempUser.verificationCode = undefined;
     tempUser.verificationExpires = undefined;
     tempUser.subscriptionStatus = 'trial';
     tempUser.trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+    if (!tempUser.hasUsedTrial) {
+      tempUser.subscriptionStatus = 'trial';
+      tempUser.trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+      tempUser.hasUsedTrial = true;
+    } else {
+      tempUser.subscriptionStatus = 'expired';
+    }
 
     const user = await tempUser.save();
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    // Issue access token (1 day) and refresh token (30 days)
+    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const refreshToken = jwt.sign({ id: user._id, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: '30d' });
+
+    // Log successful registration
+    logAuthSuccess(user._id, user.email, req.ip || 'unknown');
 
     const { password: _, ...userData } = user._doc;
-    res.json({ success: true, token, user: userData });
+    res.json({ success: true, token: accessToken, refreshToken, user: userData });
 
   } catch (error) {
     console.log(error);
@@ -83,26 +116,66 @@ const loginUser=async(req,res)=>{
         const {email,password}=req.body;
         const user=await userModel.findOne({email})
         if(!user){
-            return res.json({success:false,message:'User DNE'})
+            // Log failed login attempt
+            logAuthFailure(email, req.ip || 'unknown', 'User not found');
+            return res.json({success:false,message:'Invalid email or password'})
         }
+        
+        // Check if account is locked
+        if (user.lockUntil && user.lockUntil > Date.now()) {
+            const minutesLeft = Math.ceil((user.lockUntil - Date.now()) / 60000);
+            // Log locked account access attempt
+            logAccountLockout(email, req.ip || 'unknown');
+            return res.json({
+                success: false,
+                message: `Account is locked. Try again in ${minutesLeft} minutes.`
+            });
+        }
+        
         const isMatch=await bcrypt.compare(password,user.password)
 
         if (isMatch) {
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        // res.json({
-        //     success: true,
-        //     token,
-        //     user: {
-        //     name: user.name,
-        //     username: user.username
-        //     }
-        // });
+        // Issue access token (1 day) and refresh token (30 days)
+        const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        const refreshToken = jwt.sign({ id: user._id, type: 'refresh' }, process.env.JWT_SECRET, { expiresIn: '30d' });
+        
+        // Reset login attempts on successful login
+        if (user.loginAttempts > 0 || user.lockUntil) {
+            user.loginAttempts = 0;
+            user.lockUntil = undefined;
+            await user.save();
+        }
+        
+        // Log successful login
+        logAuthSuccess(user._id, user.email, req.ip || 'unknown');
+        
         const { password, ...userData } = user._doc;
-        res.json({ success: true, token, user: userData });
+        res.json({ success: true, token: accessToken, refreshToken, user: userData });
         }
 
         else{
-            return res.json({success:false,message:'Invalid credentials',password:{password:user.password}})
+            // Increment failed login attempts
+            user.loginAttempts += 1;
+            
+            // Lock account after 5 failed attempts (15 minutes lockout)
+            if (user.loginAttempts >= 5) {
+                user.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+                await user.save();
+                // Log account lockout event
+                logAccountLockout(email, req.ip || 'unknown');
+                return res.json({
+                    success: false,
+                    message: 'Account locked due to too many failed attempts. Try again in 15 minutes.'
+                });
+            }
+            
+            await user.save();
+            // Log failed login attempt
+            logAuthFailure(email, req.ip || 'unknown', `Invalid password - ${5 - user.loginAttempts} attempts remaining`);
+            return res.json({
+                success: false,
+                message: `Invalid email or password. ${5 - user.loginAttempts} attempts remaining.`
+            });
         }
     } 
     catch(error){
@@ -339,6 +412,8 @@ const verifyRazorpay=async(req,res)=>{
         if(orderInfo.status==='paid'){
             const transactionData=await transactionModel.findById(orderInfo.receipt)
             if(transactionData.payment){
+                // Log duplicate payment attempt
+                logPaymentAttempt(transactionData.userId, transactionData.plan, transactionData.amount, false);
                 return res.json({success:false,message:"Payment Failed"})
             }
             const userData=await userModel.findById(transactionData.userId)
@@ -356,8 +431,15 @@ const verifyRazorpay=async(req,res)=>{
                 trialEndsAt: null // Clear trial when paid subscription starts
             })
             await transactionModel.findByIdAndUpdate(transactionData._id,{payment:true})
+            // Log successful payment
+            logPaymentAttempt(userData._id, transactionData.plan, transactionData.amount, true);
             res.json({success:true,message:"Subscription Activated"})
         }else{
+            // Log failed payment
+            const transactionData = await transactionModel.findById(orderInfo.receipt);
+            if (transactionData) {
+                logPaymentAttempt(transactionData.userId, transactionData.plan, transactionData.amount, false);
+            }
             res.json({success:false,message:"Payment Failed"})
         }
     }catch(error){
@@ -401,8 +483,12 @@ const forgotPassword = async (req, res) => {
     // Find user by email
     const user = await userModel.findOne({ email });
     if (!user) {
-      return res.json({ success: false, message: 'No account found with this email' });
+      // Generic message to prevent email enumeration
+      return res.json({ success: true, message: 'If an account exists with this email, a reset code has been sent.' });
     }
+
+    // Log password reset request
+    logPasswordReset(email, req.ip || 'unknown');
 
     // Generate reset token (6-digit code for simplicity)
     const resetToken = crypto.randomInt(100000, 999999).toString();
@@ -464,8 +550,14 @@ const resetPassword = async (req, res) => {
       return res.json({ success: false, message: 'Token and new password are required' });
     }
 
-    if (newPassword.length < 6) {
-      return res.json({ success: false, message: 'Password must be at least 6 characters' });
+    // Password strength validation
+    if (newPassword.length < 8) {
+      return res.json({ success: false, message: 'New password must be at least 8 characters long' });
+    }
+    
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.json({ success: false, message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number' });
     }
 
     // Hash the provided token to compare with stored hashed token
@@ -584,4 +676,45 @@ const sendVerificationCode = async (req, res) => {
   }
 };
 
-export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay,forgotPassword,resetPassword,sendVerificationCode}
+// Refresh Token - Generate new access token from refresh token
+const refreshAccessToken = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(401).json({ success: false, message: 'Refresh token required' });
+    }
+
+    // Verify refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+    
+    // Ensure it's actually a refresh token
+    if (decoded.type !== 'refresh') {
+      return res.status(401).json({ success: false, message: 'Invalid token type' });
+    }
+
+    // Check if user still exists
+    const user = await userModel.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'User not found' });
+    }
+
+    // Issue new access token (1 day)
+    const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    res.json({ 
+      success: true, 
+      token: newAccessToken,
+      message: 'Access token refreshed successfully'
+    });
+
+  } catch (error) {
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ success: false, message: 'Invalid or expired refresh token' });
+    }
+    console.log(error);
+    res.status(500).json({ success: false, message: 'Error refreshing token' });
+  }
+};
+
+export {registerUser, loginUser, checkUsernameAvailability,searchUsers,followUser,unfollowUser,getFriends,getUser,getUserProfile,getUserSubscription,paymentRazorpay,verifyRazorpay,forgotPassword,resetPassword,sendVerificationCode,refreshAccessToken}

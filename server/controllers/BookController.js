@@ -8,7 +8,9 @@ import { createNotificationHelper } from './NotificationController.js';
 export const browseBooks = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const requestedLimit = parseInt(req.query.limit) || 20;
+    // Enforce maximum limit to prevent abuse
+    const limit = Math.min(requestedLimit, 100);
     const skip = (page - 1) * limit;
 
     // Build filter object
@@ -19,9 +21,11 @@ export const browseBooks = async (req, res) => {
       filter.genres = req.query.genre;
     }
     
-    // Author filter
+    // Author filter (sanitize to prevent ReDoS)
     if (req.query.author) {
-      filter.author = new RegExp(req.query.author, 'i');
+      // Escape special regex characters
+      const sanitizedAuthor = req.query.author.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.author = new RegExp(sanitizedAuthor, 'i');
     }
     
     // Year filter
@@ -84,7 +88,9 @@ export const searchBooks = async (req, res) => {
     }
 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const requestedLimit = parseInt(req.query.limit) || 20;
+    // Enforce maximum limit to prevent abuse
+    const limit = Math.min(requestedLimit, 100);
     const skip = (page - 1) * limit;
 
     // Text search
@@ -373,7 +379,9 @@ export const getBookReviews = async (req, res) => {
   try {
     const { id } = req.params;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const requestedLimit = parseInt(req.query.limit) || 10;
+    // Enforce maximum limit to prevent abuse
+    const limit = Math.min(requestedLimit, 100);
     const skip = (page - 1) * limit;
 
     const reviews = await Review.find({ book: id })
@@ -535,13 +543,45 @@ export const addToList = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Book already in this list' });
     }
 
+    // Check if book exists in another list
+    const existingInOtherList = await UserList.findOne({ user: userId, book: id });
+
+    if (existingInOtherList) {
+      // Update the existing entry to the new list type
+      existingInOtherList.listType = listType;
+      existingInOtherList.customListName = customListName || existingInOtherList.customListName;
+      existingInOtherList.notes = notes || existingInOtherList.notes;
+      existingInOtherList.status = listType === 'currently-reading' ? 'in-progress' : 
+                                  listType === 'read' ? 'completed' : 'not-started';
+      
+      // Update date fields based on list type
+      if (listType === 'currently-reading' && !existingInOtherList.dateStarted) {
+        existingInOtherList.dateStarted = new Date();
+      }
+      if (listType === 'read' && !existingInOtherList.dateFinished) {
+        existingInOtherList.dateFinished = new Date();
+      }
+      
+      await existingInOtherList.save();
+      
+      return res.status(200).json({
+        success: true,
+        message: 'Book moved to new list',
+        userList: existingInOtherList
+      });
+    }
+
+    // Create new entry if book doesn't exist in any list
     const userList = new UserList({
       user: userId,
       book: id,
       listType,
       customListName,
       notes,
-      status: listType === 'currently-reading' ? 'in-progress' : 'not-started'
+      status: listType === 'currently-reading' ? 'in-progress' : 
+              listType === 'read' ? 'completed' : 'not-started',
+      dateStarted: listType === 'currently-reading' ? new Date() : undefined,
+      dateFinished: listType === 'read' ? new Date() : undefined
     });
 
     await userList.save();

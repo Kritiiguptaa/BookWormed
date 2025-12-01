@@ -318,9 +318,9 @@ const MyLists = () => {
                           Finished: {new Date(item.dateFinished).toLocaleDateString()}
                         </span>
                       )}
-                      {!item.dateStarted && !item.dateFinished && (
+                      {!item.dateStarted && !item.dateFinished && item.createdAt && (
                         <span>
-                          Added: {new Date(item.dateAdded).toLocaleDateString()}
+                          Added: {new Date(item.createdAt).toLocaleDateString()}
                         </span>
                       )}
                     </div>

@@ -5,7 +5,7 @@ const userAuth=async(req,res,next)=>{
     const {token}=req.headers;
 
     if(!token){
-        return res.json({
+        return res.status(401).json({
             success: false, message:'Not Authorized. Login again'
         })
     }
@@ -14,12 +14,12 @@ const userAuth=async(req,res,next)=>{
         if(tokenDecode.id){
             req.body.userId=tokenDecode.id;
         }else{
-            return res.json({success:false,message:'Not Authorized. Login Again'})
+            return res.status(401).json({success:false,message:'Not Authorized. Login Again'})
         }
         next();
     }
     catch(error){
-        res.json({success:false,message:error.message});
+        return res.status(401).json({success:false,message:'Invalid or expired token'});
     }
 };
 export default userAuth
