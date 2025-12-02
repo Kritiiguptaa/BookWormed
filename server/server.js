@@ -58,7 +58,7 @@ const apiLimiter = rateLimit({
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  process.env.FRONTEND_URL
+  'https://book-wormed.vercel.app/'
 ].filter(Boolean);
 
 app.use(cors({
