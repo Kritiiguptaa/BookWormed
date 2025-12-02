@@ -1,6 +1,5 @@
 import winston from 'winston';
 
-// Create logger instance for security events
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
@@ -12,18 +11,19 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   defaultMeta: { service: 'bookwormed-api' },
-  transports: [
-    // Write all logs with importance level of `error` or less to `error.log`
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    // Write all logs with importance level of `warn` or less to `combined.log`
-    new winston.transports.File({ filename: 'logs/security.log', level: 'warn' }),
-    // Write all logs to `combined.log`
-    new winston.transports.File({ filename: 'logs/combined.log' })
-  ]
+  transports: []
 });
 
-// If we're not in production, log to the console as well
-if (process.env.NODE_ENV !== 'production') {
+
+if (process.env.NODE_ENV === "production") {
+  // Vercel → only console logs
+  logger.add(new winston.transports.Console());
+} else {
+  // Local development → file logs + console
+  logger.add(new winston.transports.File({ filename: 'logs/error.log', level: 'error' }));
+  logger.add(new winston.transports.File({ filename: 'logs/security.log', level: 'warn' }));
+  logger.add(new winston.transports.File({ filename: 'logs/combined.log' }));
+
   logger.add(new winston.transports.Console({
     format: winston.format.combine(
       winston.format.colorize(),
@@ -32,7 +32,6 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
-// Security event logging helpers
 export const logSecurityEvent = (event, details) => {
   logger.warn('SECURITY_EVENT', {
     event,
